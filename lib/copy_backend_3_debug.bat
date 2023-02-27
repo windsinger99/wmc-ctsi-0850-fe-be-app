@@ -1,0 +1,25 @@
+@ECHO OFF
+
+SET BUILD=Debug
+@REM SET LIB_DIR=backend_irt750_nxp3_malloc
+SET LIB_DIR=backend_irt750_nxp3
+SET LIB_NAME=lib%LIB_DIR%.a
+SET PRJ_DIR=.
+SET SRC_DIR=..\..\%LIB_DIR%\%BUILD%
+@REM dir %SRC_DIR%
+
+SET SRC_FILE=%SRC_DIR%\%LIB_NAME%
+SET DST_FILE=%PRJ_DIR%\%LIB_NAME%
+SET AXF_FILE=..\%BUILD%\*.axf
+
+ECHO %LIB_DIR%
+ECHO %PRJ_DIR%
+ECHO %SRC_DIR%
+ECHO ...
+
+dir /q %SRC_FILE%
+copy /y/v/b %SRC_FILE% %DST_FILE% 
+dir /q %DST_FILE% 
+
+del %AXF_FILE%
+pause
