@@ -1,0 +1,12 @@
+../usb/device/source/ehci/usb_device_ehci.c:147:13:USB_DeviceEhciSetDefaultState	8	static
+../usb/device/source/ehci/usb_device_ehci.c:1038:21:USB_DeviceEhciTransfer	64	static
+../usb/device/source/ehci/usb_device_ehci.c:509:13:USB_DeviceEhciCancelControlPipe	48	static
+../usb/device/source/ehci/usb_device_ehci.c:1361:14:USB_DeviceEhciInit	32	static
+../usb/device/source/ehci/usb_device_ehci.c:1535:14:USB_DeviceEhciDeinit	0	static
+../usb/device/source/ehci/usb_device_ehci.c:1603:14:USB_DeviceEhciSend	0	static
+../usb/device/source/ehci/usb_device_ehci.c:1635:14:USB_DeviceEhciRecv	0	static
+../usb/device/source/ehci/usb_device_ehci.c:1657:14:USB_DeviceEhciCancel	64	static
+../usb/device/source/ehci/usb_device_ehci.c:327:21:USB_DeviceEhciEndpointDeinit	24	static
+../usb/device/source/ehci/usb_device_ehci.c:1818:14:USB_DeviceEhciControl	40	static
+../usb/device/source/ehci/usb_device_ehci.c:2134:6:USB_DeviceEhciIsrFunction	72	static
+../usb/device/source/ehci/usb_device_ehci.c:2323:6:USB_DeviceEhciFullSpeed	0	static

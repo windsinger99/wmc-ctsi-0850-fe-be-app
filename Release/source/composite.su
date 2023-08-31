@@ -1,0 +1,7 @@
+../source/composite.c:175:21:USB_DeviceCallback	32	static
+../source/composite.c:135:6:USB_DeviceIsrEnable	0	static
+../source/composite.c:147:6:USB_DeviceIsrDisable	0	static
+../source/composite.c:428:6:USB_delay	8	static
+../source/composite.c:439:6:USB_DeviceApplicationInit	24	static
+../source/composite.c:495:9:USB_Device_ready	0	static
+../source/composite.c:500:19:USB_Get_Device_Handle	0	static

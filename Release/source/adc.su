@@ -1,0 +1,4 @@
+../source/adc.c:12:6:ADC_SamplesStart	8	static
+../source/adc.c:19:6:ADC_SamplesStop	0	static
+../source/adc.c:25:10:ADC_SamplesRead	8	static
+../source/adc.c:40:6:ADC_Conversion_State_Flag	0	static

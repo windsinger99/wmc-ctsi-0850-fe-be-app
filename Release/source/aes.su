@@ -1,0 +1,9 @@
+../source/aes.c:165:13:KeyExpansion	28	static
+../source/aes.c:423:13:Cipher	144	static
+../source/aes.c:449:13:InvCipher	88	static
+../source/aes.c:237:6:AES_init_ctx	0	static
+../source/aes.c:479:6:AES_ECB_encrypt	16	static
+../source/aes.c:488:6:AES_ECB_decrypt	16	static
+../source/aes.c:600:5:encrypt_key_copy	16	static
+../source/aes.c:619:5:encrypt_ecb	24	static
+../source/aes.c:640:5:decrypt_ecb	24	static

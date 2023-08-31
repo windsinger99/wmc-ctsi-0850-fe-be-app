@@ -1,0 +1,5 @@
+../source/gpt.c:16:6:GPT_2_GPT_IRQHANDLER	0	static
+../source/gpt.c:29:6:GPT1_Time_Var_Init	4	static
+../source/gpt.c:69:5:DEBUG_delay	8	static
+../source/gpt.c:83:6:Scan_Start_Time	0	static
+../source/gpt.c:88:6:Scan_Wait_Time	16	static
