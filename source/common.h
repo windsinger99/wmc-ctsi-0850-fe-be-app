@@ -38,6 +38,9 @@
 #define WMC_0650_NXP        20000
 #define WMC_0750_NXP        30000
 #define WMC_0850_NXP        40000
+#define WMC_0650_VE_NXP		50000
+#define SLIM_0320_NXP		60000
+
 #define MODEL_TYPE          WMC_0850_NXP
 //-----------------------------------------------------------------------------
 
@@ -51,8 +54,14 @@
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE					   TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE
-
 #elif (MODEL_TYPE == WMC_0650_NXP)
+#define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
+#define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
+#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
+#define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
+#define SPM_MODE_ENABLE         		   TRUE
+#define ONEPOINT_6MSFIX_REPORT			   FALSE
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
 #define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
@@ -72,9 +81,15 @@
 #define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE         TRUE
-#define ONEPOINT_6MSFIX_REPORT			   TRUE
+#define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
+#elif (MODEL_TYPE == SLIM_0320_NXP)
+#define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
+#define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
+#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
+#define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
+#define SPM_MODE_ENABLE         TRUE
+#define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
 #endif
-
 
 #if LED_ON_TIME_SHORT
 #define ENABLE_LED_ON_TIME_FINE             TRUE    // true:20ns,false:100ns //nsmoon@210930
@@ -90,12 +105,23 @@
 #define NOT_USE_LED_SINK_CONTROL    FALSE
 //-----------------------------------------------------------------------------
 
-#define ENABLE_UART_CMD_PROCESS             FALSE
-#if ENABLE_UART_CMD_PROCESS
+#define DEBUG_UART_MOME	1
+#define DEBUG_VCOM_MODE	2
+
+#if defined(DEBUG)
+#define DEBUG_VCOM_ENABLE	DEBUG_UART_MOME	//DEBUG_VCOM_MODE //nsmoon@230321
+#if (DEBUG_VCOM_ENABLE == DEBUG_VCOM_MODE)
+#define ENABLE_UART_CMD_PROCESS				DEBUG_VCOM_MODE
+#else
+#define ENABLE_UART_CMD_PROCESS				DEBUG_UART_MOME
+#endif
+
+#endif
+#ifdef ENABLE_UART_CMD_PROCESS
 #define ENABLE_TRIGER                       TRUE    // only for debugging
 //#define ENABLE_HIGH_LOW_CNT               FALSE
-#define ENABLE_CAL_DEBUG_PRINT              2
-#define SELECT_PD_GROUP_TRACE
+//#define ENABLE_CAL_DEBUG_PRINT              2
+//#define SELECT_PD_GROUP_TRACE
 #else
 #define ENABLE_TRIGER                       TRUE    // FALSE   //only for debugging
 #define ENABLE_FIXED_CURRENT                FALSE   // only for debugging
@@ -115,9 +141,13 @@
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #elif (MODEL_TYPE == WMC_0650_NXP)
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
+#define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #elif (MODEL_TYPE == WMC_0750_NXP)
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #elif (MODEL_TYPE == WMC_0850_NXP)
+#define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
+#elif (MODEL_TYPE == SLIM_0320_NXP)
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #endif
 
@@ -195,8 +225,12 @@
 
 #define TRACE_FULL(...) 	//DbgConsole_Printf(__VA_ARGS__)
 
-#if ENABLE_UART_CMD_PROCESS //YJ@210805
-#define TRACE_UART(...)    printf(__VA_ARGS__) //nsmoon@210906
+#ifdef ENABLE_UART_CMD_PROCESS //YJ@210805
+#if (DEBUG_VCOM_ENABLE == DEBUG_VCOM_MODE)
+#define TRACE_UART(...)    DbgConsole_Printf(__VA_ARGS__);vcom_delay(100);
+#else
+#define TRACE_UART(...)    DbgConsole_Printf(__VA_ARGS__);
+#endif
 #else
 #define TRACE_UART(...)
 #endif
@@ -277,9 +311,13 @@
 #define PD_LEVEL_LOW              	130  //<==default 130
 #elif (MODEL_TYPE == WMC_0650_NXP)
 #define PD_LEVEL_LOW                130  //<==default 130
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
+#define PD_LEVEL_LOW                130  //<==default 130
 #elif (MODEL_TYPE == WMC_0750_NXP)
 #define PD_LEVEL_LOW                130  //<==default 130
 #elif (MODEL_TYPE == WMC_0850_NXP)
+#define PD_LEVEL_LOW                130  //<==default 130
+#elif (MODEL_TYPE == SLIM_0320_NXP)
 #define PD_LEVEL_LOW                130  //<==default 130
 #endif
 #define PD_LEVEL_TOLERANCE_X        30

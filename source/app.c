@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "usb_host_config.h"
-#include "usb_host.h"
+#include "backend.h"
+//#include "usb_host_config.h"
+//#include "usb_host.h"
 #include "fsl_device_registers.h"
 //#include "usb_host_vendor.h"
 #include "board.h"
@@ -17,12 +18,25 @@
 #include "fsl_sysmpu.h"
 #endif /* FSL_FEATURE_SOC_SYSMPU_COUNT */
 
-#if ((!USB_HOST_CONFIG_KHCI) && (!USB_HOST_CONFIG_EHCI) && (!USB_HOST_CONFIG_OHCI) && (!USB_HOST_CONFIG_IP3516HS))
-#error Please enable USB_HOST_CONFIG_KHCI, USB_HOST_CONFIG_EHCI, USB_HOST_CONFIG_OHCI, or USB_HOST_CONFIG_IP3516HS in file usb_host_config.
+//#if ((!USB_HOST_CONFIG_KHCI) && (!USB_HOST_CONFIG_EHCI) && (!USB_HOST_CONFIG_OHCI) && (!USB_HOST_CONFIG_IP3516HS))
+//#error Please enable USB_HOST_CONFIG_KHCI, USB_HOST_CONFIG_EHCI, USB_HOST_CONFIG_OHCI, or USB_HOST_CONFIG_IP3516HS in file usb_host_config.
+//#endif
+
+#include "peripherals.h"
+#include "pin_mux.h"
+#include "usb_phy.h"
+#include "clock_config.h"
+
+#include "composite.h"
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
+#include "hid_generic.h"
+#include "hid_mouse.h"
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+#include "virtual_com.h"
 #endif
 
 #if (MODEL_SPT == MODEL_CTSK_N650_V100)||(MODEL_SPT == MODEL_CTSK_N750_V100)||(MODEL_SPT == MODEL_CTSK_N850_V100)
-#include "peripherals.h"
 #include "app.h"
 #include "Scan.h"
 #include "dlt.h"
@@ -33,20 +47,11 @@
 //#include <test_data_1p.h>
 #endif
 
-#include "pin_mux.h"
-#include "usb_phy.h"
-#include "clock_config.h"
-
-#if 1 //nsmoon@210609
-#include "composite.h"
-#include "hid_generic.h"
-#include "hid_mouse.h"
-#endif
-
-#include "backend.h"
 #include "backend_postp.h"
-
 #include "speed_test_float.h" //nsmoon@210205
+
+#include "uartCommand.h"
+
 
 /*******************************************************************************
 * Definitions
@@ -175,15 +180,19 @@ uint32_t curTime, prevTime;
 uint32_t app_time[APP_TIME_LEN];
 char app_time_str[APP_TIME_STR_LEN];
 #define APP_TIME_INIT()	{prevTime=DWT->CYCCNT;}
-#define APP_TIME_ADD(a)	{curTime=DWT->CYCCNT; app_time[(a)]=(curTime-prevTime); prevTime=DWT->CYCCNT;}
+#define APP_TIME_ADD(a)	{ \
+	curTime=DWT->CYCCNT; \
+	if ((a) < APP_TIME_LEN)	app_time[(a)]=(curTime-prevTime); \
+	prevTime=DWT->CYCCNT; \
+}
 #define APP_TIME_PRINT() { \
 	int i, idx; \
 	app_time_str[0] = '\0'; \
 	for (i =0; i < APP_TIME_LEN; i++) { \
 		idx = strlen(app_time_str); \
-		snprintf(&app_time_str[idx], (APP_TIME_STR_LEN-idx), "%d ", app_time[i]); \
+		snprintf(&app_time_str[idx], (APP_TIME_STR_LEN-idx), "%ld,", app_time[i]/6); \
     } \
-	DbgConsole_Printf("@@@ %s \r\n", app_time_str); \
+	DbgConsole_Printf("@@@,%s,\r\n", app_time_str); \
 }
 #else
 #define APP_TIME_INIT()
@@ -255,7 +264,6 @@ static void Make_Test_Data(void)
 }
 #endif //BACKEND_TEST_DATA
 
-
 static const uint16_t crc_table[16] =
 {
 	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
@@ -326,6 +334,8 @@ touch_mode_t touchModePrev;
 //static app_cmd_state_t appCmdState;
 #endif
 
+brush_last_send brushLastSend;
+
 #ifdef NORMAL_RESET_DELAY //nsmoon@200810
 #define RESET_DELAY_DOT_CNT			10	//1000
 #define MAX_RESET_DELAY_CNT			2	//3
@@ -342,11 +352,6 @@ static int s_devinit_delay; //nsmoon@201211
 
 ATTR_BACKEND_RAM3	uint32_t debug_count;
 
-#if 0
-extern void USB_HostClockInit(void);
-extern void USB_HostIsrEnable(void);
-extern void USB_HostTaskFn(void *param);
-#endif
 void BOARD_InitHardware(void);
 
 /*******************************************************************************
@@ -360,6 +365,10 @@ extern void USB_DeviceEhciIsrFunction(void *deviceHandle); //nsmoon@190110
 extern void USB_DeviceEhciGetSofIntCnt(uint32_t *cnt); //nsmoon@201211
 
 //static app_data_t s_appData;
+
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+extern void USB_DeviceCdcVcomTask(void);
+#endif
 
 /*******************************************************************************
  * Code
@@ -631,7 +640,7 @@ static usb_status_t USB_HostApplicationInit(void)
 #endif
 
 #if 1 //USE_FW_KEY_VALIDATION //nsmoon@191010
-#include "fsl_ocotp.h"
+//#include "fsl_ocotp.h"
 #include "aes.h"
 #define MY_OCOTP_FREQ_HZ		(CLOCK_GetFreq(kCLOCK_IpgClk))
 #define MY_OCOTP_ADDR_ST		0x18
@@ -654,6 +663,29 @@ static usb_status_t USB_HostApplicationInit(void)
 #define HD_1_SIZE				(64)
 #define HD_FW_VERSION_SIZE		(64 - 2) //crc
 
+//header2 size
+#define HD_2_SIZE				(64)
+#define HD_SN_SIZE				(64 - 1 - 2) //cmd+crc
+//#define HD_SIZE_TOT				(HD_0_SIZE + HD_1_SIZE + HD_2_SIZE)
+
+#if 1 //nsmoon@230503
+//header3 size
+#define HD_3_SIZE				(64)
+#define HD_FE_EEPROM_SIZE		(64-1) //cmd
+#define HD_SIZE_TOT				(HD_0_SIZE + HD_1_SIZE + HD_2_SIZE + HD_3_SIZE)
+#endif
+
+typedef union {
+    uint8_t all[HD_1_SIZE];
+    struct {
+        uint8_t fwVersion[HD_FW_VERSION_SIZE];
+        uint16_t hd01_crc;
+    } ind;
+} header1_t; //64-bytes, eeprom block no-1
+
+static header1_t header1;
+
+#if 0
 typedef union {
     uint8_t all[HD_0_SIZE];
     struct {
@@ -666,21 +698,13 @@ typedef union {
     } ind;
 } header0_t; //64-bytes, eeprom block no-1
 
-typedef union {
-    uint8_t all[HD_1_SIZE];
-    struct {
-        uint8_t fwVersion[HD_FW_VERSION_SIZE];
-        uint16_t hd01_crc;
-    } ind;
-} header1_t; //64-bytes, eeprom block no-1
+static header0_t header0;
 
 static uint8_t tmpKey0[HD_KEY0_SIZE];
 static uint8_t tmpKey1[HD_KEY1_SIZE];
-static header0_t header0;
-static header1_t header1;
-
 #define MAX_MATCHED_NUM		2
 static uint8_t matched[MAX_MATCHED_NUM];
+
 
 static void get_header0(void)
 {
@@ -702,12 +726,19 @@ static void get_header0(void)
         TRACE("KEY1 is matched!!!!");
     }
 }
-
+#endif
 static void get_header1(void)
 {
     uint8_t *eeprom = (uint8_t *)BOOTLOADER_EEPROM_BASE_ADDRESS + HD_0_SIZE;
     memcpy(&header1.all[0], eeprom, HD_1_SIZE);
+#if 0
+    memcpy((void*) &frontend_eeprom[0], eepromFE, FE_EEPROM_SIZE); //nsmoon@210908 bug-fix MY_EEPROM_SIZE=>FE_EEPROM_SIZE
+    show_frontend_fwinfo();
+#else
+    get_ver_string();
+#endif
 }
+
 
 #if USE_FW_KEY_VALIDATION
 static uint8_t mcuKey[EFUSE_KEY_LEN];
@@ -903,29 +934,7 @@ int backend_process_line_data(void)
     //init output buffer
     s_output_buffer.len = 0;
     s_output_buffer.buf = &s_touch_output[0];
-#if 0 //def BACKEND_TEST_DATA //for test
-    //int i;
-    for (i = 0; i < MAX_TEST_DATA_X; i++) {
-        if (test_data_x[i][0] < 0 || test_data_x[i][1] < 0) {
-            break;
-        }
-        s_hor_touch_pd2[i].pd = (uint8_t)test_data_x[i][0]; //pd
-        s_hor_touch_pd2[i].led = (uint8_t)test_data_x[i][1]; //led
-    }
-    s_input_buffer.hor_len = i;
 
-    for (i = 0; i < MAX_TEST_DATA_Y; i++) {
-        if (test_data_y[i][0] < 0 || test_data_y[i][1] < 0) {
-            break;
-        }
-        s_ver_touch_pd2[i].pd = (uint8_t)test_data_y[i][0]; //pd
-        s_ver_touch_pd2[i].led = (uint8_t)test_data_y[i][1]; //led
-    }
-    s_input_buffer.ver_len = i;
-    s_input_buffer.hor_touch_pd = &s_hor_touch_pd2[0];
-    s_input_buffer.ver_touch_pd = &s_ver_touch_pd2[0];
-#else //BACKEND_TEST_DATA
-#if 1
     stIdx = PD_DATA_IDX2;
     len = 0;
     for (m = 0; m < (g_back_conf.numPdX + g_back_conf.numPdY); m++) {
@@ -950,7 +959,6 @@ int backend_process_line_data(void)
         }
         bufIdx = stIdx + (pd * slope_byte);
 
-        //pRcv = &g_usb_in_buff[bufIdx];
         for (i = 0; i < slope_byte; i++) {
             uint8_t tmp8 = pRcv[bufIdx + i];
             if (tmp8) {
@@ -978,7 +986,6 @@ int backend_process_line_data(void)
     int thCntX = 0, tIdxX = 0;
     for (pd = 0; pd < g_back_conf.numPdX; pd++) {
         bufIdx = stIdx + (pd * g_back_conf.slope_byte_x);
-        //pRcv = &g_usb_in_buff[bufIdx];
         for (i = 0; i < g_back_conf.slope_byte_x; i++) {
             if (i < MAX_HOR_LINE_THRESHOLD) {
                 s_hor_line_threshold[tIdxX++] = pRcv[bufIdx + i];
@@ -1001,7 +1008,6 @@ int backend_process_line_data(void)
     int thCntY = 0, tIdxY = 0;
     for (pd = 0; pd < g_back_conf.numPdY; pd++) {
         bufIdx = stIdx + (pd * g_back_conf.slope_byte_y);
-        //pRcv = &g_usb_in_buff[bufIdx];
         for (i = 0; i < g_back_conf.slope_byte_y; i++) {
             if (i < MAX_VER_LINE_THRESHOLD) {
                 s_ver_line_threshold[tIdxY++] = pRcv[bufIdx + i];
@@ -1017,10 +1023,8 @@ int backend_process_line_data(void)
     }
     s_input_buffer.threshold_y_cnt = thCntY;
     stIdx += len_line_data_y;
-
 #endif
 
-#endif
 #if 0//1		//YJ211005 for DLT //YJ@220207 not used
 #define MAX_LINE_VAL4DLT	1500
     if(dltMode == BPLD_DLT_MODE)
@@ -1034,7 +1038,7 @@ int backend_process_line_data(void)
     }
     //if(thCntY+thCntX > 0)TRACE("T....MaxLineData : %d > %d", (thCntY+thCntX), MAX_LINE_VAL4DLT);
 #endif
-#endif
+
     //nextScan.currScan = nextScan.nextScan; //not-used
 #if (BRUSH_MODE_ENABLE == 1)
     nextScan.brushMode = (touchMode == APP_DRAW_BRUSH) ? 1 : 0; //nsmoon@200403
@@ -1064,6 +1068,7 @@ int backend_process_line_data(void)
     test_gpt2 = GPT2_PERIPHERAL->CNT;
 #endif
 #if 1 //for test
+    APP_TIME_ADD(2);
     if (BG_call_backend2((DEF_PD_INFO *)InBuf, (DEF_DATA_INFO2 *)OutBuf2, (next_scan_t *)&nextScan) != NO_BACKEND_ERROR)
     {
         TRACE_ERROR("(&)");
@@ -1084,6 +1089,7 @@ int backend_process_line_data(void)
 #endif
         //return APP_ERR;
     }
+    APP_TIME_ADD(3);
 #endif //1
 #ifdef TIMER_CNT_CHECK
     TRACEYJ("\r\n%d, %d, %d", test_dwt, test_gpt1, test_gpt2);
@@ -1228,8 +1234,16 @@ if (g_forcedagc.rmFrameCnt >= REMAINED_LINE_FRAME_CNT_MAX) {
     }
     else
     {
-        s_smooth_filter_brush();
-        s_coordinates_conversion_brush(OutBuf);
+#ifdef BRUSH_DELAY_REPORT_ENABLE
+		if (s_smooth_filter_brush_report_delay() == APP_OK) {
+			s_coordinates_conversion_brush_report_delay(OutBuf);
+		} else {
+			return APP_ERR;
+		}
+#else
+		s_smooth_filter_brush();
+		s_coordinates_conversion_brush(OutBuf);
+#endif
     }
 #endif
 
@@ -1428,6 +1442,7 @@ int s_is_expired_fagc_time(uint32_t time100us)
 
 static int SendTouch_Report(DEF_DATA_INFO *data_out, uint8_t reSend, uint8_t reSendStep)
 {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
     uint8_t *transmitDataBuffer = (uint8_t *)&genericDeviceInstance->buffTx[0];
     DEF_TOUCH_OUT *Data_Buf = data_out->buf;
@@ -1534,11 +1549,13 @@ static int SendTouch_Report(DEF_DATA_INFO *data_out, uint8_t reSend, uint8_t reS
             return USB_ERR;
         }
     }
+#endif
     return USB_OK;
 }
 
 static int SendBrush_Report(DEF_DATA_INFO *data_out)
 {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
     uint8_t *transmitDataBuffer = (uint8_t *)&genericDeviceInstance->buffTx[0];
     DEF_TOUCH_OUT *Data_Buf = data_out->buf;
@@ -1548,6 +1565,10 @@ static int SendBrush_Report(DEF_DATA_INFO *data_out)
     //resend = 0;
 
     memset(transmitDataBuffer, 0x00, USB_HID_GENERIC_IN_BUFFER_LENGTH);
+
+    if(Data_Buf[0].xSize == 0 && Data_Buf[0].ySize == 0 && Data_Buf[0].pressure == 0) {
+    	Data_Buf[0].status = TOUCH_SIG_UP;
+    }
 
     contact_status = Data_Buf[0].status & 0x03;
 
@@ -1607,9 +1628,9 @@ static int SendBrush_Report(DEF_DATA_INFO *data_out)
             return USB_ERR;
         }
     }
+#endif
     return USB_OK;
 }
-
 
 static int SendDigitizerReport(DEF_DATA_INFO *data_out)
 {
@@ -1630,7 +1651,7 @@ static int SendDigitizerReport(DEF_DATA_INFO *data_out)
         return USB_OK;
     }
 
-    int ret;
+    int ret = 0;
 
 #ifdef WMC_MODE_CHANGE //YJ@230207
     if(touchModePrev == APP_DRAW_PEN_MARKER)
@@ -1638,17 +1659,96 @@ static int SendDigitizerReport(DEF_DATA_INFO *data_out)
     if(touchMode == APP_DRAW_PEN_MARKER)
 #endif
     {
-
         ret = SendTouch_Report(data_out, reSendReport, 0);
         if(reSendReport)
         {
             MY_delay(80);
             ret = SendTouch_Report(data_out, reSendReport, 1);
         }
-
     }
     else	//APP_DRAW_BRUSH
     {
+#ifdef BRUSH_DELAY_REPORT_ENABLE
+    	uint32_t Send_time = 0;
+
+    	if (brushLastSend.lastSend) {
+    		brushLastSend.lastSend = 0;
+
+    		if (brushLastSend.condition) {
+    			int i = 0;
+    			int cnt = brushLastSend.condition;
+
+    			brushLastSend.condition = 0;
+
+    			for(i = 0; i < cnt; i++) {
+    				data_out->buf[brushLastSend.bufCnt].xCord = brushLastSend.xCord[i];
+					data_out->buf[brushLastSend.bufCnt].yCord = brushLastSend.yCord[i];
+					data_out->buf[brushLastSend.bufCnt].xSize = brushLastSend.xSize[i];
+					data_out->buf[brushLastSend.bufCnt].ySize = brushLastSend.ySize[i];
+					data_out->buf[brushLastSend.bufCnt].pressure = brushLastSend.pressure[i]<15?15:brushLastSend.pressure[i];
+
+					if (i == (cnt-1)) {
+						data_out->buf[brushLastSend.bufCnt].nReportSendCnt = 1;
+						data_out->buf[brushLastSend.bufCnt].status = TOUCH_SIG_UP;
+					} else {
+						data_out->buf[brushLastSend.bufCnt].nReportSendCnt = 0;
+						data_out->buf[brushLastSend.bufCnt].status = TOUCH_SIG_DOWN;
+
+						ret = SendBrush_Report(data_out);
+
+						Send_time = s_Send_get_time_diff();
+						while(Send_time < 60)		//60	100us
+						{
+							MY_delay(30);
+							Send_time  += s_Send_get_time_diff();
+						}
+					}
+				}
+
+    		} else {
+
+				int i;
+
+				data_out->buf[brushLastSend.bufCnt].nReportSendCnt = 0;
+				data_out->buf[brushLastSend.bufCnt].status = TOUCH_SIG_DOWN;
+
+				ret = SendBrush_Report(data_out);
+
+
+				Send_time = s_Send_get_time_diff();
+				while(Send_time < 60)		//60	100us
+				{
+					MY_delay(30);
+					Send_time  += s_Send_get_time_diff();
+				}
+
+				for (i = 0; i < BRUSH_DELAY_SIZE; i++) {
+
+					data_out->buf[brushLastSend.bufCnt].xCord = brushLastSend.xCord[i];
+					data_out->buf[brushLastSend.bufCnt].yCord = brushLastSend.yCord[i];
+					data_out->buf[brushLastSend.bufCnt].xSize = brushLastSend.xSize[i];
+					data_out->buf[brushLastSend.bufCnt].ySize = brushLastSend.ySize[i];
+					data_out->buf[brushLastSend.bufCnt].pressure = brushLastSend.pressure[i];//brushLastSend.pressure[i]<200?200:brushLastSend.pressure[i];
+
+					if (i == (BRUSH_DELAY_SIZE-2)) {
+						data_out->buf[brushLastSend.bufCnt].nReportSendCnt = 1;
+						data_out->buf[brushLastSend.bufCnt].status = TOUCH_SIG_UP;
+						break;
+					} else {
+						data_out->buf[brushLastSend.bufCnt].nReportSendCnt = 0;
+						data_out->buf[brushLastSend.bufCnt].status = TOUCH_SIG_DOWN;
+						ret = SendBrush_Report(data_out);
+						Send_time = s_Send_get_time_diff();
+						while(Send_time < 60)		//60	100us
+						{
+							MY_delay(30);
+							Send_time  += s_Send_get_time_diff();
+						}
+					}
+				}
+    		}
+    	}
+#endif
         ret = SendBrush_Report(data_out);
     }
     return ret;
@@ -1665,9 +1765,11 @@ typedef enum
     DATASTREAM_BUFFER_EVENT_ABORT
 } DATASTREAM_BUFFER_EVENT;
 
+
 uint8_t *normalCmdProcess(void)
 {
     uint8_t *ret = NULL;
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
 
     uint16_t crc_cal = USB_CalculateCrc(&genericDeviceInstance->buffRx[0], USB_NORCMD_LENGHT);
@@ -1692,11 +1794,13 @@ uint8_t *normalCmdProcess(void)
         TRACE_ERROR("ERROR! invalid crc %04x, %04x\r\n", crc_cal, crc_get);
     }
     TRACE_ERROR("usbcmd(%d,%d)\r\n", genericDeviceInstance->buffRx[0], genericDeviceInstance->buffRx[1]);
+#endif
 
     return ret;
 }
 
 
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 #if 1 //nsmoon@200706
 static void get_fw_version(char *src, char *dst, int len)
 {
@@ -1731,10 +1835,12 @@ static void getVerString(uint8_t *txBuff, int idx)
     char *verStr = (char *)&txBuff[idx];
 
     memset(verStrBe, 0xFF, MAX_VER_STRING); //reset
-#if (MODEL_SPT == MODEL_CTSK_N650_V100)		//YJ@230223	for new boot
+#if 0	// (MODEL_SPT == MODEL_CTSK_N650_V100)		//YJ@230223	for new boot		//YJ230616 for virtual hex FE
     get_fw_version((char *)header1.ind.fwVersion, (char *)verStrBe, 3);
     TRACE("verStrBe= [%s][%s]", verStrBe, header1.ind.fwVersion);
-    memcpy((void *)&verStr[0], (void *)&verStrFe[0],  2);
+    //memcpy((void *)&verStr[0], (void *)&verStrFe[0],  2);
+
+	memcpy((void *)&verStr[0], (void *)&frontend_fwVersion[0],  2);
     memcpy((void *)&verStr[2], (void *)&verStrBe[0],  2);
 #else
     get_fw_version((char *)header1.ind.fwVersion, (char *)verStrBe, 3);
@@ -1750,7 +1856,9 @@ static void getVerString(uint8_t *txBuff, int idx)
     transmitDataBuffer[len + 1] = (uint8_t)(crc_cal >> 8);
 }
 #endif
+#endif
 
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 static int normalSendRes(usb_device_normal_res_t res, uint8_t param)
 {
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
@@ -1779,9 +1887,11 @@ static int normalSendRes(usb_device_normal_res_t res, uint8_t param)
     }
     return USB_OK;
 }
+#endif
 
 int normal_dlt_send_data(uint8_t *txbuff, int len)
 {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
     //uint8_t *pRcv = &g_usb_in_buff[0];
     uint8_t *transmitDataBuffer = (uint8_t *)&genericDeviceInstance->buffTxDiag[0];
@@ -1793,7 +1903,7 @@ int normal_dlt_send_data(uint8_t *txbuff, int len)
         TRACE_ERROR("ERROR! invalid totalPacketSize: %d", totalPacketSize);
         return USB_ERR;
     }
-    TRACE("normal_send_data..%d", totalPacketSize);
+    //TRACE("normal_send_data..%d", totalPacketSize);
 
     for (idx = 0; idx < totalPacketSize; idx += pLen) {
         //TRACE("#3");
@@ -1804,15 +1914,16 @@ int normal_dlt_send_data(uint8_t *txbuff, int len)
             return USB_ERR;
         }
     }
+#endif
     return USB_OK;
 }
-
 
 #endif
 
 #ifdef HOR_EDGE_TOUCH_ENABLE
 static int SendWheelReport()
 {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     int cnt = 0;
     uint8_t transmitDataBufferLength;
     uint8_t *transmitDataBuffer = USB_GetMouseBuffer(&transmitDataBufferLength);
@@ -1834,6 +1945,7 @@ static int SendWheelReport()
         TRACE("*6");
         return USB_ERR;
     }
+#endif
     return USB_OK;
 }
 #endif
@@ -1908,6 +2020,7 @@ int backendInit(void)
 {
     int ret = 0;
     DEF_TP_LAYOUT_INFO tp_layout_info;
+    //TRACE("backendInit...");
 
     s_logical_max_x = TEST_LOGICAL_X_MAX;
     s_logical_max_y = TEST_LOGICAL_Y_MAX;
@@ -2003,7 +2116,10 @@ int backendInit(void)
 //#endif
 
     touchMode = APP_DRAW_PEN_MARKER;						 //YJ@230207
-
+#if 0 //for test
+    TRACE("tp_layout_info.hor_pd_num = %d %d", (int)tp_layout_info.hor_pd_num, (int)tp_layout_info.ver_pd_num);
+    TRACE("tp_layout_info.maxOfstValX = %d %d", (int)tp_layout_info.maxOfstValX, (int)tp_layout_info.maxOfstValY);
+#endif
 
     s_init_post_processing();
     tp_init_post_processing();
@@ -2027,18 +2143,6 @@ uint8_t backendProcess(void)
     switch(backendRunState)
     {
     case BACKEND_STATE_INIT:
-#if 1
-//      M_NOP_Delay_1usec();
-//      diff = DWT->CYCCNT;
-        ret = backendInit();
-//        diff_2 = DWT->CYCCNT - diff;
-
-#else
-        subThresholdDropPercent = LINE_THRESHOLD_VALUE;
-        setThresholdDataByAvgNonBlockLevel(SUB_THRESHOLD_MODE);
-        total_send_cnt = copy_ofst_to_exb();
-        backend_process_ofst_data();
-#endif
         backendRunState = BACKEND_STATE_LINE_DATA;
         break;
 
@@ -2101,7 +2205,7 @@ uint8_t backendProcess(void)
         }
         else
         {
-            TRACE("BackEnd Line Data Error!!!\r\n");
+        	TRACE_ERROR("BackEnd Line Data Error!!!\r\n");
         }
         break;
 
@@ -2113,6 +2217,7 @@ uint8_t backendProcess(void)
 }
 app_mode_t ReceiveCmdParser(void)
 {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     usb_device_hid_generic_struct_t *genericDeviceInstance = &g_UsbDeviceHidGeneric;
     //usb_hid_generic_struct_t *hidDeviceInstance = &s_UsbDeviceHidGeneric;
     usb_device_normal_cmd_t rcvCmd;
@@ -2213,7 +2318,7 @@ app_mode_t ReceiveCmdParser(void)
     }
 
     appCurrMode = appNextMode;
-
+#endif
     return appNextMode;
 }
 
@@ -2270,19 +2375,21 @@ void APP_Tasks(void)
         }
         else if (appMode != APP_MODE_WAIT_DLT_CMD)
         {
+            APP_TIME_INIT();
 #if (ONEPOINT_6MSFIX_REPORT)
         	set_DelayTimerUsec(6000);	// 6ms
 #endif
             scan_status = Scan_Process();
+            //APP_TIME_ADD(0);
 #ifdef BACKEND_TEST_DATA
             Make_Test_Data();
 #endif
+           // APP_TIME_ADD(1);
             if(scan_status == SCAN_INIT_COMPLETE)
             {
                 //TRACE("APP_MODE_BACKEND..\r\n");
-                APP_TIME_INIT();
                 backendProcess();
-                APP_TIME_ADD(0);
+                APP_TIME_ADD(4);
                 APP_TIME_PRINT();
 
                 if (appMode == APP_MODE_DLT)
@@ -2293,10 +2400,9 @@ void APP_Tasks(void)
                 }
             }
         }
-		else if(appMode == APP_MODE_WAIT_DLT_CMD)
-		{
-			M_NOP_Delay_1usec();
-		}
+
+		M_NOP_Delay_2usec();
+
 
     }
     break;
@@ -2318,6 +2424,9 @@ void APP_Tasks(void)
     }
 
     appMode = ReceiveCmdParser();
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    USB_DeviceCdcVcomTask();
+#endif
 }
 
 #endif
@@ -2329,7 +2438,47 @@ void DWT_Init(void)
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
-
+void test_mode_func(void)
+{
+#if 1
+    scanAxisFull(Y_AXIS, TRUE);
+    scanAxisFull(X_AXIS, TRUE);
+    Scan_Data_Process();
+#if 1
+	uint8_t buf[64];
+	uint8_t cnt = 0;
+    buf[cnt++] = 0x06;
+    for (uint8_t i = cnt; i < 63; i++)
+    {
+    	buf[cnt++] = 0xFF;
+    }
+    backend_process_line_data();
+  //  USB_SendDigitizerReport(buf, cnt) ;
+//#else
+   //dltProcess();
+    //backendProcess();
+   // if(backend_process_line_data() == BACKEND_OK)
+    {
+    	//backend_process_line_data();
+    	if (s_output_buffer.len == 0 && s_wheel_delta != 0) SendWheelReport();
+    	else if(s_output_buffer.len > 0) SendDigitizerReport((DEF_DATA_INFO *)&s_output_buffer);
+        else USB_SendDigitizerReport(buf, cnt) ;
+    }
+#endif
+    ReceiveCmdParser();
+    if(s_reset_delay > 0)
+    {
+    	MY_WDOG_soft_reset();
+         while(1);					//YJ@230222
+    }
+#else
+    scanAxisFull(Y_AXIS, TRUE);
+    scanAxisFull(X_AXIS, TRUE);
+    Scan_Data_Process();
+    dltProcess();
+    ReceiveCmdParser();
+#endif
+}
 int main(void)
 {
 #if (MODEL_SPT != MODEL_CTSK_N650_V100)&&(MODEL_SPT != MODEL_CTSK_N750_V100)&&(MODEL_SPT != MODEL_CTSK_N850_V100)
@@ -2360,13 +2509,15 @@ int main(void)
     MY_GTP_init(); //nsmoon@190114
     MY_GPIO_init(); //nsmoon@190116
 #endif
-
+#if 0
 #if USE_FW_KEY_VALIDATION
     MY_OCOTP_init();
 #else
     get_header0();
-    get_header1(); //nsmoon@200706
+    //get_header1(); //nsmoon@200706
 #endif
+#endif
+    get_header1(); //nsmoon@200706
 
     MY_WDOG_system_reset_reason();
     MY_WDOG_reset_init();
@@ -2408,116 +2559,25 @@ int main(void)
     scanGainHigh = 0; //init = 0;
 #endif
     Scan_Initialize();
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
+ //   uartCmdProcessInit();
+#elif(ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+    vcom_init();
+    //display_menu();
+#endif
     while (1)
     {
         WDOG_Refresh(MY_WDOG_BASE);
-#if 1
+
         APP_Tasks();
-//        DbgConsole_Printf("(%d)\r\n",gADC_DATA);
-//        scanAxisFull(X_AXIS, TRUE);
-//        DEBUG_TP2_HIGH();
-//        Timer_Delay_us(6000);
-//        DEBUG_TP2_LOW();
-#else
 
-        //        DEBUG_TP2_HIGH();
-        //        setPDDelayTimerUsec(1);
-        //        while(isPDDelayTimerExpired() == 0) {}
-        //        DEBUG_TP2_LOW();
-        //        setPDDelayTimerUsec(1);
-        //        while(isPDDelayTimerExpired() == 0) {}
+        //test_mode_func();
 
-                //setProcessExtLightTimerMsec(100);
-                //while(isProcessExtLightTimerExpired() == 0){WDOG_Refresh(MY_WDOG_BASE);}
-        //        DEBUG_TP2_HIGH();
-        //        checkExtLightNoise(Y_AXIS);
-        //        DEBUG_TP2_LOW();
-        //        checkExtLightNoise(X_AXIS);
-        //        MCU_AN_SW_EN1_TSPM();
-        //              Coupling_Sig_TSPM();
-        //
-        //             while((TMR3_PERIPHERAL->CHANNEL[TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0) {
-        //
-        //                     }
-                //setProcessExtLightTimerMsec(100);
-                //while(isProcessExtLightTimerExpired() == 0){WDOG_Refresh(MY_WDOG_BASE);}
-
-
-                //DEBUG_TP2_HIGH();
-        //    scanAxisFull(Y_AXIS, TRUE);
-        //    scanAxisFull(X_AXIS, TRUE);
-        //      M_DAC_DATA_SET(data++);
-        //      M_NOP_Delay_1usec();
-        //      MCU_LED_CELL_EN_TSPM();
-        //      M_NOP_Delay_1usec();
-        //      DbgConsole_Printf("(%d)\r\n", data);
-        //      DEBUG_TP2_HIGH();
-        //      MCU_AN_SW_EN1_TSPM();
-        //
-        //      while((TMR3_PERIPHERAL->CHANNEL[TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0){
-        //
-        //      }
-        //      DEBUG_TP2_LOW();
-        // M_TSPM_Triger_Set();
-        M_TSPM_LED_Group_Clk_Set(1);
-
-        DEBUG_TP2_HIGH();
-        ADC_SamplesStart();
-        M_NOP_Delay_60nsec();
-        M_ADC_MUX_DATA_SET(1);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
-            ;   // 0,1
-        }
-
-        adc_value[0] = ADC1_PERIPHERAL->R[0];
-        adc_value[1] = ADC2_PERIPHERAL->R[0];
-        //      M_NOP_Delay_40nsec();
-        M_ADC_MUX_DATA_SET(2);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
-            ;   // 2,3
-        }
-
-        MCU_LED_CELL_EN_TSPM();
-        MCU_AN_SW_EN1_TSPM();
-        Coupling_Sig_TSPM();
-
-        adc_value[2] = ADC1_PERIPHERAL->R[0];
-        adc_value[3] = ADC2_PERIPHERAL->R[0];
-        //      M_NOP_Delay_40nsec();
-        M_ADC_MUX_DATA_SET(3);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
-            ;   // 4,5
-        }
-
-        adc_value[4] = ADC1_PERIPHERAL->R[0];
-        adc_value[5] = ADC2_PERIPHERAL->R[0];
-
-        M_ADC_MUX_DATA_SET(4);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
-            ;   // 6,7
-        }
-
-        adc_value[6] = ADC1_PERIPHERAL->R[0];
-        adc_value[7] = ADC2_PERIPHERAL->R[0];
-
-        //              M_NOP_Delay_40nsec();
-        M_ADC_MUX_DATA_SET(0);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
-            ;   // 8,9
-        }
-
-        adc_value[8] = ADC1_PERIPHERAL->R[0];
-        adc_value[9] = ADC2_PERIPHERAL->R[0];
-
-        ADC_SamplesStop();
-        DEBUG_TP2_LOW();
-        //M_NOP_Delay_600nsec();
-//    	M_TSPM_LED_Group_Clk_Set(5);
-//    	M_TSPM_LED_Group_Clk_Set(10);
-        M_NOP_Delay_1usec();
-        //M_NOP_Delay_2usec();
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
+		  //uartCmdProcess();
 #endif
 
     } //while (1)
-
 }
+
+/* end of file */

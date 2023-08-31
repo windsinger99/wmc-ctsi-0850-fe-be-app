@@ -85,9 +85,12 @@ extern int s_debug_size_type, s_debug_edge;
 #define SMOOTHING_FILTER_ENABLE     //filter enable
 //#define CHECK_INITIAL_MOVEMENT //nsmoon@191220
 #ifdef BZ_FILTER_USE
-#define A0_OUT_FINE					0.7f //0.35f//1.0f//0.3f
+#define A0_BZ_OUT_FINE				0.7f
+#define A0_ERASE_OUT_FINE			0.9f
+#define A0_OUT_FINE					0.35f //0.35f//1.0f//0.3f
 #else
 #define A0_OUT_FINE					0.35f//1.0f//0.3f
+#define A0_ERASE_OUT_FINE			0.35f
 #endif
 #define A0_OUT_FINE_SIZE			0.5f
 #define A0_OUT_FINE_ERASER			0.5f
@@ -104,8 +107,8 @@ extern int s_debug_size_type, s_debug_edge;
 #define STAY_FRAME_LIMIT			10
 #define START_FRAME_LIMIT_ERASER	6	//5	//10		//YJ1127
 
-#define D2MIN_LIMIT_INITIAL			1500 //90
-#define D2MIN_LIMIT_PEN				15000 //80000 //nsmoon@200425 8000=>15000
+#define D2MIN_LIMIT_INITIAL			8000 //1500
+#define D2MIN_LIMIT_PEN				80000 //15000
 #define D2MIN_ACCEL_MFINGER			5000
 #define ACCEL_LIMIT_PEN				3 //5
 //#define ACCEL_LIMIT_MFINGER			20
@@ -170,25 +173,51 @@ extern int s_debug_size_type, s_debug_edge;
 #define MAX_SIZE_MARKER_1_SIDE  12.0f	//8.0f R0004
 #define MAX_SIZE_MARKER_2_SIDE  13.0f	//11.0f	R004
 #elif (MODEL_SPT == MODEL_CTSK_650_V100)||(MODEL_SPT == MODEL_CTSK_N650_V100)||(MODEL_SPT == MODEL_CTSK_N750_V100)||(MODEL_SPT == MODEL_CTSK_N850_V100)
-#define START_FRAME_LIMIT			7	//10//7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
+#define START_FRAME_LIMIT			7	//7	//10//7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
 #define START_FRAME_MULTI3			5
 #define START_FRAME_ERASE			5
+#define LIB_0418		1
+#ifdef LIB_0418
+#define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
+#define MAX_SIZE_MARKER_1      	12.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
 
-#define MAX_SIZE_PEN_2          19.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
-#define MAX_SIZE_MARKER_1      	22.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
-
-#define MAX_SIZE_PEN_E2         13.0f	//7.0f	//12.5f			//  < w_max  2
-#define MAX_SIZE_MARKER_E1      14.0f	//7.5f	//13.0f			//  > w_min  4
+#define MAX_SIZE_PEN_E2         6.0f	//7.0f	//12.5f			//  < w_max  2
+#define MAX_SIZE_MARKER_E1      7.0f	//7.5f	//13.0f			//  > w_min  4
 
 #define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31
 
-#define MAX_SIZE_PEN_2_EDGE     19.0f	//11.0f R0004
-#define MAX_SIZE_MARKER_1_EDGE  22.0f	//11.0f	R0004
-#define MAX_SIZE_MARKER_2_EDGE  24.0f	//12.0f R0004
+#define MAX_SIZE_PEN_2_EDGE     11.0f	//11.0f R0004
+#define MAX_SIZE_MARKER_1_EDGE  15.0f	//11.0f	R0004
+#define MAX_SIZE_MARKER_2_EDGE  26.0f	//12.0f R0004
 
-#define MAX_SIZE_PEN_2_SIDE     19.0f	//8.0f R0004
-#define MAX_SIZE_MARKER_1_SIDE  22.0f	//8.0f R0004
-#define MAX_SIZE_MARKER_2_SIDE  24.0f	//11.0f	R004
+#define MAX_SIZE_PEN_2_SIDE     11.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_1_SIDE  15.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_2_SIDE  26.0f	//11.0f	R004
+#ifdef MARKER_TOP_AAREA
+#define MAX_SIZE_PEN_1_MTOP     2.5f
+#define MAX_SIZE_PEN_2_MTOP     11.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_1_MTOP  15.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_2_MTOP  26.0f	//11.0f	R004
+#define MAX_SIZE_ERASER_1_MTOP  95.0f				//80.0f	YJ20200318
+#endif
+
+#elif LIB_0411
+#define MAX_SIZE_PEN_2          14.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
+#define MAX_SIZE_MARKER_1      	15.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
+
+#define MAX_SIZE_PEN_E2         12.0f	//7.0f	//12.5f			//  < w_max  2
+#define MAX_SIZE_MARKER_E1      13.0f	//7.5f	//13.0f			//  > w_min  4
+
+#define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31
+
+#define MAX_SIZE_PEN_2_EDGE     13.0f	//11.0f R0004
+#define MAX_SIZE_MARKER_1_EDGE  14.0f	//11.0f	R0004
+#define MAX_SIZE_MARKER_2_EDGE  22.0f	//12.0f R0004
+
+#define MAX_SIZE_PEN_2_SIDE     13.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_1_SIDE  14.0f	//8.0f R0004
+#define MAX_SIZE_MARKER_2_SIDE  22.0f	//11.0f	R004
+#endif
 
 #elif (MODEL_SPT == MODEL_CTSK_550_V100)
 #define START_FRAME_LIMIT			7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
@@ -430,6 +459,7 @@ typedef struct {
 //////////////////////////////////////////////////////
 // Exported Global variable prototypes
 extern int s_prevTouchCnt, s_touchReportCnt;
+extern int s_prevTouchCntPen;
 extern DEF_TOUCH_OUT s_touch_data_out[ALLOWABLE_TOUCH_DATA_IO];
 extern float s_ratioXforP2L, s_ratioYforP2L; // ratio for physical coordinates to logical coordinates
 extern int s_touch_count;
@@ -437,7 +467,7 @@ extern vec_t *s_touch_data;
 extern tp_size_t *s_touch_size;
 extern tp_line_cnt_t *s_touch_lineCnt;
 extern int8_t *s_multi_fine; //for debugging
-
+extern uint8_t curBrushId;
 //////////////////////////////////////////////////////
 // Exported Global function prototypes
 extern void s_coordinates_conversion(DEF_DATA_INFO *pOutBuf);
@@ -450,7 +480,9 @@ extern void s_touch_point_tracking(void);
 
 extern void tp_init_post_processing(void);
 extern void s_coordinates_conversion_brush(DEF_DATA_INFO *pOutBuf);
+extern void s_coordinates_conversion_brush_report_delay(DEF_DATA_INFO *pOutBuf);
 extern void s_smooth_filter_brush(void);
+extern int s_smooth_filter_brush_report_delay(void);
 extern void s_touch_point_tracking_brush(void);
 
     /* Provide C++ Compatibility */

@@ -16,7 +16,7 @@ volatile uint32_t start_scan_ctrl_time, scan_ctrl_time;
 void GPT_2_GPT_IRQHANDLER(void)
 {
     /* Clear interrupt flag.*/
-    GPT_ClearStatusFlags(GPT2_PERIPHERAL, kGPT_OutputCompare1Flag);
+    GPT_ClearStatusFlags(BOARD_GPT2_PERIPHERAL, kGPT_OutputCompare1Flag);
 
     gptIsrFlag = true;
 /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F, Cortex-M7, Cortex-M7F Store immediate overlapping
@@ -82,7 +82,7 @@ uint32_t rrrr;
 
 void Scan_Start_Time(void)
 {
-	start_scan_ctrl_time = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+	start_scan_ctrl_time = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 void Scan_Wait_Time(uint32_t wait_time)
@@ -92,7 +92,7 @@ void Scan_Wait_Time(uint32_t wait_time)
 	while (diffTime < wait_time)
 	{
 		//WDOG_Reset_Refresh();	//YJ@221122
-		curTime = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+		curTime = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 
 		if (curTime > start_scan_ctrl_time)
 		{

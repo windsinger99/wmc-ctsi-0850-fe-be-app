@@ -5,21 +5,28 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#include "composite.h"
-#include "hid_generic.h"
-#include "hid_mouse.h"
 #include "backend.h"
 #include "pin_mux.h"
+#include "usb_device_config.h"
+#include "usb_device_descriptor.h"
+#include "usb_phy.h"
+#include "composite.h"
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
+#include "hid_generic.h"
+#include "hid_mouse.h"
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+#include "virtual_com.h"
+#endif
 
 #if (defined(FSL_FEATURE_SOC_SYSMPU_COUNT) && (FSL_FEATURE_SOC_SYSMPU_COUNT > 0U))
 #include "fsl_sysmpu.h"
 #endif /* FSL_FEATURE_SOC_SYSMPU_COUNT */
 
-#if (USB_DEVICE_CONFIG_HID < 2U)
+#if (USB_DEVICE_CONFIG_HID < 2U) && !defined(DEBUG)
 #error USB_DEVICE_CONFIG_HID need to > 1U, Please change the MARCO USB_DEVICE_CONFIG_HID in file "usb_device_config.h".
 #endif
 
-#include "usb_phy.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -47,10 +54,17 @@ extern void USB_SOF_IntEnable(void);
 extern usb_device_class_struct_t g_UsbDeviceHidMouseConfig;
 extern usb_device_class_struct_t g_UsbDeviceHidGenericConfig;
 
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+extern usb_device_class_struct_t g_UsbDeviceCdcVcomConfig;
+extern usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, void *param);
+extern usb_status_t USB_DeviceCdcVcomSetConfigure(class_handle_t handle, uint8_t configure);
+#endif
+
 static usb_device_composite_struct_t s_UsbDeviceComposite;
 
 /* Set class configurations */
-usb_device_class_config_struct_t g_CompositeClassConfig[USB_COMPOSITE_INTERFACE_COUNT] = {
+usb_device_class_config_struct_t g_CompositeClassConfig[USB_COMPOSITE_CLASS_COUNT] = {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     {
         USB_DeviceHidGenericCallback, /* HID generic class callback pointer */
         (class_handle_t)NULL,          /* The HID class handle, This field is set by USB_DeviceClassInit */
@@ -64,13 +78,22 @@ usb_device_class_config_struct_t g_CompositeClassConfig[USB_COMPOSITE_INTERFACE_
         &g_UsbDeviceHidMouseConfig, /* The HID mouse configuration, including class code, subcode, and protocol, class
                                type,
                                transfer type, endpoint address, max packet size, etc.*/
-    }};
+    },
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+	{
+		USB_DeviceCdcVcomCallback,
+		(class_handle_t)NULL,
+		&g_UsbDeviceCdcVcomConfig,
+	}
+#endif
+};
 
 /* Set class configuration list */
 usb_device_class_config_list_struct_t g_UsbDeviceCompositeConfigList = {
     g_CompositeClassConfig,        /* Class configurations */
     USB_DeviceCallback,            /* Device callback pointer */
-    USB_COMPOSITE_INTERFACE_COUNT, /* Class count */
+	USB_COMPOSITE_CLASS_COUNT, /* Class count */ //nsmoon230321
 };
 
 /*******************************************************************************
@@ -163,7 +186,7 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
             /* USB bus reset signal detected */
         	s_UsbDeviceComposite.attach               = 0U;
             s_UsbDeviceComposite.currentConfiguration = 0U;
-            error                                     = kStatus_USB_Success;
+            error = kStatus_USB_Success;
 #if (defined(USB_DEVICE_CONFIG_EHCI) && (USB_DEVICE_CONFIG_EHCI > 0U)) || \
     (defined(USB_DEVICE_CONFIG_LPCIP3511HS) && (USB_DEVICE_CONFIG_LPCIP3511HS > 0U))
             /* Get USB speed to configure the device, including max packet size and interval of the endpoints. */
@@ -181,14 +204,20 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
             {
             	s_UsbDeviceComposite.attach               = 0U;
             	s_UsbDeviceComposite.currentConfiguration = 0U;
+                error = kStatus_USB_Success; //nsmoon@230315
             }
             else if (USB_COMPOSITE_CONFIGURE_INDEX == (*temp8))
             {
                 /* Set device configuration request */
             	s_UsbDeviceComposite.attach = 1U;
                 s_UsbDeviceComposite.currentConfiguration = *temp8;
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
                 USB_DeviceHidMouseSetConfigure(s_UsbDeviceComposite.hidMouseHandle, *temp8);
                 USB_DeviceHidGenericSetConfigure(s_UsbDeviceComposite.hidGenericHandle, *temp8);
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+                USB_DeviceCdcVcomSetConfigure(s_UsbDeviceComposite.cdcVcom.cdcAcmHandle, *temp8);
+#endif
 #if USB_DEVICE_SOF_ENABLE //nsmoon@211222
 				USB_SOF_IntEnable();
 #endif
@@ -209,14 +238,46 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
                 uint8_t interface        = (uint8_t)((*temp16 & 0xFF00U) >> 0x08U);
                 uint8_t alternateSetting = (uint8_t)(*temp16 & 0x00FFU);
             	usb_echo(" ..interface=%d\r\n", interface);
-                if (interface < USB_COMPOSITE_INTERFACE_COUNT)
+
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0)  //nsmoon@230321
+                if (interface == USB_CDC_VCOM_CIC_INTERFACE_INDEX)
                 {
-                	s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface] = alternateSetting;
-                    USB_DeviceHidMouseSetInterface(s_UsbDeviceComposite.hidMouseHandle, interface, alternateSetting);
-                    USB_DeviceHidGenericSetInterface(s_UsbDeviceComposite.hidGenericHandle, interface,
-                                                      alternateSetting);
-                    error = kStatus_USB_Success;
+                    if (alternateSetting < USB_CDC_VCOM_CIC_INTERFACE_ALTERNATE_COUNT)
+                    {
+                    	s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface] = alternateSetting;
+                        error = kStatus_USB_Success;
+                    }
                 }
+                else if (interface == USB_CDC_VCOM_DIC_INTERFACE_INDEX)
+                {
+                    if (alternateSetting < USB_CDC_VCOM_DIC_INTERFACE_ALTERNATE_COUNT)
+                    {
+                    	s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface] = alternateSetting;
+                        error = kStatus_USB_Success;
+                    }
+                }
+#endif
+#if (USB_DEVICE_CONFIG_HID > 0)  //nsmoon@230321
+                if (USB_HID_MOUSE_INTERFACE_INDEX == interface)
+                {
+                    if (alternateSetting < USB_HID_MOUSE_INTERFACE_ALTERNATE_COUNT)
+                    {
+                    	s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface] = alternateSetting;
+                        USB_DeviceHidMouseSetInterface(s_UsbDeviceComposite.hidMouseHandle, interface, alternateSetting);
+                        error = kStatus_USB_Success;
+                    }
+                }
+                else if (USB_HID_GENERIC_INTERFACE_INDEX == interface)
+                {
+                    if (alternateSetting < USB_HID_GENERIC_INTERFACE_ALTERNATE_COUNT)
+                    {
+                    	s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface] = alternateSetting;
+                        USB_DeviceHidGenericSetInterface(s_UsbDeviceComposite.hidGenericHandle, interface, alternateSetting);
+                        error = kStatus_USB_Success;
+                    }
+                }
+
+#endif
             }
         }
             break;
@@ -233,16 +294,16 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
             break;
         case kUSB_DeviceEventGetInterface:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetInterface...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetInterface...%x", param);
             if (param)
             {
                 /* Get current alternate setting of the interface request */
                 uint8_t interface = (uint8_t)((*temp16 & 0xFF00U) >> 0x08U);
-                TRACE_UDC(" ..interface=%x\r\n", interface);
                 if (interface < USB_COMPOSITE_INTERFACE_COUNT)
                 {
                     *temp16 = (*temp16 & 0xFF00U) | s_UsbDeviceComposite.currentInterfaceAlternateSetting[interface];
                     error   = kStatus_USB_Success;
+                    TRACE_UDC(" @@=>%d %x\r\n", error, interface);
                 }
                 else
                 {
@@ -253,71 +314,73 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
             break;
         case kUSB_DeviceEventGetDeviceDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetDeviceDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetDeviceDescriptor...%x", param);
             if (param)
             {
-#ifdef DEBUG_USB_DeviceCallback
-            	usb_device_get_device_descriptor_struct_t *deviceDescriptor = (usb_device_get_device_descriptor_struct_t *)param;
-            	TRACE_UDC(" ..length=%x\r\n", deviceDescriptor->length);
-#endif
                 /* Get device descriptor request */
                 error = USB_DeviceGetDeviceDescriptor(handle, (usb_device_get_device_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	usb_device_get_device_descriptor_struct_t *deviceDescriptor = (usb_device_get_device_descriptor_struct_t *)param;
+            	TRACE_UDC(" @@=>%d %x\r\n", error, deviceDescriptor->length);
+#endif
             }
         }
             break;
         case kUSB_DeviceEventGetConfigurationDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetConfigurationDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetConfigurationDescriptor...%x", param);
             if (param)
             {
-#ifdef DEBUG_USB_DeviceCallback
-            	usb_device_get_configuration_descriptor_struct_t *configurationDescriptor = (usb_device_get_configuration_descriptor_struct_t *)param;
-            	TRACE_UDC(" ..configuration=%x %x\r\n", configurationDescriptor->configuration, configurationDescriptor->length);
-#endif
             	/* Get device configuration descriptor request */
                 error = USB_DeviceGetConfigurationDescriptor(handle, (usb_device_get_configuration_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	usb_device_get_configuration_descriptor_struct_t *configurationDescriptor = (usb_device_get_configuration_descriptor_struct_t *)param;
+            	TRACE_UDC(" @@=>%d %x %x\r\n", error, configurationDescriptor->buffer, configurationDescriptor->length);
+#endif
             }
         }
             break;
         case kUSB_DeviceEventGetStringDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetStringDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetStringDescriptor...%x", param);
             if (param)
             {
-#ifdef DEBUG_USB_DeviceCallback
-            	usb_device_get_string_descriptor_struct_t *stringDescriptor = (usb_device_get_string_descriptor_struct_t *)param;
-            	TRACE_UDC(" ..languageId=%x %x %x\r\n", stringDescriptor->languageId, stringDescriptor->stringIndex, stringDescriptor->length);
-#endif
                 /* Get device string descriptor request */
                 error = USB_DeviceGetStringDescriptor(handle, (usb_device_get_string_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	usb_device_get_string_descriptor_struct_t *stringDescriptor = (usb_device_get_string_descriptor_struct_t *)param;
+            	TRACE_UDC(" @@=>%d %x %x %x\r\n", error, stringDescriptor->languageId, stringDescriptor->stringIndex, stringDescriptor->length);
+#endif
             }
         }
             break;
+
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
         case kUSB_DeviceEventGetHidDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetHidDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetHidDescriptor...%x", param);
             if (param)
             {
-#ifdef DEBUG_USB_DeviceCallback
-            	usb_device_get_hid_report_descriptor_struct_t *hidReportDescriptor = (usb_device_get_hid_report_descriptor_struct_t *)param;
-            	TRACE_UDC(" ..interfaceNumber=%x %x\r\n", hidReportDescriptor->interfaceNumber, hidReportDescriptor->length);
-#endif
             	/* Get hid descriptor request */
                 error = USB_DeviceGetHidDescriptor(handle, (usb_device_get_hid_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	usb_device_get_hid_report_descriptor_struct_t *hidReportDescriptor = (usb_device_get_hid_report_descriptor_struct_t *)param;
+            	TRACE_UDC(" @@=>%d %x %x\r\n", error, hidReportDescriptor->interfaceNumber, hidReportDescriptor->length);
+#endif
             }
         }
             break;
         case kUSB_DeviceEventGetHidReportDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetHidReportDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetHidReportDescriptor...%x", param);
             if (param)
             {
-#ifdef DEBUG_USB_DeviceCallback
-            	usb_device_get_hid_report_descriptor_struct_t *hidReportDescriptor = (usb_device_get_hid_report_descriptor_struct_t *)param;
-            	TRACE_UDC(" ..interfaceNumber=%x %x\r\n", hidReportDescriptor->interfaceNumber, hidReportDescriptor->length);
-#endif
                 /* Get hid report descriptor request */
                 error = USB_DeviceGetHidReportDescriptor(handle, (usb_device_get_hid_report_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	usb_device_get_hid_report_descriptor_struct_t *hidReportDescriptor = (usb_device_get_hid_report_descriptor_struct_t *)param;
+            	TRACE_UDC(" @@=>%d, %x %x\r\n", error, hidReportDescriptor->interfaceNumber, hidReportDescriptor->length);
+#endif
             }
         }
             break;
@@ -337,14 +400,19 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
 #endif
         case kUSB_DeviceEventGetHidPhysicalDescriptor:
         {
-        	TRACE_UDC("kUSB_DeviceEventGetHidPhysicalDescriptor...%x\r\n", param);
+        	TRACE_UDC("kUSB_DeviceEventGetHidPhysicalDescriptor...%x", param);
             if (param)
             {
                 /* Get hid physical descriptor request */
                 error = USB_DeviceGetHidPhysicalDescriptor(handle, (usb_device_get_hid_physical_descriptor_struct_t *)param);
+#ifdef DEBUG_USB_DeviceCallback
+            	TRACE_UDC(" @@=>%d\r\n", error);
+#endif
             }
         }
             break;
+#endif
+
         default:
             break;
     }
@@ -378,8 +446,13 @@ void USB_DeviceApplicationInit(void)
     /* Set composite device to default state */
     s_UsbDeviceComposite.speed             = USB_SPEED_FULL;
     s_UsbDeviceComposite.attach            = 0U;
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     s_UsbDeviceComposite.hidMouseHandle    = (class_handle_t)NULL;
     s_UsbDeviceComposite.hidGenericHandle = (class_handle_t)NULL;
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    s_UsbDeviceComposite.cdcVcom.cdcAcmHandle = (class_handle_t)NULL;
+#endif
     s_UsbDeviceComposite.deviceHandle      = NULL;
 
 #if defined(USB_DEVICE_FULL_SPEED_ENABLE) && (USB_DEVICE_FULL_SPEED_ENABLE > 0U)
@@ -395,13 +468,19 @@ void USB_DeviceApplicationInit(void)
     else
     {
         usb_echo("USB device composite demo\r\n");
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
         /* Get the HID generic class handle */
         s_UsbDeviceComposite.hidGenericHandle = g_UsbDeviceCompositeConfigList.config[0].classHandle;
+        USB_DeviceHidGenericInit(&s_UsbDeviceComposite);
+
         /* Get the HID mouse class handle */
         s_UsbDeviceComposite.hidMouseHandle = g_UsbDeviceCompositeConfigList.config[1].classHandle;
-
-        USB_DeviceHidGenericInit(&s_UsbDeviceComposite);
         USB_DeviceHidMouseInit(&s_UsbDeviceComposite);
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+        s_UsbDeviceComposite.cdcVcom.cdcAcmHandle = g_UsbDeviceCompositeConfigList.config[2].classHandle;
+        USB_DeviceCdcVcomInit(&s_UsbDeviceComposite);
+#endif
     }
 
     USB_DeviceIsrEnable();

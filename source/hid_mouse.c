@@ -5,8 +5,9 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #include "usb_device_config.h"
+
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 #include "usb.h"
 #include "usb_device.h"
 
@@ -17,9 +18,7 @@
 #include "usb_device_descriptor.h"
 
 #include "composite.h"
-
 #include "hid_mouse.h"
-
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -33,7 +32,6 @@
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-
 USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_MouseBuffer[USB_HID_MOUSE_REPORT_LENGTH];
 static usb_device_composite_struct_t *s_UsbDeviceComposite;
 static usb_device_hid_mouse_struct_t s_UsbDeviceHidMouse;
@@ -43,12 +41,13 @@ static usb_device_hid_mouse_struct_t s_UsbDeviceHidMouse;
  ******************************************************************************/
 static usb_status_t USB_DeviceHidMouseAction(void)
 {
+	usb_status_t error = kStatus_USB_Success;
 #if 1 //nsmoon@210610
 	uint8_t buffLen;
 	uint8_t *buff = USB_GetMouseBuffer(&buffLen);
 	memset(buff, 0, buffLen);
-    return USB_DeviceHidSend(s_UsbDeviceComposite->hidMouseHandle,
-    		USB_HID_MOUSE_ENDPOINT_IN, buff, buffLen);
+	error =  USB_DeviceHidSend(s_UsbDeviceComposite->hidMouseHandle, USB_HID_MOUSE_ENDPOINT_IN, buff, buffLen);
+    return error;
 #else
     return kStatus_USB_Error;
 #endif
@@ -179,13 +178,14 @@ usb_status_t USB_DeviceHidMouseInit(usb_device_composite_struct_t *deviceComposi
 
 int USB_SendMouseReport(uint8_t *transmitDataBuffer, int len)
 {
+	usb_status_t error = kStatus_USB_Success;
 	//int retry = 1000;
 	s_UsbDeviceHidMouse.idleRate = 0;
 
     //while (retry--)
     while (1) //best effort
     {
-	    usb_status_t error = USB_DeviceHidSend(s_UsbDeviceComposite->hidMouseHandle, USB_HID_MOUSE_ENDPOINT_IN, transmitDataBuffer, len);
+	    error = USB_DeviceHidSend(s_UsbDeviceComposite->hidMouseHandle, USB_HID_MOUSE_ENDPOINT_IN, transmitDataBuffer, len);
         if (error != kStatus_USB_Busy) {
             if (error != kStatus_USB_Success) {
     	        TRACE_ERROR("ERROR! USB_SendMouseReport..USB_DeviceHidSend: %d", error);
@@ -204,5 +204,5 @@ uint8_t *USB_GetMouseBuffer(uint8_t *len)
 	(*len) = (uint8_t)USB_HID_MOUSE_REPORT_LENGTH;
 	return s_UsbDeviceHidMouse.buffer;
 }
-
+#endif
 /*end of file */

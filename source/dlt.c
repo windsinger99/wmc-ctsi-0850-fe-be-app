@@ -11,7 +11,8 @@
 #include "TSP_Layout.h"
 #include "dlt.h"
 #include "app.h"
-#include "usb_misc.h"
+//#include "usb_misc.h"
+#include "composite.h" //nsmoon@230315
 #include "usb_device_descriptor.h"
 #include "pitch_table.h"
 #include <stddef.h>
@@ -89,15 +90,6 @@ static uint8_t DLT_adc_header[CHK_ADC_HDR_SIZE];
 #define MY_EEPROM_SIZE                  MY_USB_PACKET_SIZE
 #endif
 
-#define FE_HEADER_SIZE		    (MY_USB_PACKET_SIZE -1 -2) //-(cmd+crc)
-#define FE_EEPROM_SIZE          FE_HEADER_SIZE
-#define FE_FWFILE_SIZE		    (27) //+\0
-#define FE_TIMESTAMP_SIZE	    (13) //+\0 200618113132
-#define FE_MODEL_SIZE		    (10) //+\0
-#define FE_PRGLEN_SIZE          (6) //+\0
-#define FE_PRGCRC_SIZE          (5) //+\0
-#define MAX_VERSION_LEN         (3) //+\0
-
 static char frontend_eeprom[FE_EEPROM_SIZE]; //from hex file
 #if 0 //nsmoon@210428
 static char frontend_fwfileText[FE_FWFILE_SIZE];
@@ -106,7 +98,8 @@ static char frontend_modelText[FE_MODEL_SIZE];
 static char frontend_prgLenText[FE_PRGLEN_SIZE];
 static char frontend_prgCrcText[FE_PRGCRC_SIZE];
 #endif
-static char frontend_fwVersion[MAX_VERSION_LEN];
+//static char frontend_fwVersion[MAX_VERSION_LEN];
+char frontend_fwVersion[MAX_VERSION_LEN];	//YJ@230531
 static unsigned int hexProgLen = 0; //from file
 static unsigned short hexCrc = 0;
 
@@ -277,8 +270,19 @@ void get_ver_string(void) {
     }
     TRACE("Address=%x\r\n", Address);
 #endif
-
-    memcpy((void*) &frontend_eeprom[0], (void*) MY_EEPROM_ADDR, FE_EEPROM_SIZE); //nsmoon@210908 bug-fix MY_EEPROM_SIZE=>FE_EEPROM_SIZE
+#if 0// YJ@
+   memcpy((void*) &frontend_eeprom[0], (void*) MY_EEPROM_ADDR, FE_EEPROM_SIZE); //nsmoon@210908 bug-fix MY_EEPROM_SIZE=>FE_EEPROM_SIZE
+#else
+#define FLASH_BASE_BE_ADDR			FlexSPI2_AMBA_BASE
+#define MY_FLASH_BE_SIZE			0x400000 /*4MB*/
+#define FLASH_SECTOR_BE_SIZE		0x1000	/*4KB*/
+#define BOOTLOADER_EEPROM_BASE_BE_ADDRESS  (FLASH_BASE_BE_ADDR + MY_FLASH_BE_SIZE - FLASH_SECTOR_BE_SIZE)
+#define BE_HD_0_SIZE				(64)
+#define BE_HD_1_SIZE				(64)
+#define BE_HD_2_SIZE				(64)
+    uint8_t *eepromFE = (uint8_t *)BOOTLOADER_EEPROM_BASE_BE_ADDRESS + BE_HD_0_SIZE+BE_HD_1_SIZE+BE_HD_2_SIZE;
+    memcpy((void*) &frontend_eeprom[0], eepromFE, FE_EEPROM_SIZE);
+#endif
     show_frontend_fwinfo();
 }
 #endif
@@ -579,7 +583,7 @@ uint32_t Send_ExbBit_Data_to_USBCPU_size(void) {
     return idx;
 }
 
-#if DLT_LED_ON_TIME_ENABLE //nsmoon@220117
+
 uint8_t getLedOnTime(uint8_t axisType, uint8_t pdIdx, uint8_t ledIdx) {
     int16_t offset = ledIdx - pdIdx;
     int16_t offsetMax = (axisType == X_AXIS) ? X_MAX_OFFSET : Y_MAX_OFFSET;
@@ -594,8 +598,24 @@ uint8_t getLedOnTime(uint8_t axisType, uint8_t pdIdx, uint8_t ledIdx) {
                axisType, seqIdx, seqIdxMax, ledIdx, pdIdx);
         return 0; //error
     }
+#ifdef ENABLE_UART_CMD_PROCESS
+    uint16_t onTime = 0;
+	uint16_t onTimeMax = 0;
+    if(fixedCurrentEnable)
+  	{
+    	onTime = setValueDAC;
+		onTimeMax = 255;
+		if(onTime > onTimeMax) onTime = onTimeMax;
+  	}
+    else
+  	{
+		onTime = (axisType == X_AXIS) ? xAxisDacIdx[seqIdx]-LED_ON_DAC_MIN_X : yAxisDacIdx[seqIdx]-LED_ON_DAC_MIN_Y;
+		onTimeMax = (axisType == X_AXIS) ? LED_ON_DAC_MAX_X-LED_ON_DAC_MIN_X : LED_ON_DAC_MAX_Y-LED_ON_DAC_MIN_Y;
+  	}
+#else
     uint16_t onTime = (axisType == X_AXIS) ? xAxisDacIdx[seqIdx]-LED_ON_DAC_MIN_X : yAxisDacIdx[seqIdx]-LED_ON_DAC_MIN_Y;
     uint16_t onTimeMax = (axisType == X_AXIS) ? LED_ON_DAC_MAX_X-LED_ON_DAC_MIN_X : LED_ON_DAC_MAX_Y-LED_ON_DAC_MIN_Y;
+#endif
     uint8_t ret = (uint8_t)((onTime * 0xFF) / onTimeMax);
     return ret;
 }
@@ -618,13 +638,39 @@ uint8_t getLedCurrentIdx(uint8_t axisType, uint8_t pdIdx, uint8_t ledIdx) {
 #if DLT_THRESHOLD_ENABLE  //nsmoon@220119
     uint8_t ret = (axisType == X_AXIS) ? xScanThresholdData[pdIdx][offset + offsetMax] : yScanThresholdData[pdIdx][offset + offsetMax];
 #else
+#ifdef ENABLE_UART_CMD_PROCESS
+    uint8_t ret =0;
+    if(dltThresholdEnbale)
+    {
+    	ret = (axisType == X_AXIS) ? xScanThresholdData[pdIdx][offset + offsetMax] : yScanThresholdData[pdIdx][offset + offsetMax];
+    }
+    else
+    {
+		uint8_t curTblIdx = 0;
+		uint8_t curTblIdxMax = 0;
+		if(fixedCurrentEnable)
+		{
+			curTblIdx = (uint8_t)setADCSel;
+			curTblIdxMax = (axisType == X_AXIS) ? X_LED_CURRENT_MAX_INDEX : Y_LED_CURRENT_MAX_INDEX;
+			if(curTblIdx > curTblIdxMax) curTblIdx = curTblIdxMax;
+		}
+		else
+		{
+			curTblIdx = (axisType == X_AXIS) ? xAxisLedCurrentTblIdx[seqIdx] : yAxisLedCurrentTblIdx[seqIdx];
+			curTblIdxMax = (axisType == X_AXIS) ? X_LED_CURRENT_MAX_INDEX : Y_LED_CURRENT_MAX_INDEX;
+		}
+
+		ret = (curTblIdxMax == 0) ? 0 : (curTblIdx * 0xFF) / curTblIdxMax;
+    }
+#else
     uint8_t curTblIdx = (axisType == X_AXIS) ? xAxisLedCurrentTblIdx[seqIdx] : yAxisLedCurrentTblIdx[seqIdx];
     uint8_t curTblIdxMax = (axisType == X_AXIS) ? X_LED_CURRENT_MAX_INDEX : Y_LED_CURRENT_MAX_INDEX;
     uint8_t ret = (curTblIdxMax == 0) ? 0 : (curTblIdx * 0xFF) / curTblIdxMax;
 #endif
+#endif
     return ret;
 }
-#endif
+
 
 uint32_t Send_ADC_Data_to_USBCPU(uint8_t usbReq) {
     uint16_t i, idx; //k
@@ -935,7 +981,7 @@ int dltRxProcess(void) {
     switch (RxCmd) {
     case USB_REQ_OFST:
         TRACE_DLT("USB_REQ_OFST");
-#if 0
+#if 1
         subThresholdDropPercent = DLT_mode.subThreshold;
         if (subThresholdDropPercent > 0 && subThresholdDropPercent < 100) {
             scanStatus.requestSubThreshold = TRUE;
@@ -947,8 +993,8 @@ int dltRxProcess(void) {
 #endif
         }
 #endif
-        subThresholdDropPercent = LINE_THRESHOLD_VALUE;
-        setThresholdDataByAvgNonBlockLevel(SUB_THRESHOLD_MODE);
+        //subThresholdDropPercent = LINE_THRESHOLD_VALUE;
+        //setThresholdDataByAvgNonBlockLevel(SUB_THRESHOLD_MODE);
         total_send_cnt = copy_ofst_to_exb();
         //TRACE_DLT("total_send_cnt = %d", total_send_cnt); // kjsxx
         break;

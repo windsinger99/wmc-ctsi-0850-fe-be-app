@@ -17,14 +17,22 @@
 #define TILT_EA    3333     //4545//final //3578    //3133  //3578  //3564  //3335
 #define MODEL_CTSK_N650_V100  6502 //samsung, nxp stand alone
 #define MODEL_SPT       MODEL_CTSK_N650_V100 //MODEL_CTKS_750_V120
+#elif (MODEL_TYPE ==  WMC_0650_VE_NXP)
+#define TILT_EA    3663     //4545//final //3578    //3133  //3578  //3564  //3335
+#define MODEL_CTSK_N650_V100  6502 //samsung, nxp stand alone
+#define MODEL_SPT       MODEL_CTSK_N650_V100 //MODEL_CTKS_750_V120
 #elif (MODEL_TYPE ==  WMC_0750_NXP)
 #define TILT_EA    3838     //4545//final //3578    //3133  //3578  //3564  //3335
-#define MODEL_CTSK_N750_V100  7502 //samsung, nxp stand alone
+#define MODEL_CTSK_N750_V100  7502  //samsung, nxp stand alone
 #define MODEL_SPT       MODEL_CTSK_N750_V100 //MODEL_CTKS_750_V120
 #elif (MODEL_TYPE ==  WMC_0850_NXP)
 #define TILT_EA    4343     //4545//final //3578    //3133  //3578  //3564  //3335
 #define MODEL_CTSK_N850_V100  8502 //samsung, nxp stand alone
 #define MODEL_SPT       MODEL_CTSK_N850_V100 //MODEL_CTKS_750_V120
+#elif (MODEL_TYPE ==  SLIM_0320_NXP)
+#define TILT_EA    2963     //4545//final //3578    //3133  //3578  //3564  //3335
+#define MODEL_CTSK_N650_V100  6502 //samsung, nxp stand alone
+#define MODEL_SPT       MODEL_CTSK_N650_V100 //MODEL_CTKS_750_V120
 #else
 #endif
 
@@ -82,7 +90,7 @@
 
 #ifdef FRONTEND_LINE_THRESHOLD
 #define LINE_THRESHOLD_SIZE		(1)
-#define LINE_THRESHOLD_VALUE	(50)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
+#define LINE_THRESHOLD_VALUE	(75)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
 #endif
 
 #if (_DEBUG == 1) || defined(DEBUG)
@@ -91,13 +99,14 @@
 #endif
 
 #if (ENABLE_DEBUG_MESSAGE == 1)
-#define DEBUG_PRINTF(...)       usb_echo(__VA_ARGS__);usb_echo("\r\n")
-#define TRACE(...)				DEBUG_PRINTF(__VA_ARGS__)
+extern int DbgConsole_Printf(const char *formatString, ...);
+#define DEBUG_PRINTF(...)       DbgConsole_Printf(__VA_ARGS__);DbgConsole_Printf("\r\n")
+#define TRACE(...)				DbgConsole_Printf(__VA_ARGS__);//DEBUG_PRINTF(__VA_ARGS__)
 #define TRACENR(...)		//DEBUG_PRINTF(__VA_ARGS__)
 #define DEBUG_INFO(...)         //usb_echo(__VA_ARGS__);
 #define TRACE_ERROR(...)        DEBUG_PRINTF(__VA_ARGS__)
 #define TRACE_RCP(...) 			//DEBUG_PRINTF(__VA_ARGS__)
-#define TRACEYJ(...)
+#define TRACEYJ(...)			// DbgConsole_Printf(__VA_ARGS__);DbgConsole_Printf("\r\n")
 #else
 #define DBG_PRINTF(...)        // DbgConsole_Printf(__VA_ARGS__);
 #define DEBUG_PRINTF(...)       //DBG_PRINTF(__VA_ARGS__);DBG_PRINTF("\r\n")
@@ -184,12 +193,23 @@
 #elif (MODEL_TYPE == WMC_0650_NXP)
 #define MAX_X_SLOPE_VAL     33 //256, 8-bits
 #define MAX_Y_SLOPE_VAL     33 //256, 8-bits
+#elif (MODEL_TYPE ==  WMC_0650_VE_NXP)
+#define MAX_X_SLOPE_VAL     36 //256, 8-bits
+#define MAX_Y_SLOPE_VAL     63 //256, 8-bits
 #elif (MODEL_TYPE == WMC_0750_NXP)
+#if 0
 #define MAX_X_SLOPE_VAL     38 //256, 8-bits
 #define MAX_Y_SLOPE_VAL     38 //256, 8-bits
+#else
+#define MAX_X_SLOPE_VAL     36 //256, 8-bits
+#define MAX_Y_SLOPE_VAL     38 //256, 8-bits
+#endif
 #elif (MODEL_TYPE ==  WMC_0850_NXP)
 #define MAX_X_SLOPE_VAL     43 //256, 8-bits
 #define MAX_Y_SLOPE_VAL     43 //256, 8-bits
+#elif (MODEL_TYPE ==  SLIM_0320_NXP)
+#define MAX_X_SLOPE_VAL     29 //256, 8-bits
+#define MAX_Y_SLOPE_VAL     63 //256, 8-bits
 #endif
 //#else
 //#ERROR MODEL_SPT NOT DEFINED!
@@ -249,6 +269,12 @@
 #define TEST_PHYSICAL_X_MAX   14285 //1454.12-25.62 = 1428.5
 #define TEST_PHYSICAL_Y_MAX   8035  //829.14-25.64 = 803.5
 
+#elif ((MODEL_TYPE ==  WMC_0650_VE_NXP))
+#define TEST_LOGICAL_X_MAX    22856 //22856 =14285*1.6
+#define TEST_LOGICAL_Y_MAX    12856 //12856= 8035*1.6
+#define TEST_PHYSICAL_X_MAX   14285 //1454.12-25.62 = 1428.5
+#define TEST_PHYSICAL_Y_MAX   8035  //829.14-25.64 = 803.5
+
 #elif ((MODEL_TYPE ==  WMC_0750_NXP))
 #define TEST_LOGICAL_X_MAX    26403 //26403.2 =16502*1.6
 #define TEST_LOGICAL_Y_MAX    14852 //14852.8= 9283*1.6
@@ -260,6 +286,12 @@
 #define TEST_LOGICAL_Y_MAX    16848 //10530*1.6 = 1684.8
 #define TEST_PHYSICAL_X_MAX   18720 //1900.00-28.00 = 1872.0
 #define TEST_PHYSICAL_Y_MAX   10530  //1081.00-28.00 = 1053.0
+
+#elif (MODEL_TYPE ==  SLIM_0320_NXP)
+#define TEST_LOGICAL_X_MAX    11174 //698.4*1.6 = 1117.4
+#define TEST_LOGICAL_Y_MAX    6285 //3928*1.6 = 628.5
+#define TEST_PHYSICAL_X_MAX   6984 //718.1-19.7 = 698.4
+#define TEST_PHYSICAL_Y_MAX   3928  //412.57-19.73 = 392.84
 
 #else
 #endif

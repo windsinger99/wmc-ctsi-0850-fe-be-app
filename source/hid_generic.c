@@ -5,11 +5,20 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
+#include "usb_device_config.h"
+
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
+#include "usb.h"
+#include "usb_device.h"
+
+#include "usb_device_class.h"
+#include "usb_device_hid.h"
+
+#include "usb_device_ch9.h"
+#include "usb_device_descriptor.h"
+
 #include "composite.h"
 #include "hid_generic.h"
-#include "board.h"
-#include "backend.h"
-
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -285,6 +294,7 @@ usb_status_t USB_DeviceHidGenericInit(usb_device_composite_struct_t *deviceCompo
 
 int USB_SendDigitizerReport(uint8_t *transmitDataBuffer, int len)
 {
+	usb_status_t error = kStatus_USB_Success;
 	//int retry = 0x5000;
     g_UsbDeviceHidGeneric.idleRate = 0;
     //g_UsbDeviceHidGeneric.DataSent = 0; //not-used
@@ -292,7 +302,7 @@ int USB_SendDigitizerReport(uint8_t *transmitDataBuffer, int len)
     //while (retry-- > 0)
     while (1) //best effort
     {
-	    usb_status_t error = USB_DeviceHidSend(s_UsbDeviceComposite->hidGenericHandle, USB_HID_GENERIC_ENDPOINT_IN, transmitDataBuffer, len);
+	    error = USB_DeviceHidSend(s_UsbDeviceComposite->hidGenericHandle, USB_HID_GENERIC_ENDPOINT_IN, transmitDataBuffer, len);
         if (error != kStatus_USB_Busy) {
             if (error != kStatus_USB_Success) {
     	        TRACE_ERROR("ERROR! USB_SendDigitizerReport..USB_DeviceHidSend: %d", error);
@@ -306,5 +316,5 @@ int USB_SendDigitizerReport(uint8_t *transmitDataBuffer, int len)
     TRACE_ERROR("ERROR! USB_SendDigitizerReport..timeout!!");
     return USB_ERR;
 }
-
+#endif
 /*end of file*/

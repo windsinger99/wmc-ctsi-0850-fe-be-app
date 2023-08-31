@@ -119,15 +119,22 @@ extern uint8_t yScanThresholdData[Y_CELL_SIZE][Y_MAX_OFFSET * 2 + 1]; // [pd Ind
 //extern uint32_t adc_value[ADC_DMA_SIZE];
 extern uint32_t adc_value[ADC_SIZE];
 
-#if ENABLE_UART_CMD_PROCESS  //nsmoon@210915
+#ifdef ENABLE_UART_CMD_PROCESS  //nsmoon@210915
 extern uint8_t Current_Test_index_X, Current_Test_index_Y;
 extern uint8_t Led_On_Time_Test_X, Led_On_Time_Test_Y;
-extern uint8_t fixedCurrentEnable;
+
 extern int debug_print_on;      //yj@210713
 extern int16_t gCurrentTotalLedIdx, gCurrentStartTotalPdIdx;
 #if ENABLE_TRIGER
 extern uint8_t Current_Triger_Pd, Current_Triger_Axis, Usb_Off_Test;
 #endif
+extern const uint8_t (*xAxisSequenceTbl)[2];
+extern const uint8_t (*xPdIdxAtANOutTbl)[PD_SIGNAL_OUT_NUM];
+extern const uint8_t (*xUOffsetAtANOutTbl)[PD_SIGNAL_OUT_NUM];
+extern const uint8_t (*yAxisSequenceTbl)[2];
+extern const uint8_t (*yPdIdxAtANOutTbl)[PD_SIGNAL_OUT_NUM];
+extern const uint8_t (*yUOffsetAtANOutTbl)[PD_SIGNAL_OUT_NUM];
+
 extern uint8_t xScanNonBlockLevel[X_CELL_SIZE][X_MAX_OFFSET * 2 + 1]; // [pd Index in X][offset between ledindex and pd]
 extern uint8_t yScanNonBlockLevel[Y_CELL_SIZE][Y_MAX_OFFSET * 2 + 1]; // [pd Index in Y][offset between ledindex and pd]
 //extern uint8_t xScanThresholdData[X_CELL_SIZE][X_MAX_OFFSET * 2 + 1]; // [pd Index in X][offset between ledindex and pd]
@@ -138,6 +145,7 @@ extern uint8_t yScanSubThresholdData[Y_CELL_SIZE][Y_MAX_OFFSET * 2 + 1]; // [pd 
 
 extern uint16_t setValueDAC, setADCSel;
 extern uint8_t fixedCurrentEnable;
+extern uint8_t dltThresholdEnbale;
 
 extern uint32_t diffCYC[10];
 
@@ -242,9 +250,10 @@ extern void copySequenceTbl(void);
 extern void selectPDGroupExt(int16_t startTotalPdIdx); //nsmoon@220113
 extern uint16_t findStartScanSequenceIdx(axis_type_enum axisType, uint8_t pdIdxStart, uint8_t ledIdxMin, uint8_t ledIdxMax);
 
-#if (ENABLE_UART_CMD_PROCESS == TRUE)
+#ifdef ENABLE_UART_CMD_PROCESS
 extern int16_t scanAxisTestSeqNo(axis_type_enum axisType, uint8_t bLedOn, int16_t seqNo);
 extern void display_led_agc(axis_type_enum axisType, uint8_t pdIdx0);
+extern void displayLedAgcResult(void);
 extern uint8_t isInSideArea(uint8_t pdIdx, uint8_t ledIdx, uint8_t cellSize, uint8_t cornerCellSize);
 extern void dac_data_set(uint8_t data);
 #endif

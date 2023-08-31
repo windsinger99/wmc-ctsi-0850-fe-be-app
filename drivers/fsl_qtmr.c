@@ -1,12 +1,11 @@
 /*
- * Copyright 2017-2019 NXP
+ * Copyright 2017-2022 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include "fsl_qtmr.h"
-#include "../source/macro.h"
 /* Component ID definition, used by tools. */
 #ifndef FSL_COMPONENT_ID
 #define FSL_COMPONENT_ID "platform.drivers.qtmr"
@@ -34,6 +33,8 @@ static TMR_Type *const s_qtmrBases[] = TMR_BASE_PTRS;
 /*! @brief Pointers to Quad Timer clocks for each instance. */
 static const clock_ip_name_t s_qtmrClocks[] = TMR_CLOCKS;
 #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+
+static uint8_t s_qtmrGetPwmDutyCycle[FSL_FEATURE_SOC_TMR_COUNT] = {0U};
 
 /*******************************************************************************
  * Code
@@ -65,14 +66,9 @@ static uint32_t QTMR_GetInstance(TMR_Type *base)
  * param channel  Quad Timer channel number
  * param config   Pointer to user's Quad Timer config structure
  */
-
-
-
-
-
-
 void QTMR_Init(TMR_Type *base, qtmr_channel_selection_t channel, const qtmr_config_t *config)
 {
+
     assert(NULL != config);
 
 #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
@@ -80,46 +76,21 @@ void QTMR_Init(TMR_Type *base, qtmr_channel_selection_t channel, const qtmr_conf
     CLOCK_EnableClock(s_qtmrClocks[QTMR_GetInstance(base)]);
 #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
 
-    base->CHANNEL[channel].LOAD = 0;
-    base->CHANNEL[channel].CNTR = 0;
-//    base->CHANNEL[channel].SCTRL = 5;
-    base->CHANNEL[channel].CSCTRL = 0x06;
+    /* Setup the counter sources */
+    base->CHANNEL[channel].CTRL = (TMR_CTRL_PCS(config->primarySource) | TMR_CTRL_SCS(config->secondarySource));
 
-//    base->CHANNEL[channel].COMP1 = 20625-1; //11ms
-//    base->CHANNEL[channel].CMPLD1 = 20625-1;
-//
-//    base->CHANNEL[channel].COMP2 = 58125-20625-1; // 31ms
-//    base->CHANNEL[channel].CMPLD2 = 58125-20625-1;
-    if(base == TMR3){ //MCU_AN_SW_EN1
-      base->CHANNEL[channel].SCTRL = 5;
+    /* Setup the master mode operation */
+    base->CHANNEL[channel].SCTRL =
+        (TMR_SCTRL_EEOF(config->enableExternalForce) | TMR_SCTRL_MSTR(config->enableMasterMode));
 
-      base->CHANNEL[channel].COMP1 = MCU_AN_SW_EN1_COMP1_VALUE;
-      base->CHANNEL[channel].CMPLD1 = MCU_AN_SW_EN1_COMP1_VALUE;
+    /* Setup debug mode */
+    base->CHANNEL[channel].CSCTRL = TMR_CSCTRL_DBG_EN(config->debugMode);
 
-      base->CHANNEL[channel].COMP2 = MCU_AN_SW_EN1_COMP2_VALUE;
-      base->CHANNEL[channel].CMPLD2 = MCU_AN_SW_EN1_COMP2_VALUE;
-    }else if(base == TMR4){ // MCU_LED_GROUP_CLK
-      base->CHANNEL[channel].SCTRL = 5;
-      base->CHANNEL[channel].COMP1 =  MCU_LED_GROUP_CLK_COMP1_VALUE;
-      base->CHANNEL[channel].CMPLD1 = MCU_LED_GROUP_CLK_COMP1_VALUE;
+    base->CHANNEL[channel].FILT &= (uint16_t)(~(TMR_FILT_FILT_CNT_MASK | TMR_FILT_FILT_PER_MASK));
+    /* Setup input filter */
+    base->CHANNEL[channel].FILT =
+        (TMR_FILT_FILT_CNT(config->faultFilterCount) | TMR_FILT_FILT_PER(config->faultFilterPeriod));
 
-      base->CHANNEL[channel].COMP2 = MCU_LED_GROUP_CLK_COMP2_VALUE;
-      base->CHANNEL[channel].CMPLD2 = MCU_LED_GROUP_CLK_COMP2_VALUE;
-    }else if(base == TMR1){ // MCU_COUPLING_SIG1
-      base->CHANNEL[channel].SCTRL = 7;
-      base->CHANNEL[channel].COMP1 = MCU_COUPLING_SIG1_COMP1_VALUE;
-      base->CHANNEL[channel].CMPLD1 = MCU_COUPLING_SIG1_COMP1_VALUE;
-
-      base->CHANNEL[channel].COMP2 = MCU_COUPLING_SIG1_COMP2_VALUE;
-      base->CHANNEL[channel].CMPLD2 = MCU_COUPLING_SIG1_COMP2_VALUE;
-    }else{  // MCU_LED_CELL_EN
-      base->CHANNEL[channel].SCTRL = 7;
-      base->CHANNEL[channel].COMP1 = MCU_LED_CELL_EN_COMP1_VALUE;
-      base->CHANNEL[channel].CMPLD1 = MCU_LED_CELL_EN_COMP1_VALUE;
-
-      base->CHANNEL[channel].COMP2 = MCU_LED_CELL_EN_COMP2_VALUE;
-      base->CHANNEL[channel].CMPLD2 = MCU_LED_CELL_EN_COMP2_VALUE;
-    }
 }
 
 /*!
@@ -201,7 +172,8 @@ status_t QTMR_SetupPwm(TMR_Type *base,
                        bool outputPolarity,
                        uint32_t srcClock_Hz)
 {
-    uint16_t periodCount, highCount, lowCount, reg;
+    uint32_t periodCount, highCount, lowCount;
+    uint16_t reg;
     status_t status;
 
     if (dutyCyclePercent <= 100U)
@@ -210,17 +182,32 @@ status_t QTMR_SetupPwm(TMR_Type *base,
         base->CHANNEL[channel].SCTRL |= (TMR_SCTRL_FORCE_MASK | TMR_SCTRL_OEN_MASK);
 
         /* Counter values to generate a PWM signal */
-        periodCount = (uint16_t)(srcClock_Hz / pwmFreqHz);
-        highCount   = (uint16_t)(periodCount * dutyCyclePercent) / 100U;
+        periodCount = srcClock_Hz / pwmFreqHz;
+        highCount   = periodCount * dutyCyclePercent / 100U;
         lowCount    = periodCount - highCount;
 
+        if (highCount > 0U)
+        {
+            highCount -= 1U;
+        }
+        if (lowCount > 0U)
+        {
+            lowCount -= 1U;
+        }
+
+        if ((highCount > 0xFFFFU) || (lowCount > 0xFFFFU))
+        {
+            /* This should not be a 16-bit overflow value. If it is, change to a larger divider for clock source. */
+            return kStatus_Fail;
+        }
+
         /* Setup the compare registers for PWM output */
-        base->CHANNEL[channel].COMP1 = lowCount - 1U;
-        base->CHANNEL[channel].COMP2 = highCount - 1U;
+        base->CHANNEL[channel].COMP1 = (uint16_t)lowCount;
+        base->CHANNEL[channel].COMP2 = (uint16_t)highCount;
 
         /* Setup the pre-load registers for PWM output */
-        base->CHANNEL[channel].CMPLD1 = lowCount - 1U;
-        base->CHANNEL[channel].CMPLD2 = highCount - 1U;
+        base->CHANNEL[channel].CMPLD1 = (uint16_t)lowCount;
+        base->CHANNEL[channel].CMPLD2 = (uint16_t)highCount;
 
         reg = base->CHANNEL[channel].CSCTRL;
         /* Setup the compare load control for COMP1 and COMP2.
@@ -243,11 +230,26 @@ status_t QTMR_SetupPwm(TMR_Type *base,
 
         reg = base->CHANNEL[channel].CTRL;
         reg &= ~(uint16_t)TMR_CTRL_OUTMODE_MASK;
-        /* Count until compare value is  reached and re-initialize the counter, toggle OFLAG output
-         * using alternating compare register
-         */
-        reg |= (TMR_CTRL_LENGTH_MASK | TMR_CTRL_OUTMODE(kQTMR_ToggleOnAltCompareReg));
+        if (dutyCyclePercent == 100U)
+        {
+            /* Set OFLAG output on compare */
+            reg |= (TMR_CTRL_LENGTH_MASK | TMR_CTRL_OUTMODE(kQTMR_SetOnCompare));
+        }
+        else if (dutyCyclePercent == 0U)
+        {
+            /* Clear OFLAG output on compare */
+            reg |= (TMR_CTRL_LENGTH_MASK | TMR_CTRL_OUTMODE(kQTMR_ClearOnCompare));
+        }
+        else
+        {
+            /* Toggle OFLAG output using alternating compare register */
+            reg |= (TMR_CTRL_LENGTH_MASK | TMR_CTRL_OUTMODE(kQTMR_ToggleOnAltCompareReg));
+        }
+
         base->CHANNEL[channel].CTRL = reg;
+
+        /* Get pwm duty cycle */
+        s_qtmrGetPwmDutyCycle[channel] = dutyCyclePercent;
 
         status = kStatus_Success;
     }
@@ -543,6 +545,8 @@ void QTMR_ClearStatusFlags(TMR_Type *base, qtmr_channel_selection_t channel, uin
  *    depending on the count direction
  * 2. User can call the utility macros provided in fsl_common.h to convert to ticks
  * 3. This function supports cases, providing only primary source clock without secondary source clock.
+ * 4. The load register is reset before the counter is reinitialized to the value
+      specified in the load register.
  *
  * param base     Quad Timer peripheral base address
  * param channel  Quad Timer channel number
@@ -551,6 +555,34 @@ void QTMR_ClearStatusFlags(TMR_Type *base, qtmr_channel_selection_t channel, uin
 void QTMR_SetTimerPeriod(TMR_Type *base, qtmr_channel_selection_t channel, uint16_t ticks)
 {
     /* Set the length bit to reinitialize the counters on a match */
+    base->CHANNEL[channel].CTRL |= TMR_CTRL_LENGTH_MASK;
+
+    /* Reset LOAD register to reinitialize the counters */
+    base->CHANNEL[channel].LOAD &= (uint16_t)(~TMR_LOAD_LOAD_MASK);
+
+    if ((base->CHANNEL[channel].CTRL & TMR_CTRL_DIR_MASK) != 0U)
+    {
+        /* Counting down */
+        base->CHANNEL[channel].COMP2 = ticks - 1U;
+    }
+    else
+    {
+        /* Counting up */
+        base->CHANNEL[channel].COMP1 = ticks - 1U;
+    }
+}
+
+/*!
+ * brief Set compare value.
+ *
+ * This function sets the value used for comparison with the counter value.
+ *
+ * param base     Quad Timer peripheral base address
+ * param channel  Quad Timer channel number
+ * param ticks    Timer period in units of ticks.
+ */
+void QTMR_SetCompareValue(TMR_Type *base, qtmr_channel_selection_t channel, uint16_t ticks)
+{
     base->CHANNEL[channel].CTRL |= TMR_CTRL_LENGTH_MASK;
 
     if ((base->CHANNEL[channel].CTRL & TMR_CTRL_DIR_MASK) != 0U)
@@ -627,4 +659,72 @@ void QTMR_DisableDma(TMR_Type *base, qtmr_channel_selection_t channel, uint32_t 
         reg &= ~(uint16_t)TMR_DMA_CMPLD2DE_MASK;
     }
     base->CHANNEL[channel].DMA = reg;
+}
+
+/*!
+ * brief Set PWM output in idle status (high or low).
+ *
+ * Note: When the PWM is set again, the counting needs to be restarted.
+ *
+ * param base     Quad Timer peripheral base address
+ * param channel  Quad Timer channel number
+ * param idleStatus   True: PWM output is high in idle status; false: PWM output is low in idle status.
+ */
+void QTMR_SetPwmOutputToIdle(TMR_Type *base, qtmr_channel_selection_t channel, bool idleStatus)
+{
+    uint16_t reg = base->CHANNEL[channel].SCTRL;
+
+    /* Stop qtimer channel counter first */
+    base->CHANNEL[channel].CTRL &= (uint16_t)(~TMR_CTRL_CM_MASK);
+    /* Clear count value */
+    base->CHANNEL[channel].CNTR = 0U;
+
+    if (0U != (reg & ((uint16_t)TMR_SCTRL_OPS_MASK)))
+    {
+        /* Inverted polarity. */
+        reg |= (TMR_SCTRL_FORCE_MASK | TMR_SCTRL_VAL(!idleStatus));
+    }
+    else
+    {
+        /* True polarity. */
+        reg |= (TMR_SCTRL_FORCE_MASK | TMR_SCTRL_VAL(idleStatus));
+    }
+    base->CHANNEL[channel].SCTRL = reg;
+
+    s_qtmrGetPwmDutyCycle[channel] = 0x0;
+}
+
+/*!
+ * brief Get the PWM channel dutycycle value.
+ *
+ * param base     Quad Timer peripheral base address
+ * param channel  Quad Timer channel number
+ *
+ * return Current channel dutycycle value.
+ */
+uint8_t QTMR_GetPwmChannelStatus(TMR_Type *base, qtmr_channel_selection_t channel)
+{
+    return s_qtmrGetPwmDutyCycle[channel];
+}
+
+/*!
+ * brief This function set the value of the prescaler on QTimer channels.
+ *
+ * param base         Quad Timer peripheral base address
+ * param channel      Quad Timer channel number
+ * param prescaler    Set prescaler value
+ */
+void QTMR_SetPwmClockMode(TMR_Type *base, qtmr_channel_selection_t channel, qtmr_primary_count_source_t prescaler)
+{
+    assert((uint32_t)prescaler > 7U);
+
+    uint16_t reg = base->CHANNEL[channel].CTRL;
+
+    /* Clear qtimer channel counter mode */
+    base->CHANNEL[channel].CTRL = reg & (uint16_t)(~TMR_CTRL_CM_MASK);
+
+    /* Set the new clock prescaler value and restore qtimer channel counter mode*/
+    reg &= (uint16_t)(~(TMR_CTRL_PCS_MASK));
+    reg |= TMR_CTRL_PCS(prescaler);
+    base->CHANNEL[channel].CTRL = reg;
 }

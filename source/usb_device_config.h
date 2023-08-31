@@ -8,6 +8,7 @@
 
 #ifndef _USB_DEVICE_CONFIG_H_
 #define _USB_DEVICE_CONFIG_H_
+#include "backend.h"
 
 /*******************************************************************************
 * Definitions
@@ -49,7 +50,11 @@
 #define USB_DEVICE_CONFIG_HID (2U) //nsmoon@210608 composite device
 
 /*! @brief CDC ACM instance count */
+#if(DEBUG_VCOM_ENABLE == DEBUG_VCOM_MODE)
+#define USB_DEVICE_CONFIG_CDC_ACM (1U)
+#else
 #define USB_DEVICE_CONFIG_CDC_ACM (0U)
+#endif
 
 /*! @brief MSC instance count */
 #define USB_DEVICE_CONFIG_MSC (0U)
@@ -78,7 +83,7 @@
 #define USB_DEVICE_CONFIG_SELF_POWER (0U) //(1U) //nsmoon@190904
 
 /*! @brief How many endpoints are supported in the stack. */
-#define USB_DEVICE_CONFIG_ENDPOINTS (4U)
+#define USB_DEVICE_CONFIG_ENDPOINTS (7U) //(4U) //nsmoon@230314 4=>7
 
 /*! @brief Whether the device task is enabled. */
 #define USB_DEVICE_CONFIG_USE_TASK (0U)
@@ -156,7 +161,7 @@
 /*! @brief Whether handle the USB bus error. */
 #define USB_DEVICE_CONFIG_ERROR_HANDLING (0U)
 
-#define USB_DEVICE_SOF_ENABLE    (1U) //nsmoon@211222
+#define USB_DEVICE_SOF_ENABLE    (0U) //nsmoon@211222 //nsmoon@230320 1=>0
 
 /* @} */
 

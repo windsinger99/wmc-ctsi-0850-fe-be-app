@@ -1,0 +1,7 @@
+backend_irt_nxp3_malloc_230411A
+- add MODEL_CTSI_N650_V100 and N65_TEST
+- change EDGE_DIST_X 50.0f to 100.0f
+
+SHA1 hash of libbackend_irt_nxp3_malloc_230411A.a:
+7bc00360bd2454fdfaa7cc501bce9750bc0bca69
+

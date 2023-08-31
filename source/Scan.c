@@ -11,7 +11,7 @@
 #include "macro.h"
 #include "dlt.h"
 #include "scan_table.h"
-//#include "uartCommand.h"
+#include "uartCommand.h"
 #include "adc.h"
 #include "TSP_Layout.h"
 #include "gpt.h"
@@ -181,6 +181,48 @@ const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
     6,
     9
 };
+
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
+
+const uint8_t X_LedNumOfBd[X_LED_BD_NUM] = {
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD2_CELL_NUM,
+    X_LED_BD3_CELL_NUM,
+};
+
+const uint8_t X_StartLedIndexOfBd[X_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+};
+
+const uint8_t Y_LedNumOfBd[Y_LED_BD_NUM] = {
+    Y_LED_BD1_CELL_NUM,
+    Y_LED_BD2_CELL_NUM,
+};
+
+const uint8_t Y_StartLedIndexOfBd[Y_LED_BD_NUM] = {
+    0,
+    Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t StartLedIndexOfBd[TOTAL_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+    X_CELL_SIZE,
+    X_CELL_SIZE + Y_LED_BD1_CELL_NUM
+};
+
+const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
+    0,
+    4,
+    8,
+    10,
+    15
+};
+
+
 #elif (MODEL_TYPE == WMC_0750_NXP)
 
 const uint8_t X_LedNumOfBd[X_LED_BD_NUM] = {
@@ -271,6 +313,48 @@ const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
     14,
     15
 };
+
+
+#elif (MODEL_TYPE == SLIM_0320_NXP)
+
+const uint8_t X_LedNumOfBd[X_LED_BD_NUM] = {
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD2_CELL_NUM,
+};
+
+const uint8_t X_StartLedIndexOfBd[X_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+};
+
+const uint8_t Y_LedNumOfBd[Y_LED_BD_NUM] = {
+    Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t Y_StartLedIndexOfBd[Y_LED_BD_NUM] = {
+    0,
+};
+
+
+const uint8_t StartLedIndexOfBd[TOTAL_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_CELL_SIZE,
+};
+
+const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
+    0,
+    3,
+    6
+};
+
+/* cell per group : 6 */
+const uint8_t StartLedIndexOfGroup[TOTAL_LED_BD_NUM] = {
+    0,          // 34 + 2 = 36  // 37 + 5 = 42
+    3,          // 27 + 3 = 30  // 30 + 0 = 30
+    3+3,        // 35 + 1 = 36  // 38 + 4 = 42
+};
+
 #else
 #error "StartLedIndexOfBd is not defined!!!"
 #endif
@@ -305,12 +389,13 @@ uint8_t gCurrentLedGroupIndex;
 
 uint32_t gScanProcessCnt; //nsmoon@210716
 uint8_t fixedCurrentEnable;
+uint8_t dltThresholdEnbale;
 uint8_t gLedShiftOption;
 
-#if ENABLE_UART_CMD_PROCESS  //nsmoon@210915
+#ifdef ENABLE_UART_CMD_PROCESS  //nsmoon@210915
 uint8_t Current_Test_index_X, Current_Test_index_Y;
 uint8_t Led_On_Time_Test_X, Led_On_Time_Test_Y;
-uint8_t fixedCurrentEnable;
+//uint8_t fixedCurrentEnable;
 #if ENABLE_TRIGER
 uint8_t Current_Triger_Pd, Current_Triger_Axis, Usb_Off_Test;
 #endif
@@ -334,10 +419,11 @@ volatile uint32_t coreTimer_diff;
 
 #if 1 //nsmoon@210708
 /* [pd Index in X][offset between ledindex and pd], last element is for dummy */
-ATTR_BACKEND_RAM3 uint8_t xScanResultData[X_CELL_SIZE + 1][X_TOTAL_OFFSET + 1 + 1];
-
+//ATTR_BACKEND_RAM3 uint8_t xScanResultData[X_CELL_SIZE + 1][X_TOTAL_OFFSET + 1 + 1];		//YJ@230425
+uint8_t xScanResultData[X_CELL_SIZE + 1][X_TOTAL_OFFSET + 1 + 1];
 /* [pd Index in Y][offset between ledindex and pd], last element is for dummy */
-ATTR_BACKEND_RAM3 uint8_t yScanResultData[Y_CELL_SIZE + 1][Y_TOTAL_OFFSET + 1 + 1];
+//ATTR_BACKEND_RAM3 uint8_t yScanResultData[Y_CELL_SIZE + 1][Y_TOTAL_OFFSET + 1 + 1];		//YJ@230425
+uint8_t yScanResultData[Y_CELL_SIZE + 1][Y_TOTAL_OFFSET + 1 + 1];
 #endif
 
 // [pd Index in X][offset between ledindex and pd]
@@ -629,7 +715,7 @@ void Scan_Initialize(void)
 #endif
     xSubBlockedLineCnt = 0;
     ySubBlockedLineCnt = 0;
-
+    dltThresholdEnbale = 0;
     subThresholdDropPercent = LINE_THRESHOLD_VALUE;
 }
 
@@ -919,7 +1005,7 @@ findStartScanSequenceIdx(axis_type_enum axisType, uint8_t pdIdxStart, uint8_t le
             }
         }
     }
-#if ENABLE_UART_CMD_PROCESS //nsmoon@220117
+#ifdef ENABLE_UART_CMD_PROCESS
     uint16_t seqIdxMax = (axisType == X_AXIS) ? X_TOTAL_SCAN_STEPS : Y_TOTAL_SCAN_STEPS;
     if (seqIdx >= seqIdxMax) {
         printf("ERROR! invalid seqIdx %d (%d %d %d/%d)\r\n", seqIdx, axisType, pdIdxStart, ledIdxMin, ledIdxMax);
@@ -1034,14 +1120,14 @@ void adc_eoc_fuc(uint8_t mux, uint8_t startAdc)
 	while(1)
 	{
 		//M_NOP_Delay_60nsec();
-		if((ADC1_PERIPHERAL->HS & 1UL) == 1 && (ADC2_PERIPHERAL->HS & 1UL) == 1 )
+		if((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 1 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 1 )
 		{
 
 			if(++cnt > 1)
 			{
 				M_ADC_MUX_DATA_SET(mux);
-				adc_value[startAdc++] = ADC1_PERIPHERAL->R[0];
-				adc_value[startAdc] = ADC2_PERIPHERAL->R[0];
+				adc_value[startAdc++] = BOARD_ADC1_PERIPHERAL->R[0];
+				adc_value[startAdc] = BOARD_ADC2_PERIPHERAL->R[0];
 
 				break;
 			}
@@ -1149,13 +1235,25 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
     currentStartPdIdx = nextStartPdIdx;
 
+#ifdef ENABLE_UART_CMD_PROCESS
+    if(fixedCurrentEnable)
+    {
+    	ledOnTimeCtrl = setValueDAC;
+    	ledCurrentCtrl = LedSinkCurrentTbl[setADCSel].sinkCurrentControl;
+    }
+    else
+    {
+		ledOnTimeCtrl = ledDacIdx[nextScanSequenceIdx];
+		ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[nextScanSequenceIdx]].sinkCurrentControl;
+    }
+#else
     ledOnTimeCtrl = ledDacIdx[nextScanSequenceIdx];
-#if 1   //YJ220916
     ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[nextScanSequenceIdx]].sinkCurrentControl;
+#endif
 
     M_PD_GAIN_CTRL_SET(ledCurrentCtrl);         //80ns
     M_DAC_DATA_SET(ledOnTimeCtrl);     // @hj check
-#endif
+
 
     if (gCurrentStartTotalPdIdx < 0)
     {
@@ -1211,14 +1309,14 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
 
         __disable_irq();
 #ifdef TIMER2_CH3_LAST
-        while((TMR2_PERIPHERAL->CHANNEL[TMR2_CHANNEL_3_CHANNEL].CTRL & 0xe000) >0) {
+        while((BOARD_TMR2_PERIPHERAL->CHANNEL[BOARD_TMR2_CHANNEL_3_CHANNEL].CTRL & 0xe000) >0) {
 
         }
 #else
         //--------------------------------------------------------------------------
         // 330ns
         //--------------------------------------------------------------------------
-        while((TMR3_PERIPHERAL->CHANNEL[TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) > 0) {
+        while((BOARD_TMR3_PERIPHERAL->CHANNEL[BOARD_TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) > 0) {
 
         }
 #endif
@@ -1228,8 +1326,21 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         //----------------------------------------------------------------------
         //    M_Wait_LedOff_Timer_Expired();
         //    DEBUG_TP2_HIGH();
-        ledOnTimeCtrl = ledDacIdx[nextScanSequenceIdx];
-        ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[nextScanSequenceIdx]].sinkCurrentControl;
+#ifdef ENABLE_UART_CMD_PROCESS
+    if(fixedCurrentEnable)
+    {
+    	ledOnTimeCtrl = setValueDAC;
+    	ledCurrentCtrl = LedSinkCurrentTbl[setADCSel].sinkCurrentControl;
+    }
+    else
+    {
+		ledOnTimeCtrl = ledDacIdx[nextScanSequenceIdx];
+		ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[nextScanSequenceIdx]].sinkCurrentControl;
+    }
+#else
+    ledOnTimeCtrl = ledDacIdx[nextScanSequenceIdx];
+    ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[nextScanSequenceIdx]].sinkCurrentControl;
+#endif
         selectLED_PDshift((uint16_t)(nextLedIdx + baseLedIdx), axisType);
 
         M_PD_GAIN_CTRL_SET(ledCurrentCtrl);         //80ns
@@ -1247,8 +1358,8 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
           if (++nextScanSequenceIdx < totalScanSteps) {
               nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
               nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
-              M_TSPM_Triger_Set();
           }
+          M_TSPM_Triger_Set();
         }
         else {
           firstSequence--;
@@ -1273,57 +1384,57 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         DEBUG_TP1_HIGH();
 
         M_ADC_MUX_DATA_SET(1);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 0,1
         }
-        adc_value[0] = ADC1_PERIPHERAL->R[0];
-        adc_value[1] = ADC2_PERIPHERAL->R[0];
+        adc_value[0] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[1] = BOARD_ADC2_PERIPHERAL->R[0];
 
         M_ADC_MUX_DATA_SET(2);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 2,3
         }
-        adc_value[2] = ADC1_PERIPHERAL->R[0];
-        adc_value[3] = ADC2_PERIPHERAL->R[0];
+        adc_value[2] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[3] = BOARD_ADC2_PERIPHERAL->R[0];
 
         M_ADC_MUX_DATA_SET(3);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 4,5
         }
-        adc_value[4] = ADC1_PERIPHERAL->R[0];
-        adc_value[5] = ADC2_PERIPHERAL->R[0];
+        adc_value[4] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[5] = BOARD_ADC2_PERIPHERAL->R[0];
 
         M_ADC_MUX_DATA_SET(4);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 6,7
         }
-        adc_value[6] = ADC1_PERIPHERAL->R[0];
-        adc_value[7] = ADC2_PERIPHERAL->R[0];
+        adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
 #if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)
             M_ADC_MUX_DATA_SET(5);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[8] = ADC1_PERIPHERAL->R[0];
-            adc_value[9] = ADC2_PERIPHERAL->R[0];
+            adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 
             M_ADC_MUX_DATA_SET(0);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[10] = ADC1_PERIPHERAL->R[0];
-            adc_value[11] = ADC2_PERIPHERAL->R[0];
+            adc_value[10] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[11] = BOARD_ADC2_PERIPHERAL->R[0];
 #else
             M_ADC_MUX_DATA_SET(0);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[8] = ADC1_PERIPHERAL->R[0];
-            adc_value[9] = ADC2_PERIPHERAL->R[0];
+            adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 #endif
 
         ADC_SamplesStop();
@@ -1368,11 +1479,11 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         {   // if last scan sequence
 
 #ifdef TIMER2_CH3_LAST
-            while((TMR2_PERIPHERAL->CHANNEL[TMR2_CHANNEL_3_CHANNEL].CTRL & 0xe000) >0) {
+            while((BOARD_TMR2_PERIPHERAL->CHANNEL[BOARD_TMR2_CHANNEL_3_CHANNEL].CTRL & 0xe000) >0) {
 
             }
 #else
-            while((TMR3_PERIPHERAL->CHANNEL[TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0) {
+            while((BOARD_TMR3_PERIPHERAL->CHANNEL[BOARD_TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0) {
 
             }
 #endif
@@ -1389,62 +1500,62 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
             DEBUG_TP1_HIGH();
 
             M_ADC_MUX_DATA_SET(1);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 0,1
             }
 
-            adc_value[0] = ADC1_PERIPHERAL->R[0];
-            adc_value[1] = ADC2_PERIPHERAL->R[0];
+            adc_value[0] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[1] = BOARD_ADC2_PERIPHERAL->R[0];
             //      M_NOP_Delay_40nsec();
             M_ADC_MUX_DATA_SET(2);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 2,3
             }
 
-            adc_value[2] = ADC1_PERIPHERAL->R[0];
-            adc_value[3] = ADC2_PERIPHERAL->R[0];
+            adc_value[2] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[3] = BOARD_ADC2_PERIPHERAL->R[0];
             //      M_NOP_Delay_40nsec();
             M_ADC_MUX_DATA_SET(3);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 4,5
             }
 
-            adc_value[4] = ADC1_PERIPHERAL->R[0];
-            adc_value[5] = ADC2_PERIPHERAL->R[0];
+            adc_value[4] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[5] = BOARD_ADC2_PERIPHERAL->R[0];
 
             M_ADC_MUX_DATA_SET(4);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 6,7
             }
 
-            adc_value[6] = ADC1_PERIPHERAL->R[0];
-            adc_value[7] = ADC2_PERIPHERAL->R[0];
+            adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
             //              M_NOP_Delay_40nsec();
 #if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)
             M_ADC_MUX_DATA_SET(5);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[8] = ADC1_PERIPHERAL->R[0];
-            adc_value[9] = ADC2_PERIPHERAL->R[0];
+            adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 
             M_ADC_MUX_DATA_SET(0);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[10] = ADC1_PERIPHERAL->R[0];
-            adc_value[11] = ADC2_PERIPHERAL->R[0];
+            adc_value[10] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[11] = BOARD_ADC2_PERIPHERAL->R[0];
 #else
             M_ADC_MUX_DATA_SET(0);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[8] = ADC1_PERIPHERAL->R[0];
-            adc_value[9] = ADC2_PERIPHERAL->R[0];
+            adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 #endif
 
 
@@ -1686,21 +1797,21 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
 //      M_NOP_Delay_40nsec();
         M_ADC_MUX_DATA_SET(4);
 
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 6,7
         }
 
-        adc_value[6] = ADC1_PERIPHERAL->R[0];
-        adc_value[7] = ADC2_PERIPHERAL->R[0];
+        adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
 //              M_NOP_Delay_40nsec();
         M_ADC_MUX_DATA_SET(0);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 8,9
         }
 
-        adc_value[8] = ADC1_PERIPHERAL->R[0];
-        adc_value[9] = ADC2_PERIPHERAL->R[0];
+        adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
         if (axisType == X_AXIS) {
             xStoreAll_ADCResult(curScanSequenceIdx);
 
@@ -1771,45 +1882,45 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         //M_NOP_Delay_40nsec();
 
         M_ADC_MUX_DATA_SET(1);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 0,1
         }
 
-        adc_value[0] = ADC1_PERIPHERAL->R[0];
-        adc_value[1] = ADC2_PERIPHERAL->R[0];
+        adc_value[0] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[1] = BOARD_ADC2_PERIPHERAL->R[0];
 //      M_NOP_Delay_40nsec();
         M_ADC_MUX_DATA_SET(2);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 2,3
         }
 
-        adc_value[2] = ADC1_PERIPHERAL->R[0];
-        adc_value[3] = ADC2_PERIPHERAL->R[0];
+        adc_value[2] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[3] = BOARD_ADC2_PERIPHERAL->R[0];
         //      M_NOP_Delay_40nsec();
         M_ADC_MUX_DATA_SET(3);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 4,5
         }
 
-        adc_value[4] = ADC1_PERIPHERAL->R[0];
-        adc_value[5] = ADC2_PERIPHERAL->R[0];
+        adc_value[4] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[5] = BOARD_ADC2_PERIPHERAL->R[0];
 #if 1
         M_ADC_MUX_DATA_SET(4);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 6,7
         }
 
-        adc_value[6] = ADC1_PERIPHERAL->R[0];
-        adc_value[7] = ADC2_PERIPHERAL->R[0];
+        adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
         //              M_NOP_Delay_40nsec();
         M_ADC_MUX_DATA_SET(0);
-        while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+        while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
             ;   // 8,9
         }
 
-        adc_value[8] = ADC1_PERIPHERAL->R[0];
-        adc_value[9] = ADC2_PERIPHERAL->R[0];
+        adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+        adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 #endif
 
 
@@ -1922,21 +2033,21 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
 
             //      M_NOP_Delay_40nsec();
             M_ADC_MUX_DATA_SET(4);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 6,7
             }
 
-            adc_value[6] = ADC1_PERIPHERAL->R[0];
-            adc_value[7] = ADC2_PERIPHERAL->R[0];
+            adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
             //              M_NOP_Delay_40nsec();
             M_ADC_MUX_DATA_SET(0);
-            while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+            while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
             }
 
-            adc_value[8] = ADC1_PERIPHERAL->R[0];
-            adc_value[9] = ADC2_PERIPHERAL->R[0];
+            adc_value[8] = BOARD_ADC1_PERIPHERAL->R[0];
+            adc_value[9] = BOARD_ADC2_PERIPHERAL->R[0];
 
             ADC_SamplesStop();
 #else
@@ -2707,17 +2818,17 @@ void setProcessExtLightTimerMsec(uint32_t val)
 {
     endProcessExtLightTimer = (uint32_t)((val) * 50);
     //TIMER_CNT(TIMER3) = 0;
-    startProcessExtLightTimer = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startProcessExtLightTimer = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 void clearProcessExtLightTimer(void)
 {
-    startProcessExtLightTimer =GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startProcessExtLightTimer =GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 int16_t isProcessExtLightTimerExpired(void)
 {
-    if ( (GPT_GetCurrentTimerCount(GPT2_PERIPHERAL) - startProcessExtLightTimer) >= endProcessExtLightTimer ) return 1;
+    if ( (GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL) - startProcessExtLightTimer) >= endProcessExtLightTimer ) return 1;
     else return 0;
 }
 #else
@@ -2725,18 +2836,18 @@ void setProcessExtLightTimerMsec(uint32_t val)
 {
 	endProcessExtLightTimer = (uint32_t)(WAIT_TIME_10MS(val));	// 50
     //TIMER_CNT(TIMER3) = 0;
-	startProcessExtLightTimer = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+	startProcessExtLightTimer = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 void clearProcessExtLightTimer(void)
 {
-	startProcessExtLightTimer =GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+	startProcessExtLightTimer =GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 
 int16_t isProcessExtLightTimerExpired(void)
 {
-    if ( GPT_GetCurrentTimerCount(GPT2_PERIPHERAL) - startProcessExtLightTimer >= endProcessExtLightTimer ) return 1;
+    if ( GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL) - startProcessExtLightTimer >= endProcessExtLightTimer ) return 1;
     else return 0;
 }
 
@@ -2749,18 +2860,18 @@ void setAgcControlTimerMsec(uint32_t val)
 {
     endAgcCtrlTimer = (uint32_t)(WAIT_TIME_10MS(val));	// 50
     //TIMER_CNT(TIMER3) = 0;
-    startAgcCtrlTimer = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startAgcCtrlTimer = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 void clearAgcControlTimer(void)
 {
-    startAgcCtrlTimer =GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startAgcCtrlTimer =GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 
 int16_t isAgcControlTimerExpired(void)
 {
-    if ( GPT_GetCurrentTimerCount(GPT2_PERIPHERAL) - startAgcCtrlTimer >= endAgcCtrlTimer ) return 1;
+    if ( GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL) - startAgcCtrlTimer >= endAgcCtrlTimer ) return 1;
     else return 0;
 }
 
@@ -2769,18 +2880,18 @@ void setDelayScanTimer10Msec(uint32_t val)
 {
     endDelayscanTimer = (uint32_t)(WAIT_TIME_10MS(val));	// 50
     //TIMER_CNT(TIMER3) = 0;
-    startDelayscanTimer = GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startDelayscanTimer = GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 void clearDelayScanTimer(void)
 {
-    startDelayscanTimer =GPT_GetCurrentTimerCount(GPT2_PERIPHERAL);
+    startDelayscanTimer =GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL);
 }
 
 
 int16_t isDelayScanTimerExpired(void)
 {
-    if ( GPT_GetCurrentTimerCount(GPT2_PERIPHERAL) - startDelayscanTimer >= endDelayscanTimer ) return 1;
+    if ( GPT_GetCurrentTimerCount(BOARD_GPT2_PERIPHERAL) - startDelayscanTimer >= endDelayscanTimer ) return 1;
     else return 0;
 }
 
@@ -2788,31 +2899,31 @@ void setPDDelayTimerUsec(uint32_t val)
 {
     endPdDelayTimer= (uint32_t)(WAIT_TIME_US(val));	// 50
     //TIMER_CNT(TIMER3) = 0;
-    startPdDelayTimer = GPT_GetCurrentTimerCount(GPT1_PERIPHERAL);
+    startPdDelayTimer = GPT_GetCurrentTimerCount(BOARD_GPT1_PERIPHERAL);
 }
 
 void set_DelayTimerUsec(uint32_t val)
 {
     endPdDelayTimer= (uint32_t)(WAIT_TIME_US(val));	// 50
     //TIMER_CNT(TIMER3) = 0;
-    startPdDelayTimer = GPT_GetCurrentTimerCount(GPT1_PERIPHERAL);
+    startPdDelayTimer = GPT_GetCurrentTimerCount(BOARD_GPT1_PERIPHERAL);
 }
 
 void clearPDDelayTimer(void)
 {
-    startPdDelayTimer =GPT_GetCurrentTimerCount(GPT1_PERIPHERAL);
+    startPdDelayTimer =GPT_GetCurrentTimerCount(BOARD_GPT1_PERIPHERAL);
 }
 
 
 int16_t isPDDelayTimerExpired(void)
 {
-    if ( GPT_GetCurrentTimerCount(GPT1_PERIPHERAL) - startPdDelayTimer >= endPdDelayTimer ) return 1;
+    if ( GPT_GetCurrentTimerCount(BOARD_GPT1_PERIPHERAL) - startPdDelayTimer >= endPdDelayTimer ) return 1;
     else return 0;
 }
 
 int16_t isDelayTimerExpired(void)
 {
-    if ( GPT_GetCurrentTimerCount(GPT1_PERIPHERAL) - startPdDelayTimer >= endPdDelayTimer ) return 1;
+    if ( GPT_GetCurrentTimerCount(BOARD_GPT1_PERIPHERAL) - startPdDelayTimer >= endPdDelayTimer ) return 1;
     else return 0;
 }
 
@@ -2881,7 +2992,7 @@ int16_t checkExtLightNoise(uint8_t axisType)
     extLightNoistCnt = 0;
     for (; currentStartPdIdx <= pdIdxEnd; currentStartPdIdx += PD_SIGNAL_OUT_NUM) {
         if (currentStartPdIdx != 0) {
-#if ENABLE_UART_CMD_PROCESS //nsmoon@210909
+#ifdef ENABLE_UART_CMD_PROCESS //nsmoon@210909
             if (PD_SIGNAL_OUT_NUM != (ENABLED_CS_NUM * CELLS_PER_CS)) {
                 TRACE_UART("ERROR! invalid PD_SIGNAL_OUT_NUM %d (%d %d)", PD_SIGNAL_OUT_NUM, ENABLED_CS_NUM, CELLS_PER_CS);
             }
@@ -3065,7 +3176,7 @@ int16_t checkExtLightNoise(uint8_t axisType)
         MCU_AN_SW_EN1_TSPM();
          Coupling_Sig_TSPM();
 
-        while((TMR3_PERIPHERAL->CHANNEL[TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0) {
+        while((BOARD_TMR3_PERIPHERAL->CHANNEL[BOARD_TMR3_CHANNEL_0_CHANNEL].CTRL & 0xe000) >0) {
 
                 }
         //__enable_irq();
@@ -3082,39 +3193,39 @@ int16_t checkExtLightNoise(uint8_t axisType)
                 DEBUG_TP1_HIGH();
         #endif
                 M_ADC_MUX_DATA_SET(1);
-                while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+                while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                     ;   // 0,1
                 }
-                adcResult[0] = ADC1_PERIPHERAL->R[0];
-                adcResult[1] = ADC2_PERIPHERAL->R[0];
+                adcResult[0] = BOARD_ADC1_PERIPHERAL->R[0];
+                adcResult[1] = BOARD_ADC2_PERIPHERAL->R[0];
 
                 M_ADC_MUX_DATA_SET(2);
-                while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+                while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                     ;   // 2,3
                 }
-                adcResult[2] = ADC1_PERIPHERAL->R[0];
-                adcResult[3] = ADC2_PERIPHERAL->R[0];
+                adcResult[2] = BOARD_ADC1_PERIPHERAL->R[0];
+                adcResult[3] = BOARD_ADC2_PERIPHERAL->R[0];
 
                 M_ADC_MUX_DATA_SET(3);
-                while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+                while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                     ;   // 4,5
                 }
-                adcResult[4] = ADC1_PERIPHERAL->R[0];
-                adcResult[5] = ADC2_PERIPHERAL->R[0];
+                adcResult[4] = BOARD_ADC1_PERIPHERAL->R[0];
+                adcResult[5] = BOARD_ADC2_PERIPHERAL->R[0];
 
                 M_ADC_MUX_DATA_SET(4);
-                while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+                while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                     ;   // 6,7
                 }
-                adcResult[6] = ADC1_PERIPHERAL->R[0];
-                adcResult[7] = ADC2_PERIPHERAL->R[0];
+                adcResult[6] = BOARD_ADC1_PERIPHERAL->R[0];
+                adcResult[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
                 M_ADC_MUX_DATA_SET(0);
-                while ((ADC1_PERIPHERAL->HS & 1UL) == 0 && (ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
+                while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                     ;   // 8,9
                 }
-                adcResult[8] = ADC1_PERIPHERAL->R[0];
-                adcResult[9] = ADC2_PERIPHERAL->R[0];
+                adcResult[8] = BOARD_ADC1_PERIPHERAL->R[0];
+                adcResult[9] = BOARD_ADC2_PERIPHERAL->R[0];
 
                 ADC_SamplesStop();
         #endif
@@ -3256,25 +3367,28 @@ int16_t processExtLightNoise(void)
 }
 #endif
 
-uint16_t Led_CurrentTbl_Adj_DAC(uint8_t CurrentTblIdx)
+uint16_t Led_CurrentTbl_Adj_DAC(uint8_t CurrentTblIdx, uint8_t axisType)
 {
     uint16_t ledDacMinIdx;
+    uint8_t axisDacMinVal;
+    if(axisType == X_AXIS)axisDacMinVal = LED_ON_DAC_MIN_X;
+    else axisDacMinVal = LED_ON_DAC_MIN_Y;
     switch ( CurrentTblIdx)
     {
     case 0  :
-        ledDacMinIdx = LED_ON_DAC_MIN;
+        ledDacMinIdx = axisDacMinVal;
         break;
     case 1  :
-        ledDacMinIdx = LED_ON_DAC_MIN + 70;
+        ledDacMinIdx = axisDacMinVal + PD_GAIN_OFFSET_1;
         break;
     case 2  :
-        ledDacMinIdx = LED_ON_DAC_MIN + 90;
+        ledDacMinIdx = axisDacMinVal + PD_GAIN_OFFSET_2;
         break;
     case 3  :
-        ledDacMinIdx = LED_ON_DAC_MIN + 110;
+        ledDacMinIdx = axisDacMinVal + PD_GAIN_OFFSET_3;
         break;
     default :
-        ledDacMinIdx = LED_ON_DAC_MIN;
+        ledDacMinIdx = axisDacMinVal;
         break;
     }
     return ledDacMinIdx;
@@ -3517,7 +3631,7 @@ int16_t controlLEDLightIntensityWithTryCnt(uint8_t axisType, uint8_t tryCnt)
                         changedCntLow++;
                         ledCurrentTblIdx[scanSequenceIdx]++;
 #if 1   //YJ@220915
-                        ledDacMinIdx = Led_CurrentTbl_Adj_DAC(ledCurrentTblIdx[scanSequenceIdx]);
+                        ledDacMinIdx = Led_CurrentTbl_Adj_DAC(ledCurrentTblIdx[scanSequenceIdx], axisType);
 #endif
                         ledDacIdx[scanSequenceIdx] = ledDacMinIdx;
 
@@ -3542,7 +3656,7 @@ int16_t controlLEDLightIntensityWithTryCnt(uint8_t axisType, uint8_t tryCnt)
                     pdSaturationRatio = (highPdCnt * 100) / validPdCnt;
                     if (pdSaturationRatio > PD_LEVEL_SATURATION_RATIO) {
 #if 1    //YJ@220915
-                        ledDacMinIdx = Led_CurrentTbl_Adj_DAC(ledCurrentTblIdx[scanSequenceIdx]);
+                        ledDacMinIdx = Led_CurrentTbl_Adj_DAC(ledCurrentTblIdx[scanSequenceIdx], axisType);
 #endif
                         if (ledDacIdx[scanSequenceIdx] > ledDacMinIdx) { // adjust led on time first
                             prevAxisLedCurrentCtrlDir[scanSequenceIdx] = -1;
@@ -4018,18 +4132,18 @@ int16_t Calibration_Process(void)
         {
             if (isAgcControlTimerExpired() || g_forcedagc.forced_saved > 0) //nsmoon@220207A
             {
-                if (g_forcedagc.forced_saved > 0) {
+            	if (g_forcedagc.forced_saved > 0) {
                     //TRACE_UART("***forced_saved***\r\n");
                 	TRACE_ERROR("***forced_saved***\r\n");
                     g_forcedagc.forced_agc = g_forcedagc.forced_saved = 0; //reset
                     agc_cnt_max = FORCED_THRESHOLD_AVG_CNT;
-#if ENABLE_UART_CMD_PROCESS
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
                     showCnt_test = 5; //nsmoon@211213
 #endif
                 }
                 else {
                     agc_cnt_max = 2;
-#if ENABLE_UART_CMD_PROCESS
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
                     showCnt_test = 1; //nsmoon@211213
 #endif
                 }
@@ -4039,7 +4153,7 @@ int16_t Calibration_Process(void)
             if (isAgcControlTimerExpired())
             {
                 agc_cnt_max = 2;
-#if ENABLE_UART_CMD_PROCESS
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
                 showCnt_test = 1; //nsmoon@211213
 #endif
 #endif
@@ -4552,6 +4666,107 @@ SCAN_STATUS_T Scan_Process(void)
     }
     return scanStatus;
 }
+
+
+//------------------------------------------------------------------------------
+#ifdef ENABLE_UART_CMD_PROCESS
+void display_led_agc(uint8_t axisType, uint8_t pdIdx0)
+{
+    uint16_t i, maxScanStep, pdIdx, xx;
+    uint8_t ledCurrentTblIdx, ledDacIdx;
+    uint8_t *axisLedCurrentTblIdx;
+    uint8_t *axisLedOnTimeIdx;
+    const uint8_t (*sequenceTbl)[2];
+    uint8_t pd, led; //maxCell;
+
+    if (axisType == X_AXIS) {
+        maxScanStep = X_TOTAL_SCAN_STEPS;
+        axisLedCurrentTblIdx = &xAxisLedCurrentTblIdx[0];
+        axisLedOnTimeIdx = &xAxisDacIdx[0];
+        sequenceTbl = xAxisSequenceTbl;
+        //maxCell = X_CELL_SIZE;
+        TRACE_UART("X ");
+    }
+    else {
+        maxScanStep = Y_TOTAL_SCAN_STEPS;
+        axisLedCurrentTblIdx = &yAxisLedCurrentTblIdx[0];
+        axisLedOnTimeIdx = &yAxisDacIdx[0];
+        sequenceTbl = yAxisSequenceTbl;
+        //maxCell = Y_CELL_SIZE;
+        TRACE_UART("Y ");
+    }
+    pdIdx = pdIdx0; //findStartScanSequenceIdx(axisType, pdIdx0, 0, maxCell);
+    //--------------------------------------------------------------------------
+    // Init LED current table index & LED On time
+    TRACE_UART("AGC Result %d\r\n", pdIdx);
+    TRACE_UART("-------------------------------------------------------------------------");
+    TRACE_UART("\r\n");
+    xx =0;
+    for(i = 0; i < maxScanStep; i++)
+    {
+        pd = sequenceTbl[i][0];
+        led = sequenceTbl[i][1];
+        if (pd == pdIdx || pd == pdIdx-CELLS_PER_CS){
+            ledCurrentTblIdx = axisLedCurrentTblIdx[i];
+            ledDacIdx = axisLedOnTimeIdx[i];
+            TRACE_UART("(,%d,%d,%d,%2d,%2d,)\r\n", xx++,i, led,  ledCurrentTblIdx, ledDacIdx);
+        }
+    }
+    TRACE_UART("\r\n");
+    TRACE_UART("-------------------------------------------------------------------------\r\n\r\n");
+}
+
+#include "fsl_wdog.h"
+#define MY_WDOG_BASE		WDOG1
+
+void displayLedAgcResult(void)
+{
+    int i;
+    uint8_t ledCurrentTblIdx, ledDacIdx;
+#if (DEBUG_VCOM_ENABLE == DEBUG_VCOM_MODE)
+    nr_option = 1;
+#endif
+    //--------------------------------------------------------------------------
+    // Init LED current table index & LED On time
+    TRACE_UART("X-Axis AGC Result\r\n");
+    TRACE_UART("-------------------------------------------------------------------------");
+    for(i = 0; i < X_TOTAL_SCAN_STEPS; i++)
+    {
+    	WDOG_Refresh(MY_WDOG_BASE);
+    	ledCurrentTblIdx = xAxisLedCurrentTblIdx[i];
+        ledDacIdx = xAxisDacIdx[i];
+
+        if ((i % PD_SIGNAL_OUT_NUM) == 0) {
+        	TRACE_UART("\r\n%3d : ", i);
+        }
+
+        TRACE_UART("(%2d, %2d), ", ledCurrentTblIdx, ledDacIdx);
+    }
+
+    TRACE_UART("\r\n\r\n");
+    TRACE_UART("Y-Axis AGC Result\r\n");
+    TRACE_UART("-------------------------------------------------------------------------");
+    for(i = 0; i < Y_TOTAL_SCAN_STEPS; i++)
+    {
+    	WDOG_Refresh(MY_WDOG_BASE);
+    	ledCurrentTblIdx = yAxisLedCurrentTblIdx[i];
+        ledDacIdx = yAxisDacIdx[i];
+
+        if ((i % PD_SIGNAL_OUT_NUM) == 0) {
+        	TRACE_UART("\r\n%3d : ", i);
+        }
+
+        TRACE_UART("(%2d, %2d), ", ledCurrentTblIdx, ledDacIdx);
+    }
+    TRACE_UART("\r\n");
+    TRACE_UART("-------------------------------------------------------------------------\r\n\r\n");
+#if (DEBUG_VCOM_ENABLE == DEBUG_VCOM_MODE)
+    nr_option = 0;
+#endif
+}
+#endif
+
+
 
 /*******************************************************************************
  End of File

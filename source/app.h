@@ -7,8 +7,8 @@
  */
 #ifndef __APP_H__
 #define __APP_H__
-#include "usb_host_config.h"
-#include "usb_host.h"
+//#include "usb_host_config.h"
+//#include "usb_host.h"
 #include "fsl_device_registers.h"
 #include "backend.h"
 #include "dlt.h"
@@ -49,6 +49,8 @@
 #define BACKEND_OK		0
 #define BACKEND_ERR		1
 
+#define BRUSH_DELAY_REPORT_ENABLE
+#define BRUSH_DELAY_SIZE	5
 
 #define USB_NORCMD_LENGHT	10
 typedef enum _usb_device_normal_cmd
@@ -143,6 +145,19 @@ typedef struct {
 //    uint8_t fdltmode;
 } forcedagc;
 
+typedef struct {
+	uint8_t lastSend;
+	uint8_t condition;
+	int bufCnt;
+	uint8_t brushIdx;
+	uint16_t xCord[BRUSH_DELAY_SIZE];
+	uint16_t yCord[BRUSH_DELAY_SIZE];
+	uint16_t xSize[BRUSH_DELAY_SIZE];
+	uint16_t ySize[BRUSH_DELAY_SIZE];
+	uint16_t pressure[BRUSH_DELAY_SIZE];
+	uint8_t reSend[BRUSH_DELAY_SIZE];
+} brush_last_send;
+
 extern forcedagc g_forcedagc;
 extern backend_config_t g_back_conf;
 extern uint8_t g_usb_in_buff[EXB_XFER_BUF_SIZE];		//MAX_USB_IN_BUF_SIZE
@@ -157,6 +172,7 @@ extern float s_sensor_zero_x, s_sensor_zero_y, s_sensor_end_x, s_sensor_end_y;
 extern float s_aarea_zero_x, s_aarea_zero_y, s_aarea_end_x, s_aarea_end_y;
 extern float s_logical_max_x, s_logical_max_y;
 extern uint8_t verReadFlag;	//YJ@211221
+extern brush_last_send brushLastSend;
 extern uint32_t s_get_frame_span(void);
 extern void s_frontend_Reset();
 extern void DoSoftReset(int cnt);	//YJ@211206

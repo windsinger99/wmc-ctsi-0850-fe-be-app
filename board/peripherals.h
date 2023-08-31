@@ -10,14 +10,13 @@
  * Included files
  **********************************************************************************************************************/
 #include "fsl_common.h"
-#include "fsl_adc.h"
-#include "fsl_gpt.h"
-#include "fsl_clock.h"
 #include "fsl_lpuart.h"
+#include "fsl_clock.h"
 #include "fsl_wdog.h"
-
-
+#include "fsl_adc.h"
 #include "fsl_qtmr.h"
+#include "fsl_gpt.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif /* __cplusplus */
@@ -26,79 +25,81 @@ extern "C" {
  * Definitions
  **********************************************************************************************************************/
 /* Definitions for BOARD_InitPeripherals functional group */
+/* Definition of peripheral ID */
+#define BOARD_LPUART1_PERIPHERAL LPUART1
+/* Definition of the clock source frequency */
+#define BOARD_LPUART1_CLOCK_SOURCE 80000000UL
+/* Definition of peripheral ID */
+#define BOARD_WDOG1_PERIPHERAL WDOG1
+/* WDOG1 interrupt vector ID (number). */
+#define BOARD_WDOG1_IRQN WDOG1_IRQn
+/* WDOG1 interrupt vector priority. */
+#define BOARD_WDOG1_IRQ_PRIORITY 0
+/* WDOG1 interrupt handler identifier. */
+#define BOARD_WDOG1_IRQHANDLER WDOG1_IRQHandler
 /* BOARD_InitPeripherals defines for ADC1 */
 /* Definition of peripheral ID */
-#define ADC1_PERIPHERAL ADC1
+#define BOARD_ADC1_PERIPHERAL ADC1
 /* Definition of special channel interconnected with ADC_ETC which takes real channel to be measured from ADC_ETC. */
-#define ADC1_CHANNEL_DRIVEN_BY_ADC_ETC 16U
+#define BOARD_ADC1_CHANNEL_DRIVEN_BY_ADC_ETC 16U
 /* Channel 0 (IN.11) conversion control group. */
-#define ADC1_CH0_CONTROL_GROUP 0U
+#define BOARD_ADC1_CH0_CONTROL_GROUP 0U
 /* BOARD_InitPeripherals defines for ADC2 */
 /* Definition of peripheral ID */
-#define ADC2_PERIPHERAL ADC2
+#define BOARD_ADC2_PERIPHERAL ADC2
 /* Definition of special channel interconnected with ADC_ETC which takes real channel to be measured from ADC_ETC. */
-#define ADC2_CHANNEL_DRIVEN_BY_ADC_ETC 16U
+#define BOARD_ADC2_CHANNEL_DRIVEN_BY_ADC_ETC 16U
 /* Channel 0 (IN.12) conversion control group. */
-#define ADC2_CH0_CONTROL_GROUP 0U
+#define BOARD_ADC2_CH0_CONTROL_GROUP 0U
 /* Definition of peripheral ID */
-#define GPT1_PERIPHERAL GPT1
+#define BOARD_TMR1_PERIPHERAL TMR1
+/* Definition of the timer channel Channel_0. */
+#define BOARD_TMR1_CHANNEL_0_CHANNEL kQTMR_Channel_0
+/* Definition of the timer channel Channel_0 clock source frequency. */
+#define BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE 150000000UL
+/* Definition of peripheral ID */
+#define BOARD_TMR2_PERIPHERAL TMR2
+/* Definition of the timer channel Channel_3. */
+#define BOARD_TMR2_CHANNEL_3_CHANNEL kQTMR_Channel_3
+/* Definition of the timer channel Channel_3 clock source frequency. */
+#define BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE 150000000UL
+/* Definition of peripheral ID */
+#define BOARD_TMR3_PERIPHERAL TMR3
+/* Definition of the timer channel Channel_0. */
+#define BOARD_TMR3_CHANNEL_0_CHANNEL kQTMR_Channel_0
+/* Definition of the timer channel Channel_0 clock source frequency. */
+#define BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE 150000000UL
+/* Definition of peripheral ID */
+#define BOARD_TMR4_PERIPHERAL TMR4
+/* Definition of the timer channel Channel_3. */
+#define BOARD_TMR4_CHANNEL_3_CHANNEL kQTMR_Channel_3
+/* Definition of the timer channel Channel_3 clock source frequency. */
+#define BOARD_TMR4_CHANNEL_3_CLOCK_SOURCE 150000000UL
+/* Definition of peripheral ID */
+#define BOARD_GPT1_PERIPHERAL GPT1
 /* Definition of the clock source frequency */
-#define GPT1_CLOCK_SOURCE 75000000UL
+#define BOARD_GPT1_CLOCK_SOURCE 75000000UL
 /* Definition of peripheral ID */
-#define GPT2_PERIPHERAL GPT2
+#define BOARD_GPT2_PERIPHERAL GPT2
 /* Definition of the clock source frequency */
-#define GPT2_CLOCK_SOURCE 75000000UL
-/* Definition of peripheral ID */
-#define LPUART1_PERIPHERAL LPUART1
-/* Definition of the clock source frequency */
-#define LPUART1_CLOCK_SOURCE 80000000UL
-/* Definition of peripheral ID */
-#define WDOG1_PERIPHERAL WDOG1
-/* WDOG1 interrupt vector ID (number). */
-#define WDOG1_IRQN WDOG1_IRQn
-/* WDOG1 interrupt vector priority. */
-#define WDOG1_IRQ_PRIORITY 0
-/* WDOG1 interrupt handler identifier. */
-#define WDOG1_IRQHANDLER WDOG1_IRQHandler
-  /* Definition of peripheral ID */
-  #define TMR1_PERIPHERAL TMR1
-  /* Definition of the timer channel Channel_0. */
-  #define TMR1_CHANNEL_0_CHANNEL kQTMR_Channel_0
-  /* Definition of the timer channel Channel_0 clock source frequency. */
-  #define TMR1_CHANNEL_0_CLOCK_SOURCE 150000000UL
-  /* Definition of peripheral ID */
-  #define TMR2_PERIPHERAL TMR2
-  /* Definition of the timer channel Channel_3. */
-  #define TMR2_CHANNEL_3_CHANNEL kQTMR_Channel_3
-  /* Definition of the timer channel Channel_3 clock source frequency. */
-  #define TMR2_CHANNEL_3_CLOCK_SOURCE 150000000UL
-  /* Definition of peripheral ID */
-  #define TMR3_PERIPHERAL TMR3
-  /* Definition of the timer channel Channel_0. */
-  #define TMR3_CHANNEL_0_CHANNEL kQTMR_Channel_0
-  /* Definition of the timer channel Channel_0 clock source frequency. */
-  #define TMR3_CHANNEL_0_CLOCK_SOURCE 150000000UL
-  /* Definition of peripheral ID */
-  #define TMR4_PERIPHERAL TMR4
-  /* Definition of the timer channel Channel_3. */
-  #define TMR4_CHANNEL_3_CHANNEL kQTMR_Channel_3
-  /* Definition of the timer channel Channel_3 clock source frequency. */
-  #define TMR4_CHANNEL_3_CLOCK_SOURCE 150000000UL
+#define BOARD_GPT2_CLOCK_SOURCE 75000000UL
+
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
-extern const adc_config_t ADC1_config;
-extern const adc_channel_config_t ADC1_channels_config[1];
-extern const adc_config_t ADC2_config;
-extern const adc_channel_config_t ADC2_channels_config[1];
-extern const gpt_config_t GPT1_config;
-extern const gpt_config_t GPT2_config;
-extern const lpuart_config_t LPUART1_config;
-extern const wdog_config_t WDOG1_config;
-extern const qtmr_config_t TMR1_Channel_0_config;
-extern const qtmr_config_t TMR2_Channel_3_config;
-extern const qtmr_config_t TMR3_Channel_0_config;
-extern const qtmr_config_t TMR4_Channel_3_config;
+extern const lpuart_config_t BOARD_LPUART1_config;
+extern const wdog_config_t BOARD_WDOG1_config;
+extern const adc_config_t BOARD_ADC1_config;
+extern const adc_channel_config_t BOARD_ADC1_channels_config[1];
+extern const adc_config_t BOARD_ADC2_config;
+extern const adc_channel_config_t BOARD_ADC2_channels_config[1];
+extern const qtmr_config_t BOARD_TMR1_Channel_0_config;
+extern const qtmr_config_t BOARD_TMR2_Channel_3_config;
+extern const qtmr_config_t BOARD_TMR3_Channel_0_config;
+extern const qtmr_config_t BOARD_TMR4_Channel_3_config;
+extern const gpt_config_t BOARD_GPT1_config;
+extern const gpt_config_t BOARD_GPT2_config;
+
 /***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/

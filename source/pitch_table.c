@@ -12,10 +12,14 @@
 #include "CTSI_0650_GD_new_pitch_table.h"
 #elif ((MODEL_TYPE ==  WMC_0650_NXP))
 #include "WMC_0650_NXP_new_pitch_table.h"
+#elif ((MODEL_TYPE ==  WMC_0650_VE_NXP))
+#include "WMC_0650_VE_NXP_new_pitch_table.h"
 #elif ((MODEL_TYPE ==  WMC_0750_NXP))
 #include "WMC_0750_NXP_new_pitch_table.h"
 #elif (MODEL_TYPE == WMC_0850_NXP)
 #include "WMC_0850_NXP_new_pitch_table.h"
+#elif (MODEL_TYPE == SLIM_0320_NXP)
+#include "SLIM_0320_NXPP_new_pitch_table.h"
 #else
 #error "not defined MODEL_TYPE"
 

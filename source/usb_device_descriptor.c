@@ -7,8 +7,16 @@
  */
 
 #include "composite.h"
+
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 #include "hid_mouse.h"
 #include "hid_generic.h"
+#include "backend_postp.h"
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+#include "virtual_com.h"
+#endif
+#include "usb_device_descriptor.h"
 
 /*******************************************************************************
  * Definitions
@@ -21,7 +29,7 @@
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 /* hid generic endpoint information */
 usb_device_endpoint_struct_t g_UsbDeviceHidGenericEndpoints[USB_HID_GENERIC_ENDPOINT_COUNT] = {
     /* HID generic interrupt IN pipe */
@@ -437,6 +445,75 @@ uint8_t g_UsbDeviceHidGenericReportDescriptor[] = {
 	STOUCH_SUB_DESC,
 	DIAGNOSTIC_SUB_DESC,
 };
+#endif
+
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+/* cdc virtual com information */
+/* Define endpoint for communication class */
+usb_device_endpoint_struct_t g_cdcVcomCicEndpoints[USB_CDC_VCOM_CIC_ENDPOINT_COUNT] = {
+    {
+        USB_CDC_VCOM_CIC_INTERRUPT_IN_ENDPOINT | (USB_IN << 7U),
+        USB_ENDPOINT_INTERRUPT,
+        FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE,
+        FS_CDC_VCOM_INTERRUPT_IN_INTERVAL,
+    },
+};
+
+/* Define endpoint for data class */
+usb_device_endpoint_struct_t g_cdcVcomDicEndpoints[USB_CDC_VCOM_DIC_ENDPOINT_COUNT] = {
+    {
+        USB_CDC_VCOM_DIC_BULK_IN_ENDPOINT | (USB_IN << 7U),
+        USB_ENDPOINT_BULK,
+        FS_CDC_VCOM_BULK_IN_PACKET_SIZE,
+        0U,
+    },
+    {
+        USB_CDC_VCOM_DIC_BULK_OUT_ENDPOINT | (USB_OUT << 7U),
+        USB_ENDPOINT_BULK,
+        FS_CDC_VCOM_BULK_OUT_PACKET_SIZE,
+        0U,
+    },
+};
+
+/* Define interface for communication class */
+usb_device_interface_struct_t g_cdcVcomCicInterface[] = {{USB_CDC_VCOM_CIC_INTERFACE_ALTERNATE_0,
+                                                          {
+                                                              USB_CDC_VCOM_CIC_ENDPOINT_COUNT,
+                                                              g_cdcVcomCicEndpoints,
+                                                          },
+                                                          NULL}};
+
+/* Define interface for data class */
+usb_device_interface_struct_t g_cdcVcomDicInterface[] = {{USB_CDC_VCOM_DIC_INTERFACE_ALTERNATE_0,
+                                                          {
+                                                              USB_CDC_VCOM_DIC_ENDPOINT_COUNT,
+                                                              g_cdcVcomDicEndpoints,
+                                                          },
+                                                          NULL}};
+
+/* Define interfaces for virtual com */
+usb_device_interfaces_struct_t g_cdcVcomInterfaces[USB_CDC_VCOM_INTERFACE_COUNT] = {
+    {USB_CDC_VCOM_CIC_CLASS, USB_CDC_VCOM_CIC_SUBCLASS, USB_CDC_VCOM_CIC_PROTOCOL, USB_CDC_VCOM_CIC_INTERFACE_INDEX,
+     g_cdcVcomCicInterface, sizeof(g_cdcVcomCicInterface) / sizeof(usb_device_interface_struct_t)},
+    {USB_CDC_VCOM_DIC_CLASS, USB_CDC_VCOM_DIC_SUBCLASS, USB_CDC_VCOM_DIC_PROTOCOL, USB_CDC_VCOM_DIC_INTERFACE_INDEX,
+     g_cdcVcomDicInterface, sizeof(g_cdcVcomDicInterface) / sizeof(usb_device_interface_struct_t)},
+};
+
+/* Define configurations for virtual com */
+usb_device_interface_list_t g_UsbDeviceCdcVcomInterfaceList[USB_DEVICE_CONFIGURATION_COUNT] = {
+    {
+        USB_CDC_VCOM_INTERFACE_COUNT,
+        g_cdcVcomInterfaces,
+    },
+};
+
+/* Define class information for virtual com */
+usb_device_class_struct_t g_UsbDeviceCdcVcomConfig = {
+    g_UsbDeviceCdcVcomInterfaceList,
+    kUSB_DeviceClassTypeCdc,
+    USB_DEVICE_CONFIGURATION_COUNT,
+};
+#endif
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceDescriptor[] = {
@@ -458,25 +535,55 @@ uint8_t g_UsbDeviceDescriptor[] = {
     USB_SHORT_GET_HIGH(USB_DEVICE_DEMO_BCD_VERSION), /* Device release number in binary-coded decimal */
     0x01U,                                           /* Index of string descriptor describing manufacturer */
     0x02U,                                           /* Index of string descriptor describing product */
-    0x00U,                                           /* Index of string descriptor describing the
-                                                        device's serial number */
+    0x06U,                                           /* Index of string descriptor describing the
+                                                        device's serial number */ /*nsmoon@230321 0x00=>0x06*/
     USB_DEVICE_CONFIGURATION_COUNT,                  /* Number of possible configurations */
 };
+
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0)
+#define CDC_USB_DESCRIPTOR_LENGTH ( \
+	 USB_IAD_DESC_SIZE + \
+	 USB_DESCRIPTOR_LENGTH_INTERFACE + \
+	 USB_DESCRIPTOR_LENGTH_CDC_HEADER_FUNC + \
+	 USB_DESCRIPTOR_LENGTH_CDC_CALL_MANAG + \
+	 USB_DESCRIPTOR_LENGTH_CDC_ABSTRACT + \
+	 USB_DESCRIPTOR_LENGTH_CDC_UNION_FUNC + \
+	 USB_DESCRIPTOR_LENGTH_ENDPOINT + \
+	 USB_DESCRIPTOR_LENGTH_INTERFACE + \
+	 USB_DESCRIPTOR_LENGTH_ENDPOINT + \
+	 USB_DESCRIPTOR_LENGTH_ENDPOINT)
+#else
+#define CDC_USB_DESCRIPTOR_LENGTH (0)
+#endif
+
+#if (USB_DEVICE_CONFIG_HID > 0)
+#define HID_USB_DESCRIPTOR_LENGTH ( \
+		USB_IAD_DESC_SIZE + \
+	    USB_DESCRIPTOR_LENGTH_INTERFACE + \
+	    USB_DESCRIPTOR_LENGTH_HID + \
+	    USB_DESCRIPTOR_LENGTH_ENDPOINT + \
+	    USB_DESCRIPTOR_LENGTH_ENDPOINT + \
+		USB_IAD_DESC_SIZE + \
+		USB_DESCRIPTOR_LENGTH_INTERFACE + \
+		USB_DESCRIPTOR_LENGTH_HID + \
+	    USB_DESCRIPTOR_LENGTH_ENDPOINT)
+#else
+#define HID_USB_DESCRIPTOR_LENGTH (0)
+#endif
+
+#define USB_DESCRIPTOR_LENGTH_TOTAL (USB_DESCRIPTOR_LENGTH_CONFIGURE + \
+		CDC_USB_DESCRIPTOR_LENGTH + HID_USB_DESCRIPTOR_LENGTH)
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceConfigurationDescriptor[] = {
     USB_DESCRIPTOR_LENGTH_CONFIGURE, /* Size of this descriptor in bytes */
     USB_DESCRIPTOR_TYPE_CONFIGURE,   /* CONFIGURATION Descriptor Type */
-    USB_SHORT_GET_LOW(USB_DESCRIPTOR_LENGTH_CONFIGURE + USB_DESCRIPTOR_LENGTH_INTERFACE + USB_DESCRIPTOR_LENGTH_HID +
-                      USB_DESCRIPTOR_LENGTH_ENDPOINT + USB_DESCRIPTOR_LENGTH_INTERFACE + USB_DESCRIPTOR_LENGTH_HID +
-                      USB_DESCRIPTOR_LENGTH_ENDPOINT + USB_DESCRIPTOR_LENGTH_ENDPOINT),
-    USB_SHORT_GET_HIGH(USB_DESCRIPTOR_LENGTH_CONFIGURE + USB_DESCRIPTOR_LENGTH_INTERFACE + USB_DESCRIPTOR_LENGTH_HID +
-                       USB_DESCRIPTOR_LENGTH_ENDPOINT + USB_DESCRIPTOR_LENGTH_INTERFACE + USB_DESCRIPTOR_LENGTH_HID +
-                       USB_DESCRIPTOR_LENGTH_ENDPOINT + USB_DESCRIPTOR_LENGTH_ENDPOINT), /* Total length of data returned for this configuration. */
-    USB_COMPOSITE_INTERFACE_COUNT,                      /* Number of interfaces supported by this configuration */
-    USB_COMPOSITE_CONFIGURE_INDEX,                      /* Value to use as an argument to the
-                                                           SetConfiguration() request to select this configuration */
-    0x00U,                                              /* Index of string descriptor describing this configuration */
+    /* Total length of data returned for this configuration. */
+    USB_SHORT_GET_LOW(USB_DESCRIPTOR_LENGTH_TOTAL),
+    USB_SHORT_GET_HIGH(USB_DESCRIPTOR_LENGTH_TOTAL),
+    USB_COMPOSITE_INTERFACE_COUNT, /* Number of interfaces supported by this configuration */
+    USB_COMPOSITE_CONFIGURE_INDEX, /* Value to use as an argument to the SetConfiguration() request to select this configuration */
+    0x00U, /* Index of string descriptor describing this configuration */
     (USB_DESCRIPTOR_CONFIGURE_ATTRIBUTE_D7_MASK) |
         (USB_DEVICE_CONFIG_SELF_POWER << USB_DESCRIPTOR_CONFIGURE_ATTRIBUTE_SELF_POWERED_SHIFT) |
         (USB_DEVICE_CONFIG_REMOTE_WAKEUP << USB_DESCRIPTOR_CONFIGURE_ATTRIBUTE_REMOTE_WAKEUP_SHIFT),
@@ -492,7 +599,24 @@ uint8_t g_UsbDeviceConfigurationDescriptor[] = {
                                       * operational. Expressed in 2 mA units
                                       *  (i.e., 50 = 100 mA).
                                       */
-
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    /* Interface Association Descriptor */
+    /* Size of this descriptor in bytes */
+    USB_IAD_DESC_SIZE,
+    /* INTERFACE_ASSOCIATION Descriptor Type  */
+    USB_DESCRIPTOR_TYPE_INTERFACE_ASSOCIATION,
+    /* The first interface number associated with this function */
+	USB_HID_GENERIC_INTERFACE_INDEX,
+    /* The number of contiguous interfaces associated with this function */
+    0x01,
+    /* The function belongs to the Communication Device/Interface Class  */
+	USB_HID_GENERIC_CLASS, USB_HID_GENERIC_SUBCLASS, /*0x03,*/ /*bFunctionClass: 2:CDC*/
+    /* The function uses the No class specific protocol required Protocol  */
+	USB_HID_GENERIC_PROTOCOL, /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+    /* The Function string descriptor index */
+    0x03,
+#endif
 	/* digitizer */
     USB_DESCRIPTOR_LENGTH_INTERFACE, /* Size of this descriptor in bytes */
     USB_DESCRIPTOR_TYPE_INTERFACE,   /* INTERFACE Descriptor Type */
@@ -548,6 +672,23 @@ uint8_t g_UsbDeviceConfigurationDescriptor[] = {
        selected. */
     FS_HID_GENERIC_INTERRUPT_OUT_INTERVAL, /* Interval for polling endpoint for data transfers. */
 
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    /* Interface Association Descriptor */
+    /* Size of this descriptor in bytes */
+    USB_IAD_DESC_SIZE,
+    /* INTERFACE_ASSOCIATION Descriptor Type  */
+    USB_DESCRIPTOR_TYPE_INTERFACE_ASSOCIATION,
+    /* The first interface number associated with this function */
+	USB_HID_MOUSE_INTERFACE_INDEX,
+    /* The number of contiguous interfaces associated with this function */
+    0x01,
+    /* The function belongs to the Communication Device/Interface Class  */
+	USB_HID_MOUSE_CLASS, USB_HID_MOUSE_SUBCLASS, /*0x03,*/ /*bFunctionClass: 2:CDC*/
+    /* The function uses the No class specific protocol required Protocol  */
+	USB_HID_MOUSE_PROTOCOL, /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+    /* The Function string descriptor index */
+    0x04,
+#endif
 	/* mouse */
     USB_DESCRIPTOR_LENGTH_INTERFACE, /* Size of this descriptor in bytes */
     USB_DESCRIPTOR_TYPE_INTERFACE,   /* INTERFACE Descriptor Type */
@@ -589,6 +730,74 @@ uint8_t g_UsbDeviceConfigurationDescriptor[] = {
        sending or receiving when this configuration is
        selected. */
     FS_HID_MOUSE_INTERRUPT_IN_INTERVAL, /* Interval for polling endpoint for data transfers. */
+#endif //1
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    /* Interface Association Descriptor */
+    /* Size of this descriptor in bytes */
+    USB_IAD_DESC_SIZE,
+    /* INTERFACE_ASSOCIATION Descriptor Type  */
+    USB_DESCRIPTOR_TYPE_INTERFACE_ASSOCIATION,
+    /* The first interface number associated with this function */
+	USB_CDC_VCOM_CIC_INTERFACE_INDEX, /*starts from zero .. hence 0-1-*/
+    /* The number of contiguous interfaces associated with this function */
+    0x02,
+    /* The function belongs to the Communication Device/Interface Class  */
+    USB_CDC_VCOM_CIC_CLASS, USB_CDC_VCOM_CIC_SUBCLASS, /*0x03,*/ /*bFunctionClass: 2:CDC*/
+    /* The function uses the No class specific protocol required Protocol  */
+	USB_CDC_VCOM_CIC_PROTOCOL, /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+    /* The Function string descriptor index */
+    0x05,
+
+	/* Interface Descriptor */
+    USB_DESCRIPTOR_LENGTH_INTERFACE, USB_DESCRIPTOR_TYPE_INTERFACE, USB_CDC_VCOM_CIC_INTERFACE_INDEX, USB_CDC_VCOM_CIC_INTERFACE_ALTERNATE_0,
+    USB_CDC_VCOM_CIC_ENDPOINT_COUNT, USB_CDC_VCOM_CIC_CLASS, USB_CDC_VCOM_CIC_SUBCLASS, USB_CDC_VCOM_CIC_PROTOCOL, 0x00,
+
+    /* CDC Class-Specific descriptor */
+    USB_DESCRIPTOR_LENGTH_CDC_HEADER_FUNC, /* Size of this descriptor in bytes */
+    USB_DESCRIPTOR_TYPE_CDC_CS_INTERFACE,  /* CS_INTERFACE Descriptor Type */
+    USB_CDC_HEADER_FUNC_DESC, 0x10,
+    0x01, /* USB Class Definitions for Communications the Communication specification version 1.10 */
+
+    USB_DESCRIPTOR_LENGTH_CDC_CALL_MANAG, /* Size of this descriptor in bytes */
+    USB_DESCRIPTOR_TYPE_CDC_CS_INTERFACE, /* CS_INTERFACE Descriptor Type */
+    USB_CDC_CALL_MANAGEMENT_FUNC_DESC,
+    0x01, /*Bit 0: Whether device handle call management itself 1, Bit 1: Whether device can send/receive call
+             management information over a Data Class Interface 0 */
+    0x01, /* Indicates multiplexed commands are handled via data interface */
+
+    USB_DESCRIPTOR_LENGTH_CDC_ABSTRACT,   /* Size of this descriptor in bytes */
+    USB_DESCRIPTOR_TYPE_CDC_CS_INTERFACE, /* CS_INTERFACE Descriptor Type */
+    USB_CDC_ABSTRACT_CONTROL_FUNC_DESC,
+    0x06, /* Bit 0: Whether device supports the request combination of Set_Comm_Feature, Clear_Comm_Feature, and
+             Get_Comm_Feature 0, Bit 1: Whether device supports the request combination of Set_Line_Coding,
+             Set_Control_Line_State, Get_Line_Coding, and the notification Serial_State 1, Bit ...  */
+
+    USB_DESCRIPTOR_LENGTH_CDC_UNION_FUNC, /* Size of this descriptor in bytes */
+    USB_DESCRIPTOR_TYPE_CDC_CS_INTERFACE, /* CS_INTERFACE Descriptor Type */
+    USB_CDC_UNION_FUNC_DESC, 0x00,        /* The interface number of the Communications or Data Class interface  */
+    0x01,                                 /* Interface number of subordinate interface in the Union  */
+
+    /*Notification Endpoint descriptor */
+    USB_DESCRIPTOR_LENGTH_ENDPOINT, USB_DESCRIPTOR_TYPE_ENDPOINT,
+    USB_CDC_VCOM_CIC_INTERRUPT_IN_ENDPOINT | (USB_IN << 7U), USB_ENDPOINT_INTERRUPT,
+    USB_SHORT_GET_LOW(FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE), USB_SHORT_GET_HIGH(FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE),
+    FS_CDC_VCOM_INTERRUPT_IN_INTERVAL,
+
+    /* Data Interface Descriptor */
+    USB_DESCRIPTOR_LENGTH_INTERFACE, USB_DESCRIPTOR_TYPE_INTERFACE, USB_CDC_VCOM_DIC_INTERFACE_INDEX, USB_CDC_VCOM_DIC_INTERFACE_ALTERNATE_0,
+    USB_CDC_VCOM_DIC_ENDPOINT_COUNT, USB_CDC_VCOM_DIC_CLASS, USB_CDC_VCOM_DIC_SUBCLASS, USB_CDC_VCOM_DIC_PROTOCOL,
+    0x00, /* Interface Description String Index*/
+
+    /*Bulk IN Endpoint descriptor */
+    USB_DESCRIPTOR_LENGTH_ENDPOINT, USB_DESCRIPTOR_TYPE_ENDPOINT, USB_CDC_VCOM_DIC_BULK_IN_ENDPOINT | (USB_IN << 7U),
+    USB_ENDPOINT_BULK, USB_SHORT_GET_LOW(FS_CDC_VCOM_BULK_IN_PACKET_SIZE),
+    USB_SHORT_GET_HIGH(FS_CDC_VCOM_BULK_IN_PACKET_SIZE), 0x00, /* The polling interval value is every 0 Frames */
+
+    /*Bulk OUT Endpoint descriptor */
+    USB_DESCRIPTOR_LENGTH_ENDPOINT, USB_DESCRIPTOR_TYPE_ENDPOINT, USB_CDC_VCOM_DIC_BULK_OUT_ENDPOINT | (USB_OUT << 7U),
+    USB_ENDPOINT_BULK, USB_SHORT_GET_LOW(FS_CDC_VCOM_BULK_OUT_PACKET_SIZE),
+    USB_SHORT_GET_HIGH(FS_CDC_VCOM_BULK_OUT_PACKET_SIZE), 0x00, /* The polling interval value is every 0 Frames */
+#endif
 };
 
 #if (defined(USB_DEVICE_CONFIG_CV_TEST) && (USB_DEVICE_CONFIG_CV_TEST > 0U))
@@ -662,27 +871,6 @@ uint8_t g_UsbDeviceString2[] = {
 };
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
-uint8_t g_UsbDeviceString4[] = {
-    2U + 2U * 16U, USB_DESCRIPTOR_TYPE_STRING,
-    'H',           0x00U,
-    'I',           0x00U,
-    'D',           0x00U,
-    ' ',           0x00U,
-    'M',           0x00U,
-    'O',           0x00U,
-    'U',           0x00U,
-    'S',           0x00U,
-    'E',           0x00U,
-    ' ',           0x00U,
-    'D',           0x00U,
-    'E',           0x00U,
-    'V',           0x00U,
-    'I',           0x00U,
-    'C',           0x00U,
-    'E',           0x00U,
-};
-
-USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceString3[] = {
     2U + 2U * 20U, USB_DESCRIPTOR_TYPE_STRING,
     'H',           0x00U,
@@ -707,13 +895,75 @@ uint8_t g_UsbDeviceString3[] = {
     'E',           0x00U,
 };
 
+USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
+uint8_t g_UsbDeviceString4[] = {
+    2U + 2U * 16U, USB_DESCRIPTOR_TYPE_STRING,
+    'H',           0x00U,
+    'I',           0x00U,
+    'D',           0x00U,
+    ' ',           0x00U,
+    'M',           0x00U,
+    'O',           0x00U,
+    'U',           0x00U,
+    'S',           0x00U,
+    'E',           0x00U,
+    ' ',           0x00U,
+    'D',           0x00U,
+    'E',           0x00U,
+    'V',           0x00U,
+    'I',           0x00U,
+    'C',           0x00U,
+    'E',           0x00U,
+};
+
+USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
+uint8_t g_UsbDeviceString5[] = {
+    2U + 2U * 15U, USB_DESCRIPTOR_TYPE_STRING,
+    'C',           0x00U,
+    'D',           0x00U,
+    'C',           0x00U,
+    ' ',           0x00U,
+    'V',           0x00U,
+    'I',           0x00U,
+    'R',           0x00U,
+    'T',           0x00U,
+    'U',           0x00U,
+    'A',           0x00U,
+    'L',           0x00U,
+    ' ',           0x00U,
+    'C',           0x00U,
+    'O',           0x00U,
+    'M',           0x00U,
+};
+
+USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
+uint8_t g_UsbDeviceString6[] = {2U + 2U * 16U, USB_DESCRIPTOR_TYPE_STRING,
+                                '0',           0x00U,
+                                '1',           0x00U,
+                                '2',           0x00U,
+                                '3',           0x00U,
+                                '4',           0x00U,
+                                '5',           0x00U,
+                                '6',           0x00U,
+                                '7',           0x00U,
+                                '8',           0x00U,
+                                '9',           0x00U,
+                                'A',           0x00U,
+                                'B',           0x00U,
+                                'C',           0x00U,
+                                'D',           0x00U,
+                                'E',           0x00U,
+                                'F',           0x00U};
+
 uint32_t g_UsbDeviceStringDescriptorLength[USB_DEVICE_STRING_COUNT] = {
     sizeof(g_UsbDeviceString0), sizeof(g_UsbDeviceString1), sizeof(g_UsbDeviceString2),
     sizeof(g_UsbDeviceString3), sizeof(g_UsbDeviceString4),
+	sizeof(g_UsbDeviceString5), sizeof(g_UsbDeviceString6), /*nsmoon230321 add 5, 6*/
 };
 
 uint8_t *g_UsbDeviceStringDescriptorArray[USB_DEVICE_STRING_COUNT] = {
     g_UsbDeviceString0, g_UsbDeviceString1, g_UsbDeviceString2, g_UsbDeviceString3, g_UsbDeviceString4,
+	g_UsbDeviceString5, g_UsbDeviceString6, /*nsmoon230321 add 5, 6*/
 };
 
 usb_language_t g_UsbDeviceLanguage[USB_DEVICE_LANGUAGE_COUNT] = {{
@@ -800,6 +1050,7 @@ usb_status_t USB_DeviceGetStringDescriptor(usb_device_handle handle,
     return kStatus_USB_Success;
 }
 
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 /* Get hid descriptor request */
 usb_status_t USB_DeviceGetHidDescriptor(usb_device_handle handle, usb_device_get_hid_descriptor_struct_t *hidDescriptor)
 {
@@ -833,6 +1084,7 @@ usb_status_t USB_DeviceGetHidPhysicalDescriptor(usb_device_handle handle,
 {
     return kStatus_USB_InvalidRequest;
 }
+#endif
 
 /* Due to the difference of HS and FS descriptors, the device descriptors and configurations need to be updated to match
  * current speed.
@@ -855,6 +1107,7 @@ usb_status_t USB_DeviceSetSpeed(usb_device_handle handle, uint8_t speed)
         {
             if (USB_SPEED_HIGH == speed)
             {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
                 if (((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
                      USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN) &&
                     (USB_HID_MOUSE_ENDPOINT_IN ==
@@ -874,12 +1127,39 @@ usb_status_t USB_DeviceSetSpeed(usb_device_handle handle, uint8_t speed)
                     USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(USB_HID_GENERIC_INTERRUPT_IN_PACKET_SIZE,
                                                        descriptorHead->endpoint.wMaxPacketSize);
                 }
-                else
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+                if ((USB_CDC_VCOM_CIC_INTERRUPT_IN_ENDPOINT ==
+                     (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                    ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                     USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN))
                 {
+                	descriptorHead->endpoint.bInterval = HS_CDC_VCOM_INTERRUPT_IN_INTERVAL;
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(HS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE,
+                    		descriptorHead->endpoint.wMaxPacketSize);
                 }
+                else if ((USB_CDC_VCOM_DIC_BULK_IN_ENDPOINT ==
+                          (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                         ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                          USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN))
+                {
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(HS_CDC_VCOM_BULK_IN_PACKET_SIZE, descriptorHead->endpoint.wMaxPacketSize);
+                }
+                else if ((USB_CDC_VCOM_DIC_BULK_OUT_ENDPOINT ==
+                          (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                         ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                          USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_OUT))
+                {
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(HS_CDC_VCOM_BULK_OUT_PACKET_SIZE, descriptorHead->endpoint.wMaxPacketSize);
+                }
+#endif
+                //else
+                //{
+                //}
             }
             else
             {
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
                 if (((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
                      USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN) &&
                     (USB_HID_MOUSE_ENDPOINT_IN ==
@@ -899,14 +1179,41 @@ usb_status_t USB_DeviceSetSpeed(usb_device_handle handle, uint8_t speed)
                     USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(USB_HID_GENERIC_INTERRUPT_IN_PACKET_SIZE,
                                                        descriptorHead->endpoint.wMaxPacketSize);
                 }
-                else
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+                if ((USB_CDC_VCOM_CIC_INTERRUPT_IN_ENDPOINT ==
+                     (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                    ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                     USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN))
                 {
+                	descriptorHead->endpoint.bInterval = FS_CDC_VCOM_INTERRUPT_IN_INTERVAL;
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE,
+                    		descriptorHead->endpoint.wMaxPacketSize);
                 }
+                else if ((USB_CDC_VCOM_DIC_BULK_IN_ENDPOINT ==
+                          (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                         ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                          USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_IN))
+                {
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(FS_CDC_VCOM_BULK_IN_PACKET_SIZE, descriptorHead->endpoint.wMaxPacketSize);
+                }
+                else if ((USB_CDC_VCOM_DIC_BULK_OUT_ENDPOINT ==
+                          (descriptorHead->endpoint.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)) &&
+                         ((descriptorHead->endpoint.bEndpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK) ==
+                          USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_OUT))
+                {
+                    USB_SHORT_TO_LITTLE_ENDIAN_ADDRESS(FS_CDC_VCOM_BULK_OUT_PACKET_SIZE, descriptorHead->endpoint.wMaxPacketSize);
+                }
+#endif
+                //else
+                //{
+                //}
             }
         }
         descriptorHead = (usb_descriptor_union_t *)((uint8_t *)descriptorHead + descriptorHead->common.bLength);
     }
 
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     if (USB_SPEED_HIGH == speed)
     {
         g_UsbDeviceHidMouseEndpoints[0].maxPacketSize = USB_HID_MOUSE_INTERRUPT_IN_PACKET_SIZE;
@@ -924,6 +1231,35 @@ usb_status_t USB_DeviceSetSpeed(usb_device_handle handle, uint8_t speed)
     {
         g_UsbDeviceHidGenericEndpoints[0].maxPacketSize = USB_HID_GENERIC_INTERRUPT_IN_PACKET_SIZE;
     }
+#endif
+
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    for (int i = 0; i < USB_CDC_VCOM_DIC_ENDPOINT_COUNT; i++)
+    {
+        if (USB_SPEED_HIGH == speed)
+        {
+            if (g_cdcVcomDicEndpoints[i].endpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK)
+            {
+                g_cdcVcomDicEndpoints[i].maxPacketSize = HS_CDC_VCOM_BULK_IN_PACKET_SIZE;
+            }
+            else
+            {
+                g_cdcVcomDicEndpoints[i].maxPacketSize = HS_CDC_VCOM_BULK_OUT_PACKET_SIZE;
+            }
+        }
+        else
+        {
+            if (g_cdcVcomDicEndpoints[i].endpointAddress & USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_MASK)
+            {
+                g_cdcVcomDicEndpoints[i].maxPacketSize = FS_CDC_VCOM_BULK_IN_PACKET_SIZE;
+            }
+            else
+            {
+                g_cdcVcomDicEndpoints[i].maxPacketSize = FS_CDC_VCOM_BULK_OUT_PACKET_SIZE;
+            }
+        }
+    }
+#endif
 
     return kStatus_USB_Success;
 }

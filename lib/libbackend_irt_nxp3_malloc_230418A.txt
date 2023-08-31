@@ -1,0 +1,16 @@
+backend_irt_nxp3_malloc_230418A
+- add FINE_INITIAL_LINE_CENT for 4-pen drawing
+- change MULTI_MIN_TOUCH_AREA 16.0f => 8.0f
+- FINE_CAL_WIDTH_INIT 0.8f*6
+
+SHA1 hash of libbackend_irt_nxp3_m8_malloc_230418A.a:
+1d1410d8d0d01836ce392b5f46375d03c399239e
+
+SHA1 hash of libbackend_irt_nxp3_malloc_m10_230418A.a:
+573403839416486c0aaee93fe580077f1cc8e2ec
+
+SHA1 hash of libbackend_irt_nxp3_malloc_m16_230418A.a:
+0daf1f192155af3f68e37d84e440c7cd3ff32c91
+
+
+

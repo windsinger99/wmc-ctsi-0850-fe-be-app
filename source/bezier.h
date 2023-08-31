@@ -2,8 +2,6 @@
 #define BEZIER_H
 
 #define BZ_FILTER_USE
-#define BZ_FIX_FILTER
-#define BZ_1STEP_REDUCE
 #define BZ_CUBIC_FILTER		1
 #if (BZ_CUBIC_FILTER == 1)
 #define BZ_CUBIC_FILTER_USE

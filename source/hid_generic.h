@@ -5,14 +5,16 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #ifndef __USB_DEVICE_HID_GENERIC_H__
 #define __USB_DEVICE_HID_GENERIC_H__
+
+#include "usb_device_config.h"
+
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-
 typedef struct _usb_device_hid_generic_struct
 {
 #if 1 //nsmoon@190719
@@ -272,4 +274,5 @@ extern usb_status_t USB_DeviceHidGenericSetInterface(class_handle_t handle,
                                                       uint8_t interface,
                                                       uint8_t alternateSetting);
 extern int USB_SendDigitizerReport(uint8_t *transmitDataBuffer, int len);
+#endif /*(USB_DEVICE_CONFIG_HID > 0)*/
 #endif /* __USB_DEVICE_HID_GENERIC_H__ */

@@ -9,7 +9,6 @@
 #ifndef __USB_DEVICE_EHCI_H__
 #define __USB_DEVICE_EHCI_H__
 
-
 /*!
  * @addtogroup usb_device_controller_ehci_driver
  * @{
@@ -31,30 +30,31 @@
 /*! @brief The maximum value of control type maximum packet size for HS in USB specification 2.0 */
 #define USB_DEVICE_MAX_HS_CONTROL_MAX_PACKET_SIZE (64U)
 
-#define USB_DEVICE_MAX_TRANSFER_PRIME_TIMES (10000000U)  /* The max prime times of EPPRIME, if still doesn't take effect, means status has been reset*/
+#define USB_DEVICE_MAX_TRANSFER_PRIME_TIMES \
+    (10000000U) /* The max prime times of EPPRIME, if still doesn't take effect, means status has been reset*/
 
 /* Device QH */
-#define USB_DEVICE_EHCI_QH_POINTER_MASK (0xFFFFFFC0U)
-#define USB_DEVICE_EHCI_QH_MULT_MASK (0xC0000000U)
-#define USB_DEVICE_EHCI_QH_ZLT_MASK (0x20000000U)
+#define USB_DEVICE_EHCI_QH_POINTER_MASK         (0xFFFFFFC0U)
+#define USB_DEVICE_EHCI_QH_MULT_MASK            (0xC0000000U)
+#define USB_DEVICE_EHCI_QH_ZLT_MASK             (0x20000000U)
 #define USB_DEVICE_EHCI_QH_MAX_PACKET_SIZE_MASK (0x07FF0000U)
-#define USB_DEVICE_EHCI_QH_MAX_PACKET_SIZE (0x00000800U)
-#define USB_DEVICE_EHCI_QH_IOS_MASK (0x00008000U)
+#define USB_DEVICE_EHCI_QH_MAX_PACKET_SIZE      (0x00000800U)
+#define USB_DEVICE_EHCI_QH_IOS_MASK             (0x00008000U)
 
 /* Device DTD */
-#define USB_DEVICE_ECHI_DTD_POINTER_MASK (0xFFFFFFE0U)
-#define USB_DEVICE_ECHI_DTD_TERMINATE_MASK (0x00000001U)
-#define USB_DEVICE_ECHI_DTD_PAGE_MASK (0xFFFFF000U)
-#define USB_DEVICE_ECHI_DTD_PAGE_OFFSET_MASK (0x00000FFFU)
-#define USB_DEVICE_ECHI_DTD_PAGE_BLOCK (0x00001000U)
-#define USB_DEVICE_ECHI_DTD_TOTAL_BYTES_MASK (0x7FFF0000U)
-#define USB_DEVICE_ECHI_DTD_TOTAL_BYTES (0x00004000U)
-#define USB_DEVICE_ECHI_DTD_IOC_MASK (0x00008000U)
-#define USB_DEVICE_ECHI_DTD_MULTIO_MASK (0x00000C00U)
-#define USB_DEVICE_ECHI_DTD_STATUS_MASK (0x000000FFU)
-#define USB_DEVICE_EHCI_DTD_STATUS_ERROR_MASK (0x00000068U)
-#define USB_DEVICE_ECHI_DTD_STATUS_ACTIVE (0x00000080U)
-#define USB_DEVICE_ECHI_DTD_STATUS_HALTED (0x00000040U)
+#define USB_DEVICE_ECHI_DTD_POINTER_MASK             (0xFFFFFFE0U)
+#define USB_DEVICE_ECHI_DTD_TERMINATE_MASK           (0x00000001U)
+#define USB_DEVICE_ECHI_DTD_PAGE_MASK                (0xFFFFF000U)
+#define USB_DEVICE_ECHI_DTD_PAGE_OFFSET_MASK         (0x00000FFFU)
+#define USB_DEVICE_ECHI_DTD_PAGE_BLOCK               (0x00001000U)
+#define USB_DEVICE_ECHI_DTD_TOTAL_BYTES_MASK         (0x7FFF0000U)
+#define USB_DEVICE_ECHI_DTD_TOTAL_BYTES              (0x00004000U)
+#define USB_DEVICE_ECHI_DTD_IOC_MASK                 (0x00008000U)
+#define USB_DEVICE_ECHI_DTD_MULTIO_MASK              (0x00000C00U)
+#define USB_DEVICE_ECHI_DTD_STATUS_MASK              (0x000000FFU)
+#define USB_DEVICE_EHCI_DTD_STATUS_ERROR_MASK        (0x00000068U)
+#define USB_DEVICE_ECHI_DTD_STATUS_ACTIVE            (0x00000080U)
+#define USB_DEVICE_ECHI_DTD_STATUS_HALTED            (0x00000040U)
 #define USB_DEVICE_ECHI_DTD_STATUS_DATA_BUFFER_ERROR (0x00000020U)
 #define USB_DEVICE_ECHI_DTD_STATUS_TRANSACTION_ERROR (0x00000008U)
 
@@ -99,7 +99,7 @@ typedef struct _usb_device_ehci_qh_struct
         struct
         {
             uint32_t isOpened : 1;
-            uint32_t zlt: 1;
+            uint32_t zlt : 1;
             uint32_t : 30;
         } endpointStatusBitmap;
     } endpointStatusUnion;
@@ -142,10 +142,17 @@ typedef struct _usb_device_ehci_state_struct
     usb_device_struct_t *deviceHandle; /*!< Device handle used to identify the device object is belonged to */
     USBHS_Type *registerBase;          /*!< The base address of the register */
 #if (defined(USB_DEVICE_CONFIG_LOW_POWER_MODE) && (USB_DEVICE_CONFIG_LOW_POWER_MODE > 0U))
+#if ((defined FSL_FEATURE_SOC_USBPHY_COUNT) && (FSL_FEATURE_SOC_USBPHY_COUNT > 0U))
     USBPHY_Type *registerPhyBase; /*!< The base address of the PHY register */
+#endif
 #if (defined(FSL_FEATURE_SOC_USBNC_COUNT) && (FSL_FEATURE_SOC_USBNC_COUNT > 0U))
     USBNC_Type *registerNcBase; /*!< The base address of the USBNC register */
 #endif
+#endif
+#if (defined(USB_DEVICE_CONFIG_CHARGER_DETECT) && (USB_DEVICE_CONFIG_CHARGER_DETECT > 0U)) && \
+    ((defined(FSL_FEATURE_SOC_USBHSDCD_COUNT) && (FSL_FEATURE_SOC_USBHSDCD_COUNT > 0U)) ||    \
+     (defined(FSL_FEATURE_SOC_USB_ANALOG_COUNT) && (FSL_FEATURE_SOC_USB_ANALOG_COUNT > 0U)))
+    void *dcdHandle; /*!< Dcd handle used to identify the device object belongs to */
 #endif
     usb_device_ehci_qh_struct_t *qh;       /*!< The QH structure base address */
     usb_device_ehci_dtd_struct_t *dtd;     /*!< The DTD structure base address */
@@ -154,23 +161,13 @@ typedef struct _usb_device_ehci_state_struct
         *dtdHard[USB_DEVICE_CONFIG_ENDPOINTS * 2]; /*!< The transferring DTD list head for each endpoint */
     usb_device_ehci_dtd_struct_t
         *dtdTail[USB_DEVICE_CONFIG_ENDPOINTS * 2]; /*!< The transferring DTD list tail for each endpoint */
-    int8_t dtdCount;                               /*!< The idle DTD node count */
+    uint8_t dtdCount;                              /*!< The idle DTD node count */
     uint8_t endpointCount;                         /*!< The endpoint number of EHCI */
     uint8_t isResetting;                           /*!< Whether a PORT reset is occurring or not  */
     uint8_t controllerId;                          /*!< Controller ID */
     uint8_t speed;                                 /*!< Current speed of EHCI */
     uint8_t isSuspending;                          /*!< Is suspending of the PORT */
 } usb_device_ehci_state_struct_t;
-
-#if (defined(USB_DEVICE_CHARGER_DETECT_ENABLE) && (USB_DEVICE_CHARGER_DETECT_ENABLE > 0U)) && \
-    (defined(FSL_FEATURE_SOC_USBHSDCD_COUNT) && (FSL_FEATURE_SOC_USBHSDCD_COUNT > 0U))
-typedef struct _usb_device_dcd_state_struct
-{
-    usb_device_struct_t *deviceHandle; /*!< Device handle used to identify the device object belongs to */
-    USBHSDCD_Type *dcdRegisterBase;    /*!< The base address of the dcd module */
-    uint8_t controllerId;              /*!< Controller ID */
-} usb_device_dcd_state_struct_t;
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

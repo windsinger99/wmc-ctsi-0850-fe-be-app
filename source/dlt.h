@@ -52,6 +52,18 @@
 
 #define EXB_XFER_PACKET_SIZE    ((EXB_BUF_SIZE_MAX + (USB_ENDPOINT_BUFFER_LENGTH - 1)) / USB_ENDPOINT_BUFFER_LENGTH)
 #define EXB_XFER_BUF_SIZE       (EXB_XFER_PACKET_SIZE * USB_ENDPOINT_BUFFER_LENGTH)
+
+
+#define FE_HEADER_SIZE		    (MY_USB_PACKET_SIZE -1 -2) //-(cmd+crc)
+#define FE_EEPROM_SIZE          FE_HEADER_SIZE
+#define FE_FWFILE_SIZE		    (27) //+\0
+#define FE_TIMESTAMP_SIZE	    (13) //+\0 200618113132
+#define FE_MODEL_SIZE		    (10) //+\0
+#define FE_PRGLEN_SIZE          (6) //+\0
+#define FE_PRGCRC_SIZE          (5) //+\0
+#define MAX_VERSION_LEN         (3) //+\0
+
+
 //==============================================================================
 #if 0 // kjsxx 0 to change definition name
 #define PD_DATA_IDX2			4 //PD-data start
@@ -115,6 +127,8 @@ extern uint8_t *Exb_Send_Buf;
 extern uint8_t Exb_Send_Buf[EXB_XFER_BUF_SIZE];
 #endif
 
+extern char frontend_fwVersion[MAX_VERSION_LEN];	//YJ@230531
+
 extern volatile uint32_t total_send_cnt;
 extern DLT_SCAN_INFO_T DLT_scan;
 
@@ -123,4 +137,5 @@ extern void dltParmInit(uint8_t usb_rx_cmd, uint8_t *usb_rx_buff);
 extern int dltProcess(void);
 extern uint32_t copy_ofst_to_exb(void);
 extern uint32_t Send_ExbBit_Data_to_USBCPU_Init(void);
+extern void get_ver_string(void);
 #endif /* DLT_H_ */

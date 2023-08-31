@@ -20,6 +20,7 @@ extern "C" {
 #include "TSP_Layout.h"
 #include "backend.h"
 
+
 #if NOT_USE_LED_SINK_CONTROL
 typedef struct {
   uint8_t sinkCurrentControl;
@@ -72,7 +73,7 @@ typedef struct {
          * because it uses the DAC.
          *
          */
-        #define LED_SINK_CONTROL_STEPS   4
+        #define LED_SINK_CONTROL_STEPS  4
     //#else
         //#define LED_SINK_CONTROL_BITS       6
         //#define LED_SINK_CONTROL_STEPS      63
@@ -108,50 +109,122 @@ typedef struct {
         #define LED_ON_DAC_MIN           120		// == 95mA
         #define LED_ON_DAC_UINT           2
 
-        #define LED_ON_DAC_MIN_X         150	// 180	//LED_ON_DAC_MIN
+        #define LED_ON_DAC_MIN_X         120	// 180	//LED_ON_DAC_MIN
         #define LED_ON_DAC_MAX_X         254	// 254
-		#define LED_ON_DAC_INIT_X        150	// 150 ~ 이상
+		#define LED_ON_DAC_INIT_X        180	// 150 ~ 이상
 
-        #define LED_ON_DAC_MIN_Y         170	// LED_ON_DAC_MIN
+        #define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_Y         254	// 254
-        #define LED_ON_DAC_INIT_Y        170  	// 220
+        #define LED_ON_DAC_INIT_Y        180  	// 220
+
+		#define LED_GAIN_INIT_X			 0
+		#define LED_GAIN_INIT_Y			 0
 
         #define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
         #define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+
+		#define PD_GAIN_OFFSET_1		70
+		#define PD_GAIN_OFFSET_2		90
+		#define PD_GAIN_OFFSET_3		110
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
+
+/*                                max     min    uint  step
+                        DAC Step  254      110      2   72     (8bit)*/
+
+        #define LED_ON_DAC_MIN           120		// == 95mA
+        #define LED_ON_DAC_UINT           2
+
+        #define LED_ON_DAC_MIN_X         120	// 180	//LED_ON_DAC_MIN
+        #define LED_ON_DAC_MAX_X         254	// 254
+		#define LED_ON_DAC_INIT_X        180	// 150 ~ 이상
+
+        #define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_Y         254	// 254
+        #define LED_ON_DAC_INIT_Y        180  	// 220
+
+		#define LED_GAIN_INIT_X			 0
+		#define LED_GAIN_INIT_Y			 0
+
+        #define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
+        #define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+
+		#define PD_GAIN_OFFSET_1		90
+		#define PD_GAIN_OFFSET_2		90
+		#define PD_GAIN_OFFSET_3		90
+
+#elif (MODEL_TYPE == SLIM_0320_NXP)
+
+/*                                max     min    uint  step
+                        DAC Step  254      110      2   72     (8bit)*/
+
+        #define LED_ON_DAC_MIN           120		// == 95mA
+        #define LED_ON_DAC_UINT           2
+
+        #define LED_ON_DAC_MIN_X         120	// 180	//LED_ON_DAC_MIN
+        #define LED_ON_DAC_MAX_X         254	// 254
+		#define LED_ON_DAC_INIT_X        180	// 150 ~ 이상
+
+        #define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_Y         254	// 254
+        #define LED_ON_DAC_INIT_Y        180  	// 220
+
+		#define LED_GAIN_INIT_X			 0
+		#define LED_GAIN_INIT_Y			 0
+
+        #define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
+        #define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+
+		#define PD_GAIN_OFFSET_1		80
+		#define PD_GAIN_OFFSET_2		80
+		#define PD_GAIN_OFFSET_3		80
 #elif (MODEL_TYPE == WMC_0750_NXP)
     /*                                max     min    uint  step
                             DAC Step  254      110      2   72     (8bit)*/
 
-            #define LED_ON_DAC_MIN           120		// == 95mA
-            #define LED_ON_DAC_UINT           2
+		#define LED_ON_DAC_MIN           120		// == 95mA
+		#define LED_ON_DAC_UINT           2
 
-            #define LED_ON_DAC_MIN_X         140	// 180	//LED_ON_DAC_MIN
-            #define LED_ON_DAC_MAX_X         254	// 254
-    		#define LED_ON_DAC_INIT_X        140	// 150 ~ 이상
+		#define LED_ON_DAC_MIN_X         120	//140	// 180	//LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_X         254	// 254
+		#define LED_ON_DAC_INIT_X        200	// 150 ~ 이상
 
-            #define LED_ON_DAC_MIN_Y         160	// LED_ON_DAC_MIN
-    		#define LED_ON_DAC_MAX_Y         254	// 254
-            #define LED_ON_DAC_INIT_Y        160  	// 220
+		#define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_Y         254	// 254
+		#define LED_ON_DAC_INIT_Y        200  	// 220
 
-            #define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
-            #define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+		#define LED_GAIN_INIT_X			 0
+		#define LED_GAIN_INIT_Y			 0
+
+		#define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
+		#define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+
+		#define PD_GAIN_OFFSET_1		70
+		#define PD_GAIN_OFFSET_2		90
+		#define PD_GAIN_OFFSET_3		110
 #elif (MODEL_TYPE == WMC_0850_NXP)
     /*                                max     min    uint  step
                             DAC Step  254      110      2   72     (8bit)*/
 
-            #define LED_ON_DAC_MIN           120		// == 95mA
-            #define LED_ON_DAC_UINT           2
+		#define LED_ON_DAC_MIN           120		// == 95mA
+		#define LED_ON_DAC_UINT           2
 
-            #define LED_ON_DAC_MIN_X         150	// 180	//LED_ON_DAC_MIN
-            #define LED_ON_DAC_MAX_X         254	// 254
-    		#define LED_ON_DAC_INIT_X        150	// 150 ~ 이상
+		#define LED_ON_DAC_MIN_X         120	// 180	//LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_X         254	// 254
+		#define LED_ON_DAC_INIT_X        200	// 150 ~ 이상
 
-            #define LED_ON_DAC_MIN_Y         170	// LED_ON_DAC_MIN
-    		#define LED_ON_DAC_MAX_Y         254	// 254
-            #define LED_ON_DAC_INIT_Y        170  	// 220
+		#define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MAX_Y         254	// 254
+		#define LED_ON_DAC_INIT_Y        200  	// 220
 
-            #define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
-            #define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+		#define LED_GAIN_INIT_X			 0
+		#define LED_GAIN_INIT_Y			 0//3
+
+		#define LED_ON_TIME_TEST_X        LED_ON_DAC_MIN_X
+		#define LED_ON_TIME_TEST_Y        LED_ON_DAC_MIN_Y
+
+		#define PD_GAIN_OFFSET_1		70
+		#define PD_GAIN_OFFSET_2		90
+		#define PD_GAIN_OFFSET_3		110
 
 #endif
 extern  ledSinkControl_t LedSinkCurrentTbl[LED_SINK_CONTROL_STEPS];
@@ -176,17 +249,33 @@ extern const ledSinkControl_t LedSinkCurrentTbl[LED_SINK_CONTROL_STEPS];
 #elif (MODEL_TYPE == WMC_0650_NXP)
  #define X_TOTAL_SCAN_STEPS 659
  #define Y_TOTAL_SCAN_STEPS 456
+#elif (MODEL_TYPE == WMC_0650_VE_NXP)
+ #define X_TOTAL_SCAN_STEPS 734
+ #define Y_TOTAL_SCAN_STEPS 612
 #elif (MODEL_TYPE == WMC_0750_NXP)
+#if(MAX_X_SLOPE_VAL == 38)
  #define X_TOTAL_SCAN_STEPS 712
+#elif(MAX_X_SLOPE_VAL == 37)
+ #define X_TOTAL_SCAN_STEPS 700
+#elif(MAX_X_SLOPE_VAL == 36)
+ #define X_TOTAL_SCAN_STEPS 688
+#else
+ #define X_TOTAL_SCAN_STEPS 712
+#endif
  #define Y_TOTAL_SCAN_STEPS 520
 #elif (MODEL_TYPE == WMC_0850_NXP)
   #define X_TOTAL_SCAN_STEPS 878
   #define Y_TOTAL_SCAN_STEPS 657
+#elif (MODEL_TYPE == SLIM_0320_NXP)
+  #define X_TOTAL_SCAN_STEPS 790
+  #define Y_TOTAL_SCAN_STEPS 600
 
 /*****************************************************************************/
 #else
  #error "MODEL_TYPE is not defined!!!"
 #endif
+
+
 
 
 

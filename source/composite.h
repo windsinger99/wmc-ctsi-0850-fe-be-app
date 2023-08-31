@@ -16,6 +16,10 @@
 #include "usb_device_hid.h"
 #include "usb_device_ch9.h"
 #include "usb_device_descriptor.h"
+#include "backend.h"
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+#include "virtual_com.h"
+#endif
 
 /*******************************************************************************
  * Definitions
@@ -38,8 +42,13 @@
 typedef struct _usb_device_composite_struct
 {
     usb_device_handle deviceHandle;
+#if (USB_DEVICE_CONFIG_HID > 0) //nsmoon@230321
     class_handle_t hidMouseHandle;
     class_handle_t hidGenericHandle;
+#endif
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+    usb_cdc_vcom_struct_t cdcVcom;  /* CDC virtual com device structure. */
+#endif
     uint8_t speed;
     uint8_t attach;
     uint8_t currentConfiguration;
@@ -57,5 +66,7 @@ extern uint8_t USB_Device_ready(void);
 extern usb_device_handle USB_Get_Device_Handle(void);
 extern void USB_DeviceIsrEnable(void);
 extern void USB_DeviceIsrDisable(void);
-
+#if (USB_DEVICE_CONFIG_CDC_ACM > 0) //nsmoon@230321
+extern usb_status_t USB_DeviceCdcVcomInit(usb_device_composite_struct_t *deviceComposite);
+#endif
 #endif /* __USB_DEVICE_COMPOSITE_H__ */

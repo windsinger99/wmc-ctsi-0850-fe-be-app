@@ -13,6 +13,9 @@
  * @addtogroup usb_device_hid_drv
  * @{
  */
+#include "usb.h"
+#include "usb_device.h"
+#include "usb_device_class.h"
 
 /*******************************************************************************
  * Definitions

@@ -1,4 +1,0 @@
-libbackend_irt650_nxp3_malloc_211224A
-- bug-fix, brush mode
-- black area를 근처에 손바닥으로 drawing시
-  forced agc가 발생하여 끊어지는 현상개선

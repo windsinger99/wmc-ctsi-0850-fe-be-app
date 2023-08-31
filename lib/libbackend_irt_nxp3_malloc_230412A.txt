@@ -1,0 +1,14 @@
+backend_irt_nxp3_malloc_230412A
+- if touch_cnt > 4 in BG_clipping_fine5(), 
+  delete more than 5 touch.
+- use MAX_INITIAL_LINE_FINE_XY insted of MAX_INITIAL_LINE_FINE_Y
+  in fine_cal_coordinates5()
+
+SHA1 hash of libbackend_irt_nxp3_malloc_06_230412A.a:
+ae2fc8efc222b0f24f36cbc62a2a7079241d83e1
+
+SHA1 hash of libbackend_irt_nxp3_malloc_08_230412A.a:
+3c18572a20f03a0255e863501eb21546d8ecce4a
+
+
+

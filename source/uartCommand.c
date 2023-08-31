@@ -1,12 +1,355 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "macro.h"
 #include "scan.h"
 #include "scan_table.h"
 #include "app.h"
+#include "uartCommand.h"
 
-#if (ENABLE_UART_CMD_PROCESS == TRUE)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+
+char HisBuff[HIS_MAX][DEBUG_BUF_MAX] = { {0,}, };
+int HisCount = 0;
+int HisIndex = 0;
+
+uint16_t setValueDAC, getValueDAC;
+uint16_t setADCSel, getADCSel;
+uint8_t vcom_mode, nr_option;
+
+static const char *delim = " \f\n\r\t\v";
+
+typedef struct {
+	char *CmdStr;
+	int (*func)(int argc, char **argv);
+
+} TCommand;
+
+void vcom_init(void)
+{
+    getValueDAC = setValueDAC = LED_ON_DAC_INIT_Y;
+    getADCSel = setADCSel = 0;
+    dltThresholdEnbale = 0;
+    nr_option = 0;
+    vcom_mode = VCOM_SHELL_MODE;
+}
+
+int vcom_delay(uint32_t cnt)
+{
+    volatile uint32_t i = 0;
+    uint32_t cntTotal = cnt * 1000;
+    for (i = 0; i < cntTotal; ++i)
+    {
+        __asm("NOP"); /* delay */
+    }
+    return 0;
+}
+
+void Current_adj_mode(uint8_t val)
+{
+	switch (val)
+	{
+	case '=' :
+           if (setValueDAC >= 255) {
+               setValueDAC = 255;
+           } else {
+               setValueDAC ++;
+           }
+           break;
+       case '-' :
+           if (setValueDAC <= 0) {
+               setValueDAC = 0;
+           } else {
+               setValueDAC--;
+           }
+
+           break;
+       case '+' :
+           if (setADCSel >= LED_SINK_CONTROL_STEPS-1) {
+               setADCSel = LED_SINK_CONTROL_STEPS-1;
+           } else {
+               setADCSel++;
+           }
+
+           break;
+       case '_' :
+           if (setADCSel <= 0) {
+               setADCSel = 0;
+           } else {
+               setADCSel --;
+           }
+           break;
+
+       case 0x1B :
+    	   vcom_mode = VCOM_SHELL_MODE;
+    	   fixedCurrentEnable = 0;
+    	   scanStatus.isUsualAgcCal = TRUE;
+    	   TRACE_MENU("\r\n>>/*************\033[1;35m DAC MODE END \033[0m*************/\r\n");
+    	   TRACE_VCOM("\r\n>> AGC ON -> DAC_ADJ_MODE_OFF\r\n");
+    	   break;
+
+       default :
+    	   TRACE_VCOM("up down key -> DAC : - =, CURRENT : _ +, EXIT : ESC ");
+           break;
+       } //switch
+
+       if(setValueDAC !=getValueDAC || setADCSel  != getADCSel)
+       {
+    	   fixedCurrentEnable = 1;
+    	   getValueDAC = setValueDAC;
+           getADCSel = setADCSel;
+           TRACE_VCOM("\r\n>> DAC value : %d, PD GAIN: %d ", setValueDAC, setADCSel);
+       }
+}
+
+void display_menu(void)
+{
+	int i = 0;
+
+	TRACE_MENU("\r\n/***************\033[1;32m Command List \033[0m***************/");
+	TRACE_MENU("\r\n %d. ?		:	Command List print", i++);
+	TRACE_MENU("\r\n %d. TEST	:	Test print ex) test 222 555", i++);
+	TRACE_MENU("\r\n %d. AGC		:	AGC on/off 1 = on, 0 = off", i++);
+	TRACE_MENU("\r\n %d. AGCD	:	AGC Calibration data Display", i++);
+	TRACE_MENU("\r\n %d. DAC		:	Fixed Current mode ", i++);
+	TRACE_MENU("\r\n %d. THD		:	DLT Display Threshold	1 = on, 0 = off ", i++);
+	TRACE_MENU("\r\n ex) cmd xx xx ... enter  -> xx max = 255");
+	TRACE_MENU("\r\n/********************************************/\r\n");
+}
+
+int CmdContents(int argc, char **argv)
+{
+	argv = argv;
+	if(argc > 0)
+	{
+		display_menu();
+	}
+	return 0;
+}
+
+int testprint(int argc, char **argv)
+{
+	int i = 0;
+	int j = 0;
+
+	if(argc > 1)
+	{
+		i = (uint8_t)atoi(argv[1]);
+		j = (uint8_t)atoi(argv[2]);
+		TRACE_VCOM( "\r\n>>Test argv 1: %d, argv 2: %d", i, j);
+	}
+	return 0;
+}
+
+int AGC_onoff_test(int argc, char **argv)
+{
+	int i = 0;
+	i = (uint8_t)atoi(argv[1]);
+
+	if (i == 0 )
+	{
+		scanStatus.isUsualAgcCal = FALSE;
+		TRACE_VCOM("\r\n>>AGC OFF\r\n");
+	}
+	else if(i == 1 )
+	{
+		scanStatus.isUsualAgcCal = TRUE;
+		TRACE_VCOM("\r\n>>AGC ON\r\n");
+	}
+	else
+	{
+		TRACE_VCOM(WRONG);
+	}
+	return 0;
+}
+
+int DAC_test_mode(int argc, char **argv)
+{
+	argv = argv;
+	vcom_mode = VCOM_DAC_MODE;
+	fixedCurrentEnable = 1;
+	scanStatus.isUsualAgcCal = FALSE;
+	TRACE_MENU("\r\n>>AGC OFF -> DAC_ADJ_MODE_ON\r\n");
+	TRACE_MENU("DAC up down		: -  =");
+	TRACE_MENU("CURRENT up down	: _  +");
+	TRACE_MENU("EXIT key		: ESC ");
+	TRACE_MENU("\r\n>>/*************\033[1;34m DAC MODE START \033[0m*************/\r\n");
+
+	return 0;
+}
+
+int dlt_TH_display(int argc, char **argv)
+{
+	int i = 0;
+	i = (uint8_t)atoi(argv[1]);
+
+	if (i == 0 )
+	{
+		dltThresholdEnbale = 0;
+		TRACE_VCOM("\r\n>>DLT Display Threshold level OFF\r\n");
+	}
+	else if(i == 1 )
+	{
+		dltThresholdEnbale = 1;
+		TRACE_VCOM("\r\n>>DLT Display Threshold level ON\r\n");
+	}
+	else
+	{
+		TRACE_VCOM(WRONG);
+	}
+	return 0;
+}
+int AGC_display(int argc, char **argv)
+{
+	argv = argv;
+	displayLedAgcResult();
+	return 0;
+}
+
+int forcedAgc_test(int argc, char **argv)
+{
+	argv = argv;
+	if (scanStatus.isUsualAgcCal == FALSE)
+	{
+		scanStatus.isUsualAgcCal = TRUE;
+		fixedCurrentEnable = 0;
+		TRACE_MENU("\r\nAGC ON, Fixed Current OFF");
+	}
+
+	g_forcedagc.forced_agc = 1;
+	TRACE_VCOM("\r\n*Forced agc Start*\r\n");
+	return 0;
+}
+
+TCommand Cmds[CMD_MAX] = 	{
+							{	"?"						,	CmdContents							},
+							{	"TEST"					,	testprint							},
+							{	"AGC"					,	AGC_onoff_test						},
+							{	"AGCD"					,	AGC_display							},
+							{	"DAC"					,	DAC_test_mode						},
+							{	"THD"					,	dlt_TH_display						},
+							{	"FOC"					,	forcedAgc_test						},
+							{	"NULL"					,	NULL								}
+};
+
+
+int his_append(char *s)
+{
+	int loop;
+
+	for( loop = 0; loop < HIS_MAX; loop++ )
+	{
+		if( strcmp( s, HisBuff[loop] ) == 0 )
+		{
+			HisIndex = 0;
+			if( HisCount ) HisIndex = HisCount-1;
+			return HisCount;
+		}
+	}
+
+	if( HisCount < HIS_MAX )
+	{
+		strcpy( HisBuff[HisCount], s );
+		HisCount++;
+	}
+	else
+	{
+		for( loop = 1; loop < HIS_MAX ; loop++ )
+		{
+			strcpy( HisBuff[loop-1], HisBuff[loop] );
+		}
+		strcpy( HisBuff[HIS_MAX-1], s );
+		HisIndex = HisCount-1;
+	}
+
+	HisIndex = 0;
+	if( HisCount ) HisIndex = HisCount-1;
+
+	return HisCount;
+}
+
+int gets_his(char *s, uint8_t *vcomRecvBuf, uint32_t revsize)
+{
+	char  *fp;
+	char  c;
+	int cnt = 0;
+
+	fp = s;
+
+	for(cnt=0; cnt < revsize; cnt++)
+	{
+		c = vcomRecvBuf[cnt];
+
+		if( c == '\r' ) {
+			*s = 0;
+			if( strlen( fp ) )
+				his_append( fp );
+			break;
+		}
+		*s++ = c;
+	}
+
+	return cnt;
+}
+
+static int parse_args(char *cmdline, char **argv)
+{
+	char *tok;
+	int argc = 0;
+
+	argv[argc] = NULL;
+
+	for (tok = strtok(cmdline, delim); tok; tok = strtok(NULL, delim))
+	{
+		argv[argc++] = tok;
+	}
+
+	return argc;
+}
+
+void UpperStr(char *Str )
+{
+   while( *Str ){ *Str = toupper( *Str ); Str++; }
+}
+
+void shellTask(uint8_t *vcomRecvBuf, uint32_t revsize )
+{
+	char ReadBuffer[256];	//512
+	char *argv[128];			//128
+	int argc;
+	int cmdlp;
+	int cnt;
+
+	memset( ReadBuffer, 0 , sizeof( ReadBuffer ) );
+	gets_his( ReadBuffer , vcomRecvBuf, revsize);
+
+	argc = parse_args( ReadBuffer, argv );
+
+	if(argc)
+	{
+		UpperStr( argv[0] );
+		cmdlp = 0;
+
+		for(cnt=0; cnt < CMD_MAX; cnt++)		//cmds size
+		{
+			if( strcmp( argv[0], Cmds[cmdlp].CmdStr ) == 0 )
+			{
+
+				Cmds[cmdlp].func( argc, argv );
+				break;
+			}
+
+			if( strcmp( "NULL", Cmds[cmdlp].CmdStr ) == 0 )
+			{
+				TRACE_VCOM(WRONG);
+				break;
+			}
+			cmdlp++;
+		}
+	}
+}
+#elif (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
 #define READ_STR_MAX_BYTES  80
 uint32_t uartScanSeqTestCnt;
 int debug_print_on;
@@ -63,10 +406,11 @@ void uartCmdProcessInit(void)
     seqNo = 0;
     bLedOn = 0; //off
     uartCmdModeCnt = 0;
-    setValueDAC = LED_ON_DAC_INIT_Y;
-    setADCSel = 0;
+    getValueDAC = setValueDAC = LED_ON_DAC_INIT_Y;
+    getADCSel = setADCSel = 0;
+    dltThresholdEnbale = 0;
     Scan_Initialize();
-    printf("\r\n***Please press 123 to enter UART command Mode***\r\n\n");
+    TRACE_UART("\r\n***Please press 123 to enter UART command Mode***\r\n\n");
 }
 
 static uint8_t UART2_ReadByte(void)
@@ -86,9 +430,15 @@ void uartReceiveHandler(void)
 
     if (UART2_ReceiverIsReady() == true) {
         rcvByte = (uint8_t)UART2_ReadByte();
-        if (rcvByte == '\r') printf("\n");
-        else printf("%c", rcvByte);
-        //printf("%c (%02x)\r\n", rcvByte, rcvByte);
+        if (rcvByte == '\r')
+        {
+        	TRACE_UART("\n");
+       	}
+        else
+        {
+        	TRACE_UART("%c", rcvByte);
+        }
+        //TRACE_UART("%c (%02x)\r\n", rcvByte, rcvByte);
     }
 }
 
@@ -112,7 +462,7 @@ static int16_t readStr(void)
     while(nChars <= READ_STR_MAX_BYTES) {
         rcvChar = _mon_getc(1);
         _mon_putc(rcvChar);
-        printf("%c", rcvChar);
+        TRACE_UART("%c", rcvChar);
         if (rcvChar == '\b') {
             if (nChars) nChars--;
         } else {
@@ -127,24 +477,73 @@ static int16_t readStr(void)
     return nChars;
 }
 
-#if 1 //nsmoon@211213
+
+
+void print_scan_threshold(const char *dbgStr, uint8_t axis, int16_t ledIdx, int16_t pdIdx)
+{
+    if (!getPdLedIdx_test_enable) return; //nsmoon@211230
+
+    if (showCnt_test > 0) {
+        uint8_t max_cell = (axis == X_AXIS) ? X_CELL_SIZE : Y_CELL_SIZE;
+        if (pdIdx >= max_cell || ledIdx >= max_cell) {
+            TRACE_UART("ERROR! invalid ledIdx.. %d/%d/%d", axis, ledIdx, pdIdx);
+            return;
+        }
+        max_cell = (scan_axis_test == X_AXIS) ? X_CELL_SIZE : Y_CELL_SIZE;
+        if (pdIdx >= max_cell || ledIdx_test >= max_cell) {
+            TRACE_UART("ERROR! invalid ledIdx_test.. %d/%d/%d", scan_axis_test, ledIdx_test, pdIdx_test);
+            ledIdx_test = pdIdx_test = 0;
+            return;
+        }
+        if (axis == (uint8_t)scan_axis_test && ledIdx == (int16_t)ledIdx_test && pdIdx == (int16_t)pdIdx_test) {
+            uint16_t tmpSeqIdx = findStartScanSequenceIdx(scan_axis_test, pdIdx, ledIdx, ledIdx);
+            int16_t offset = ledIdx_test - pdIdx_test;
+            int16_t maxOffset = (scan_axis_test == X_AXIS) ? X_MAX_OFFSET : Y_MAX_OFFSET;
+            int16_t offsetIdxMax = (scan_axis_test == X_AXIS) ? X_TOTAL_OFFSET : Y_TOTAL_OFFSET;
+            int16_t offsetIdx = offset + maxOffset;
+            if (offsetIdx < 0 || offsetIdx >= offsetIdxMax) {
+                TRACE_UART("ERROR! print_scan_threshold..invalid offsetIdx.. %d/%d/%d %d/%d", axis, ledIdx, pdIdx, offset, offsetIdx);
+                return;
+            }
+#if 0
+            if (scan_axis_test == X_AXIS) {
+                TRACE_UART("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, xScanThresholdData[pdIdx][offsetIdx], xScanResultData[pdIdx][offsetIdx], xScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, xAxisLedOnTimeIdx[tmpSeqIdx]);
+            }
+            else {
+                TRACE_UART("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, yScanThresholdData[pdIdx][offsetIdx], yScanResultData[pdIdx][offsetIdx], yScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, yAxisLedOnTimeIdx[tmpSeqIdx]);
+            }
+#else
+            if (scan_axis_test == X_AXIS) {
+			   TRACE_UART("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, xScanThresholdData[pdIdx][offsetIdx], xScanResultData[pdIdx][offsetIdx], xScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, xAxisDacIdx[tmpSeqIdx]);
+		   }
+		   else {
+			   TRACE_UART("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, yScanThresholdData[pdIdx][offsetIdx], yScanResultData[pdIdx][offsetIdx], yScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, yAxisDacIdx[tmpSeqIdx]);
+		   }
+#endif
+        }
+    }
+}
+
+
+
+#if 0 //nsmoon@211213
 static void getPdLedIdx_test(void)
 {
     uint8_t rcvUint8;
-    printf("Axis(0=X, 1=Y): ");
+    TRACE_UART("Axis(0=X, 1=Y): ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
     scan_axis_test = (rcvUint8)? Y_AXIS : X_AXIS; //0:x-axis
-    printf("LED Index: ");
+    TRACE_UART("LED Index: ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
     ledIdx_test = rcvUint8;
-    printf("PD Index: ");
+    TRACE_UART("PD Index: ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
     pdIdx_test = rcvUint8;
 #if 0
-    printf("SCAN Delay: ");
+    TRACE_UART("SCAN Delay: ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
     scan_delay_test = rcvUint8;
@@ -155,7 +554,7 @@ static void getPdLedIdx_test(void)
 static void scan_full_test(void)
 {
     int cnt = 30;
-    printf("scan_full_test..(%d)\r\n", cnt);
+    TRACE_UART("scan_full_test..(%d)\r\n", cnt);
     while(cnt-- > 0) {
         scanAxisFull(Y_AXIS, TRUE);
         scanAxisFull(X_AXIS, TRUE);
@@ -166,11 +565,11 @@ static void scan_full_test(void)
         CORETIMER_DelayMs(scan_delay_test);
         if (scan_axis_test == X_AXIS) {
             int16_t offsetIdx = (ledIdx_test - pdIdx_test) + X_MAX_OFFSET;
-            printf("X==%d/%d/%d %d\r\n", ledIdx_test, pdIdx_test, xScanResultData[pdIdx_test][offsetIdx], scan_delay_test);
+            TRACE_UART("X==%d/%d/%d %d\r\n", ledIdx_test, pdIdx_test, xScanResultData[pdIdx_test][offsetIdx], scan_delay_test);
         }
         else {
             int16_t offsetIdx = (ledIdx_test - pdIdx_test) + Y_MAX_OFFSET;
-            printf("Y==%d/%d/%d %d\r\n", ledIdx_test, pdIdx_test, yScanResultData[pdIdx_test][offsetIdx], scan_delay_test);
+            TRACE_UART("Y==%d/%d/%d %d\r\n", ledIdx_test, pdIdx_test, yScanResultData[pdIdx_test][offsetIdx], scan_delay_test);
         }
     }
 }
@@ -235,58 +634,21 @@ static uint8_t getZeroThresholdDataAll(void)
 }
 #endif
 
-#define INVALID_OFST_IDX 0xFF
-void print_scan_threshold(const char *dbgStr, uint8_t axis, int16_t ledIdx, int16_t pdIdx)
-{
-    if (!getPdLedIdx_test_enable) return; //nsmoon@211230
-
-    if (showCnt_test > 0) {
-        uint8_t max_cell = (axis == X_AXIS) ? X_CELL_SIZE : Y_CELL_SIZE;
-        if (pdIdx >= max_cell || ledIdx >= max_cell) {
-            printf("ERROR! invalid ledIdx.. %d/%d/%d", axis, ledIdx, pdIdx);
-            return;
-        }
-        max_cell = (scan_axis_test == X_AXIS) ? X_CELL_SIZE : Y_CELL_SIZE;
-        if (pdIdx >= max_cell || ledIdx_test >= max_cell) {
-            printf("ERROR! invalid ledIdx_test.. %d/%d/%d", scan_axis_test, ledIdx_test, pdIdx_test);
-            ledIdx_test = pdIdx_test = 0;
-            return;
-        }
-        if (axis == (uint8_t)scan_axis_test && ledIdx == (int16_t)ledIdx_test && pdIdx == (int16_t)pdIdx_test) {
-            uint16_t tmpSeqIdx = findStartScanSequenceIdx(scan_axis_test, pdIdx, ledIdx, ledIdx);
-            int16_t offset = ledIdx_test - pdIdx_test;
-            int16_t maxOffset = (scan_axis_test == X_AXIS) ? X_MAX_OFFSET : Y_MAX_OFFSET;
-            int16_t offsetIdxMax = (scan_axis_test == X_AXIS) ? X_TOTAL_OFFSET : Y_TOTAL_OFFSET;
-            int16_t offsetIdx = offset + maxOffset;
-            if (offsetIdx < 0 || offsetIdx >= offsetIdxMax) {
-                printf("ERROR! print_scan_threshold..invalid offsetIdx.. %d/%d/%d %d/%d", axis, ledIdx, pdIdx, offset, offsetIdx);
-                return;
-            }
-            if (scan_axis_test == X_AXIS) {
-                printf("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, xScanThresholdData[pdIdx][offsetIdx], xScanResultData[pdIdx][offsetIdx], xScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, xAxisLedOnTimeIdx[tmpSeqIdx]);
-            }
-            else {
-                printf("%s %d/%d %d/%d/%d %d/%d\r\n", dbgStr, ledIdx, pdIdx, yScanThresholdData[pdIdx][offsetIdx], yScanResultData[pdIdx][offsetIdx], yScanNonBlockLevel[pdIdx][offsetIdx], tmpSeqIdx, yAxisLedOnTimeIdx[tmpSeqIdx]);
-            }
-        }
-    }
-}
-
 #define DISPLAY_SCAN_RESULT_DATA() { \
-    printf(" %c,%03d,%03d, ", axisChar, seqNo, onTimeIdx); \
-    printf("%03d,%03d,%03d, ", ledIdx, pdIdx, offsetIdx); \
+    TRACE_UART(" %c,%03d,%03d, ", axisChar, seqNo, onTimeIdx); \
+    TRACE_UART("%03d,%03d,%03d, ", ledIdx, pdIdx, offsetIdx); \
     if (pdIdx == maxCellSize || offsetIdx == offsetIdxMax) { \
-        printf("---,---,--- "); \
+        TRACE_UART("---,---,--- "); \
     } \
     else { \
         if (axis == X_AXIS) { \
-            printf("%03d,%03d,%03d, ", xScanResultData[pdIdx][offsetIdx], xScanNonBlockLevel[pdIdx][offsetIdx], xScanThresholdData[pdIdx][offsetIdx]); \
+            TRACE_UART("%03d,%03d,%03d, ", xScanResultData[pdIdx][offsetIdx], xScanNonBlockLevel[pdIdx][offsetIdx], xScanThresholdData[pdIdx][offsetIdx]); \
         } \
         else { \
-            printf("%03d,%03d,%03d, ", yScanResultData[pdIdx][offsetIdx], yScanNonBlockLevel[pdIdx][offsetIdx], yScanThresholdData[pdIdx][offsetIdx]); \
+            TRACE_UART("%03d,%03d,%03d, ", yScanResultData[pdIdx][offsetIdx], yScanNonBlockLevel[pdIdx][offsetIdx], yScanThresholdData[pdIdx][offsetIdx]); \
         } \
     } \
-    printf("\r\n"); \
+    TRACE_UART("\r\n"); \
 }
 
 static int displayScanResult(uint8_t axis, uint16_t seqNo, uint8_t dispAll)
@@ -303,7 +665,9 @@ static int displayScanResult(uint8_t axis, uint16_t seqNo, uint8_t dispAll)
         maxCellSize = X_CELL_SIZE;
         //maxOffset = X_MAX_OFFSET;
         ledIdx = xAxisSequenceTbl[seqNo][1];
-        onTimeIdx = xAxisLedOnTimeIdx[seqNo];
+        //onTimeIdx = xAxisLedOnTimeIdx[seqNo];
+        onTimeIdx = xAxisDacIdx[seqNo];				//YJ@230314
+
     }
     else {
         axisChar = 'Y';
@@ -311,9 +675,10 @@ static int displayScanResult(uint8_t axis, uint16_t seqNo, uint8_t dispAll)
         maxCellSize = Y_CELL_SIZE;
         //maxOffset = Y_MAX_OFFSET;
         ledIdx = yAxisSequenceTbl[seqNo][1];
-        onTimeIdx = yAxisLedOnTimeIdx[seqNo];
+        //onTimeIdx = yAxisLedOnTimeIdx[seqNo];
+        onTimeIdx = yAxisDacIdx[seqNo];				//YJ@230314
     }
-    //printf("Axis:%c SeqNo:%d OnTime:%d\r\n", axisChar, seqNo, onTimeIdx);
+    //TRACE_UART("Axis:%c SeqNo:%d OnTime:%d\r\n", axisChar, seqNo, onTimeIdx);
     for (i = 0; i < PD_SIGNAL_OUT_NUM; i++) {
         if (axis == X_AXIS) {
             pdIdx = xPdIdxAtANOutTbl[seqNo][i];
@@ -344,7 +709,7 @@ static int displayScanResult(uint8_t axis, uint16_t seqNo, uint8_t dispAll)
                 diffLevel = (int16_t)(scanData - thresholdData);
                 if (diffLevel < LEVEL_CHECK_MARGIN || thresholdData < THRESHOLD_CHECK_MIN) {
                     cnt++;
-                    printf("%02d,%02d, ", diffLevel, thresholdData);
+                    TRACE_UART("%02d,%02d, ", diffLevel, thresholdData);
                     DISPLAY_SCAN_RESULT_DATA();
                 }
 #endif
@@ -377,14 +742,14 @@ static int displayScanResult(uint8_t axis, uint16_t seqNo, uint8_t dispAll)
                 }
                 if (M_ABS(thDiff) > THRESHOLD_CHECK_MARGIN) {
                     cnt++;
-                    printf("%02d,%02d,", thLevel, thDiff);
+                    TRACE_UART("%02d,%02d,", thLevel, thDiff);
                     DISPLAY_SCAN_RESULT_DATA();
                 }
 #endif
             }
         }
     }
-    //printf("\r\n");
+    //TRACE_UART("\r\n");
     return cnt;
 }
 
@@ -399,7 +764,7 @@ static void displayScanResultAll(void)
         int cntTmp = displayScanResult(Y_AXIS, i, 0);
         cnt += cntTmp;
     }
-    printf("..done (%d)\r\n", cnt);
+    TRACE_UART("..done (%d)\r\n", cnt);
 }
 #endif
 
@@ -408,17 +773,17 @@ static void getThreshold_wSeqNo(void)
     uint8_t rcvUint8, axis;
     uint16_t seqNo, seqNoMax;
     int rcvUint;
-    printf("Axis (0=X, 1=Y): ");
+    TRACE_UART("Axis (0=X, 1=Y): ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
     axis = (rcvUint8)? Y_AXIS : X_AXIS; //0:x-axis
-    printf("Seq No: ");
+    TRACE_UART("Seq No: ");
     readStr();
     sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint);
     seqNo = (uint16_t)rcvUint;
     seqNoMax = (axis == X_AXIS) ? X_TOTAL_SCAN_STEPS : Y_TOTAL_SCAN_STEPS;
     if (seqNo >= seqNoMax) {
-        printf("ERROR! invalid seqNo %d\r\n", seqNo);
+        TRACE_UART("ERROR! invalid seqNo %d\r\n", seqNo);
         return;
     }
     displayScanResult(axis, seqNo, 1);
@@ -431,7 +796,7 @@ static void DAC_getValue(void)
 
     rxDacValue = dac_data.VAL;
 
-    printf("DAC Current Value: 0x%04x \r\n", rxDacValue);
+    TRACE_UART("DAC Current Value: 0x%04x \r\n", rxDacValue);
 
 }
 
@@ -443,16 +808,16 @@ int16_t uartDACTest(void)
     //uint8_t rcvChar;
 
     while(1) {
-        printf("\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf("Uart DAC Test\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf(" 1) Read DAC Value \r\n");
-        printf(" =) increase DAC Value \r\n");
-        printf(" -) decrease DAC value \r\n");
-        printf(" Esc) Exit\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf("\r\n");
+        TRACE_UART("\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART("Uart DAC Test\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART(" 1) Read DAC Value \r\n");
+        TRACE_UART(" =) increase DAC Value \r\n");
+        TRACE_UART(" -) decrease DAC value \r\n");
+        TRACE_UART(" Esc) Exit\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART("\r\n");
 
 
         commandNo = _mon_getc(1);
@@ -469,7 +834,7 @@ int16_t uartDACTest(void)
                 setValueDAC = getValueDAC + 8;
             }
             dac_data_set(setValueDAC);
-            printf("increase>> Set DAC value : 0x%04x \r\n", setValueDAC);
+            TRACE_UART("increase>> Set DAC value : 0x%04x \r\n", setValueDAC);
             //rcvValue = setValueDAC;
             break;
         case '3' :
@@ -480,7 +845,7 @@ int16_t uartDACTest(void)
                 setValueDAC = 0;
             }
             dac_data_set(setValueDAC);
-            printf("decrease>> set DAC value : 0x%04x \r\n", setValueDAC);
+            TRACE_UART("decrease>> set DAC value : 0x%04x \r\n", setValueDAC);
             //rcvValue = setValueDAC;
             break;
         default:
@@ -490,7 +855,7 @@ int16_t uartDACTest(void)
         if (commandNo >= '0' && commandNo <= '9') {
             continue;
         } else if (commandNo == 0x1B) { // if key is ESC
-            printf("\r\nGood Bye !!!\r\n");
+            TRACE_UART("\r\nGood Bye !!!\r\n");
             break;
         }
 
@@ -502,39 +867,40 @@ int16_t uartDACTest(void)
 
 static void uartCmdProcessMenu(void)
 {
-    printf("\r\n");
-    printf("-----------------------------------------------\r\n");
-    printf("UART Command Process\r\n");
-    printf("-----------------------------------------------\r\n");
-    printf(" h) Display This Menu\r\n");
-    printf(" a) AGC On/Off\r\n");
-    printf(" e) ExtLightNoiseCal On/Off\r\n");
-    printf(" d) Display AGC Result (currIdx, onTime)\r\n");
-    printf(" s) Scan Test\r\n");
-    printf(" t) Scan Seq Test\r\n");
-    printf(" f) Fixed Current Mode\r\n");
-    printf(" j) Decrease PD number Triger\r\n");
-    printf(" k) Increase PD number Triger\r\n");
-    printf(" L) Toggle Axis Triger\r\n");
-    printf("    -) Decrease X Current Index\r\n");
-    printf("    =) Increase X Current Index\r\n");
-    printf("    _) Decrease Y Current Index\r\n");
-    printf("    +) Increase Y Current Index\r\n");
-    printf("    [) Decrease X On Time\r\n");
-    printf("    ]) Increase X On Time\r\n");
-    printf("    {) Decrease Y On Time\r\n");
-    printf("    }) Increase Y On Time\r\n");
-    printf(" m) Scan Result All\r\n");
-    printf(" n) Scan Result (SeqNo)\r\n");
-    printf(" p) Scan Result (pdIdx,ledIdx)\r\n");
-    printf(" P) Scan Result Display On/Off\r\n");
-    printf(" c) Forced AGC On\r\n");
-    printf(" D) DAC Voltage Value control\r\n");
+    TRACE_UART("\r\n");
+    TRACE_UART("-----------------------------------------------\r\n");
+    TRACE_UART("UART Command Process\r\n");
+    TRACE_UART("-----------------------------------------------\r\n");
+    TRACE_UART(" h) Display This Menu\r\n");
+    TRACE_UART(" a) AGC On/Off + Fixed Current mode\r\n");
+   // TRACE_UART(" e) ExtLightNoiseCal On/Off\r\n");
+    //TRACE_UART(" s) Scan Test\r\n");
+    //TRACE_UART(" t) Scan Seq Test\r\n");
+    //TRACE_UART(" f) Fixed Current Mode\r\n");
+    //TRACE_UART(" j) Decrease PD number Triger\r\n");
+    //TRACE_UART(" k) Increase PD number Triger\r\n");
+    //TRACE_UART(" L) Toggle Axis Triger\r\n");
+    TRACE_UART("   -) Decrease DAC Index\r\n");
+    TRACE_UART("   =) Increase DAC Index\r\n");
+    TRACE_UART("   _) Decrease PD Gain Index\r\n");
+    TRACE_UART("   +) Increase PD Gain Index\r\n");
+    TRACE_UART(" b) DLT Threshold Display\r\n");
+    TRACE_UART(" d) Display AGC Result (PD gain, Dac)\r\n");
+    //TRACE_UART("    [) Decrease X On Time\r\n");
+    //TRACE_UART("    ]) Increase X On Time\r\n");
+    //TRACE_UART("    {) Decrease Y On Time\r\n");
+    //TRACE_UART("    }) Increase Y On Time\r\n");
+    //TRACE_UART(" m) Scan Result All\r\n");
+    //TRACE_UART(" n) Scan Result (SeqNo)\r\n");
+    //TRACE_UART(" p) Scan Result (pdIdx,ledIdx)\r\n");
+    //TRACE_UART(" P) Scan Result Display On/Off\r\n");
+    TRACE_UART(" c) Forced AGC On\r\n");
+    //TRACE_UART(" D) DAC Voltage Value control\r\n");
 
-    printf(" =) increase DAC Value \r\n");
-    printf(" -) decrease DAC Value \r\n");
-    printf("-----------------------------------------------\r\n");
-    printf("\r\n");
+    //TRACE_UART(" =) increase DAC Value \r\n");
+    //TRACE_UART(" -) decrease DAC Value \r\n");
+    TRACE_UART("-----------------------------------------------\r\n");
+    TRACE_UART("\r\n");
 }
 
 static uint8_t chkUartCmdMode(char key)
@@ -568,7 +934,7 @@ static uint8_t chkUartCmdMode(char key)
 
 static void uartCmdESC(void)
 {
-    printf("Exit UART Command Process~~\r\n\r\n");
+    TRACE_UART("Exit UART Command Process~~\r\n\r\n");
     uartCmdModeCnt = 0;
     fixedCurrentEnable = 0;
 #if (WATCHDOG_ENABLE)
@@ -576,38 +942,19 @@ static void uartCmdESC(void)
 #endif
 }
 
-#if 0
-static void uartPDGainCtrl(uint8_t gain)
-{
-    switch (gain) {
-    case 0:
-        MCU_ADC_GROUP_SELECT_0_Clear();
-        MCU_ADC_GROUP_SELECT_1_Clear();
-        break;
-    case 1:
-        MCU_ADC_GROUP_SELECT_0_Set();
-        MCU_ADC_GROUP_SELECT_1_Clear();
-        break;
-    case 2:
-        MCU_ADC_GROUP_SELECT_0_Clear();
-        MCU_ADC_GROUP_SELECT_1_Set();
-        break;
-    case 3:
-        MCU_ADC_GROUP_SELECT_0_Set();
-        MCU_ADC_GROUP_SELECT_1_Set();
-        break;
-
-    }
-}
-#endif
 
 uint16_t uartCmdProcess(void)
 {
     char key;
+#if 0
     if(kStatus_LPUART_FlagCannotClearManually != LPUART_GetStatusFlags(LPUART1_PERIPHERAL))
     {
-
         key = getchar();
+#else
+	key =  DbgConsole_Getchar();	//YJ@230314
+	if(key)
+	{
+#endif
         if (chkUartCmdMode(key) == 0)
         {
             return 0;
@@ -626,7 +973,7 @@ uint16_t uartCmdProcess(void)
             uartCmdProcessMenu();
             break;
 #if 1 // function off
-#if 1 //nsmoon@211213
+#if 0 //nsmoon@211213
         case 'n' :
         case 'N' :
             //scan_full_test();
@@ -638,26 +985,38 @@ uint16_t uartCmdProcess(void)
         case 'P' :
             if (getPdLedIdx_test_enable) {
                 getPdLedIdx_test_enable = 0;
-                printf("\r\ngetPdLedIdx_test OFF\r\n");
+                TRACE_UART("\r\ngetPdLedIdx_test OFF\r\n");
             }
             else {
                 getPdLedIdx_test_enable = 1;
-                printf("\r\ngetPdLedIdx_test ON\r\n");
+                TRACE_UART("\r\ngetPdLedIdx_test ON\r\n");
             }
             break;
 #endif
         case 'a' :
         case 'A' :
             if (scanStatus.isUsualAgcCal == TRUE) {
-                scanStatus.isUsualAgcCal = FALSE;
+				scanStatus.isUsualAgcCal = FALSE;
                 fixedCurrentEnable = 1;
-                printf("\r\nAGC OFF\r\n");
+                TRACE_UART("\r\nAGC OFF\r\n");
             } else {
                 scanStatus.isUsualAgcCal = TRUE;
                 fixedCurrentEnable = 0;
-                printf("\r\nAGC ON\r\n");
+                TRACE_UART("\r\nAGC ON\r\n");
             }
             break;
+        case 'b' :
+        case 'B' :
+		   if (dltThresholdEnbale == 0) {
+			   dltThresholdEnbale = 1;
+			   TRACE_UART("\r\nDLT THRESHOLD DISPLAY ON\r\n");
+		   } else {
+			   dltThresholdEnbale = 0;
+			   TRACE_UART("\r\nDLT THRESHOLD DISPLAY OFF\r\n");
+		   }
+		   break;
+
+
 #if FORCE_AGC_SET
         case 'c' :
         case 'C' :
@@ -665,29 +1024,32 @@ uint16_t uartCmdProcess(void)
         	g_forcedagc.forced_saved =1;
             break;
 #endif
-        case 'e' :
-        case 'E' :
-            if (scanStatus.isUsualExtLightNoiseCal == TRUE) {
-                scanStatus.isUsualExtLightNoiseCal = FALSE;
-                printf("\r\nExtLightNoiseCal OFF\r\n");
-            } else {
-                scanStatus.isUsualExtLightNoiseCal = TRUE;
-                printf("\r\nExtLightNoiseCal ON\r\n");
-            }
-            break;
         case 'd' : // if key is 'd'
         case 'D' : // if key is 'D'
             // Display sense information related to current mode
             //uartCmdDisplayInformation();
-            // printf("D command\r\n");
+            // TRACE_UART("D command\r\n");
             // kjs 210414 add
-            //  displayLedAgcResult();
+              displayLedAgcResult();
             break;
+#if 0
+        case 'e' :
+        case 'E' :
+            if (scanStatus.isUsualExtLightNoiseCal == TRUE) {
+                scanStatus.isUsualExtLightNoiseCal = FALSE;
+                TRACE_UART("\r\nExtLightNoiseCal OFF\r\n");
+            } else {
+                scanStatus.isUsualExtLightNoiseCal = TRUE;
+                TRACE_UART("\r\nExtLightNoiseCal ON\r\n");
+            }
+            break;
+
+
         case 'm' :
         case 'M' :
             // displayScanResultAll();
             break;
-#if 0 //ENABLE_TRIGER
+ //ENABLE_TRIGER
         case 'j' :
         case 'J' :
             if (Current_Triger_Pd > CELLS_PER_CS) {
@@ -696,7 +1058,7 @@ uint16_t uartCmdProcess(void)
             else {
                 Current_Triger_Pd = 0;
             }
-            printf("Current Triger PD number is (%d) \r\n", Current_Triger_Pd);
+            TRACE_UART("Current Triger PD number is (%d) \r\n", Current_Triger_Pd);
             break;
         case 'k' : // if key is 'k'
         case 'K' : // if key is 'K'
@@ -706,7 +1068,7 @@ uint16_t uartCmdProcess(void)
             else {
                 Current_Triger_Pd = X_CELL_SIZE - 1;
             }
-            printf("Current Triger PD number is (%d) \r\n", Current_Triger_Pd);
+            TRACE_UART("Current Triger PD number is (%d) \r\n", Current_Triger_Pd);
             break;
         case 'l' : // if key is 'l'
         case 'L' : // if key is 'L'
@@ -717,7 +1079,7 @@ uint16_t uartCmdProcess(void)
                 Current_Triger_Axis = Y_AXIS;
             }
             char axis_char = (Current_Triger_Axis == Y_AXIS) ? 'Y' : 'X';
-            printf("Current Triger AXIS is (%c) \r\n", axis_char);
+            TRACE_UART("Current Triger AXIS is (%c) \r\n", axis_char);
             break;
         case 'u' : // if key is 'u'
         case 'U' : // if key is 'U'
@@ -728,7 +1090,7 @@ uint16_t uartCmdProcess(void)
                 Usb_Off_Test = 0;
             }
             char usb_char = (Usb_Off_Test == 0) ? 'O' : 'X';
-            printf("USB status is (%c) \r\n", usb_char);
+            TRACE_UART("USB status is (%c) \r\n", usb_char);
             break;
 #endif
 #if 0
@@ -736,15 +1098,15 @@ uint16_t uartCmdProcess(void)
         case 'P' : // if key is 'P'
             // parameter settings
             //uartCmdParameters();
-            printf("P command\r\n");
+            TRACE_UART("P command\r\n");
             break;
-#endif
+//#endif
         case 's' : // if key is 's'
         case 'S' : // if key is 'S'
             // Scan Test
             uartScanTest();
             break;
-#if 1 //nsmoon@210719
+//#if 1 //nsmoon@210719
         case 't' : // if key is 't'
         case 'T' : // if key is 'T'
             // Scan Test
@@ -755,10 +1117,10 @@ uint16_t uartCmdProcess(void)
         case 'v' : // if key is 'v'
         case 'V' : // if key is 'V'
             // Display F/W version information
-//        printf("\n\n");
-//        printf("Model Name       : %s\n", ModelName);
-//        printf("Firmware Version : %s\n", FirmwareVersion);
-//        printf("Compile time is %s, %s\n\n", __TIME__, __DATE__);
+//        TRACE_UART("\n\n");
+//        TRACE_UART("Model Name       : %s\n", ModelName);
+//        TRACE_UART("Firmware Version : %s\n", FirmwareVersion);
+//        TRACE_UART("Compile time is %s, %s\n\n", __TIME__, __DATE__);
             break;
 #endif
 #if 0 // 1 //nsmoon@210915
@@ -767,10 +1129,10 @@ uint16_t uartCmdProcess(void)
             if (fixedCurrentEnable) {
                 fixedCurrentEnable = 0;
                 g_forcedagc.forced_agc = 1;
-                printf("Fixed Current OFF\r\n");
+                TRACE_UART("Fixed Current OFF\r\n");
             } else {
                 fixedCurrentEnable = 1;
-                printf("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
+                TRACE_UART("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
             }
             break;
 
@@ -851,7 +1213,7 @@ uint16_t uartCmdProcess(void)
                 setValueDAC = getValueDAC + 40;
             }
             dac_data_set(DAC1, DAC_ALIGN_12B_R, setValueDAC);
-            //printf("increase>> Set DAC value : %d \r\n", setValueDAC);
+            //TRACE_UART("increase>> Set DAC value : %d \r\n", setValueDAC);
             //rcvValue = setValueDAC;
             break;
         case '-' :
@@ -862,7 +1224,7 @@ uint16_t uartCmdProcess(void)
                 setValueDAC = 15;
             }
             dac_data_set(DAC1, DAC_ALIGN_12B_R, setValueDAC);
-            //printf("decrease>> set DAC value : %d \r\n", setValueDAC);
+            //TRACE_UART("decrease>> set DAC value : %d \r\n", setValueDAC);
             break;
         case '+' :
             if (getADCSel >= 4) {
@@ -871,7 +1233,7 @@ uint16_t uartCmdProcess(void)
                 setADCSel = ++getADCSel;
             }
             uartPDGainCtrl(setADCSel);
-            //printf("increase>> Set DAC value : 0x%04x \r\n", setValueDAC);
+            //TRACE_UART("increase>> Set DAC value : 0x%04x \r\n", setValueDAC);
             //rcvValue = setValueDAC;
             break;
         case '_' :
@@ -884,8 +1246,8 @@ uint16_t uartCmdProcess(void)
             break;
 #else
         case '=' :
-            if (setValueDAC >= LED_ON_DAC_MAX_X) {
-                setValueDAC = LED_ON_DAC_MAX_X;
+            if (setValueDAC >= 255) {
+                setValueDAC = 255;
             } else {
                 setValueDAC ++;
             }
@@ -899,8 +1261,8 @@ uint16_t uartCmdProcess(void)
 
             break;
         case '+' :
-            if (setADCSel >= LED_SINK_CONTROL_STEPS) {
-                setADCSel = LED_SINK_CONTROL_STEPS;
+            if (setADCSel >= LED_SINK_CONTROL_STEPS-1) {
+                setADCSel = LED_SINK_CONTROL_STEPS-1;
             } else {
                 setADCSel++;
             }
@@ -923,16 +1285,17 @@ uint16_t uartCmdProcess(void)
 
         if(setValueDAC !=getValueDAC || setADCSel  != getADCSel)
         {
-            getValueDAC = setValueDAC;
+        	fixedCurrentEnable = 1;
+        	getValueDAC = setValueDAC;
             getADCSel = setADCSel;
-            printf(">> DAC value : %d, PD GAIN: %d \r\n", setValueDAC, setADCSel);
+            TRACE_UART(">> DAC value : %d, PD GAIN: %d \r\n", setValueDAC, setADCSel);
         }
 #if 0
 
         if (fixedCurrentEnable) {
             if (key == '_' || key == '-' || key == '+' || key == '=' ||
                     key == '{' || key == '[' || key == '}' || key == ']') {
-                printf("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
+                TRACE_UART("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
             }
         }
 
@@ -971,27 +1334,27 @@ int16_t uartScanTest(void)
     if (pdIdxMax >= cellSize) pdIdxMax = cellSize - 1;
 
     while(1) {
-        printf("\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf("Uart Scan Test\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf(" Press 1 ~ 5 to change parameter or s to start scan\r\n");
-        printf(" 1) Axis = %s\r\n", axisType == X_AXIS ? "X" : "Y");
-        printf(" 2) LED index No = %d\r\n", ledIdx);
-        printf(" 3) PD Start index No = %d\r\n", pdStartIdx);
-        printf(" 4) LED On/Off = %s\r\n", bLedOn == TRUE ? "On" : "Off");
-        printf(" 5) Loop delay = %d [msec]\r\n", loopDelayMsec);
-        printf(" s) Start scan\r\n");
-        printf(" Esc) Exit\r\n");
-        printf("----------------------------------------------------------------\r\n");
-        printf("\r\n");
-        //printf("Enter command number : ");
+        TRACE_UART("\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART("Uart Scan Test\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART(" Press 1 ~ 5 to change parameter or s to start scan\r\n");
+        TRACE_UART(" 1) Axis = %s\r\n", axisType == X_AXIS ? "X" : "Y");
+        TRACE_UART(" 2) LED index No = %d\r\n", ledIdx);
+        TRACE_UART(" 3) PD Start index No = %d\r\n", pdStartIdx);
+        TRACE_UART(" 4) LED On/Off = %s\r\n", bLedOn == TRUE ? "On" : "Off");
+        TRACE_UART(" 5) Loop delay = %d [msec]\r\n", loopDelayMsec);
+        TRACE_UART(" s) Start scan\r\n");
+        TRACE_UART(" Esc) Exit\r\n");
+        TRACE_UART("----------------------------------------------------------------\r\n");
+        TRACE_UART("\r\n");
+        //TRACE_UART("Enter command number : ");
 
         commandNo = _mon_getc(1);
 
         switch(commandNo) {
         case '1' :
-            printf("Enter Axis Type [ x / y ] = ");
+            TRACE_UART("Enter Axis Type [ x / y ] = ");
             readStr();
             sscanf((const char *)readStrBuffer, "%c", &rcvChar);
             axisType = rcvChar == 'x' ? X_AXIS : Y_AXIS;
@@ -1017,7 +1380,7 @@ int16_t uartScanTest(void)
             break;
 
         case '2' :
-            printf("Enter LED Index No in the axis = ( 0 ~ %d ) = ", cellSize - 1);
+            TRACE_UART("Enter LED Index No in the axis = ( 0 ~ %d ) = ", cellSize - 1);
             readStr();
             sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
             ledIdx = rcvUint8;
@@ -1034,7 +1397,7 @@ int16_t uartScanTest(void)
             break;
 
         case '3' :
-            printf("Enter PD Start Index No in the axis ( %d ~ %d ) = ", pdIdxMin, pdIdxMax);
+            TRACE_UART("Enter PD Start Index No in the axis ( %d ~ %d ) = ", pdIdxMin, pdIdxMax);
             readStr();
             sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
             if (rcvUint8 < pdIdxMin) rcvUint8 = pdIdxMin;
@@ -1043,14 +1406,14 @@ int16_t uartScanTest(void)
             break;
 
         case '4' :
-            printf("Enter LED On/Off [ 1 for On / 0 for Off ] = ");
+            TRACE_UART("Enter LED On/Off [ 1 for On / 0 for Off ] = ");
             readStr();
             sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
             bLedOn = rcvUint8 == 1 ? TRUE : FALSE;
             break;
 
         case '5' :
-            printf("Enter Loop Delay [msec] = ");
+            TRACE_UART("Enter Loop Delay [msec] = ");
             readStr();
             sscanf((const char *)readStrBuffer, "%d", (int *)&rcvUint8);
             loopDelayMsec = rcvUint8;
@@ -1061,12 +1424,12 @@ int16_t uartScanTest(void)
         if (commandNo >= '0' && commandNo <= '9') {
             continue;
         } else if (commandNo == 0x1B) { // if key is ESC
-            printf("\r\nGood Bye !!!\r\n");
+            TRACE_UART("\r\nGood Bye !!!\r\n");
             break;
         }
 
         if (commandNo == 's') {
-            printf("\t-----> Now scan testing, press ESC key to quit !!!\r\n");
+            TRACE_UART("\t-----> Now scan testing, press ESC key to quit !!!\r\n");
             selectPDGroupExt(-1);
             //gCurrentStartTotalPdIdx = -1; //nsmoon@210914 move to selectPDGroup()
             while(1) {
@@ -1093,7 +1456,7 @@ int16_t uartScanTest(void)
 #if 1 //nsmoon@210719
 #define LED_ON_STR_LEN 4
 #define uartScanSeqTest_printParam() { \
-    printf("\r\n"); \
+    TRACE_UART("\r\n"); \
     if (axisType == X_AXIS) { \
         maxSeqNo = X_TOTAL_SCAN_STEPS-1; \
         sequenceTbl = xAxisSequenceTbl; \
@@ -1108,33 +1471,33 @@ int16_t uartScanTest(void)
         snprintf(ledOnStr, LED_ON_STR_LEN, "%s", "ON"); \
     } \
     else { \
-        snprintf(ledOnStr, LED_ON_STR_LEN, "%s", "OFF"); \
+    	snprintf(ledOnStr, LED_ON_STR_LEN, "%s", "OFF"); \
     } \
     pdIdx = sequenceTbl[seqNo][0]; \
     ledIdx = sequenceTbl[seqNo][1]; \
-    printf("%s %c seq=%d pd=%d led=%d currIdx=%d onTime=%d\r\n", \
+    TRACE_UART("%s %c seq=%d pd=%d led=%d currIdx=%d onTime=%d\r\n", \
         ledOnStr, axisChar, seqNo, pdIdx, ledIdx, \
         currentTestIndex, ledOnTimeTest); \
 }
 
 static void uartScanSeqTestMenu(void)
 {
-    printf("\r\n");
-    printf("-------------------------------\r\n");
-    printf("UART Scan Seq Test\r\n");
-    printf("-------------------------------\r\n");
-    printf(" H) Display This Menu\r\n");
-    printf(" A) Axis Toggle\r\n");
-    printf(" L) LED On/Off\r\n");
-    printf(" D) Display ADC Value\r\n");
-    printf(" 1,2) Sequence No +,-\r\n");
-    printf(" 3,4) Sequence No +10,-10\r\n");
-    printf(" 5,6) Sequence No +50,-50\r\n");
-    printf(" +,-) Led Current Index\r\n");
-    printf(" [,]) Led On Time\r\n");
-    printf(" Esc) Exit\r\n");
-    printf("-------------------------------\r\n");
-    printf("gCurrentStartTotalPdIdx=%d\r\n", gCurrentStartTotalPdIdx);
+    TRACE_UART("\r\n");
+    TRACE_UART("-------------------------------\r\n");
+    TRACE_UART("UART Scan Seq Test\r\n");
+    TRACE_UART("-------------------------------\r\n");
+    TRACE_UART(" H) Display This Menu\r\n");
+    TRACE_UART(" A) Axis Toggle\r\n");
+    TRACE_UART(" L) LED On/Off\r\n");
+    TRACE_UART(" D) Display ADC Value\r\n");
+    TRACE_UART(" 1,2) Sequence No +,-\r\n");
+    TRACE_UART(" 3,4) Sequence No +10,-10\r\n");
+    TRACE_UART(" 5,6) Sequence No +50,-50\r\n");
+    TRACE_UART(" +,-) Led Current Index\r\n");
+    TRACE_UART(" [,]) Led On Time\r\n");
+    TRACE_UART(" Esc) Exit\r\n");
+    TRACE_UART("-------------------------------\r\n");
+    TRACE_UART("gCurrentStartTotalPdIdx=%d\r\n", gCurrentStartTotalPdIdx);
 }
 
 int16_t uartScanSeqTest(void)
@@ -1169,7 +1532,7 @@ int16_t uartScanSeqTest(void)
 
     uartScanSeqTestMenu();
     uartScanSeqTest_printParam();
-    printf("\r\n");
+    TRACE_UART("\r\n");
 
     uartScanSeqTestCnt = 0;
     debug_print_on = 1;
@@ -1195,7 +1558,7 @@ int16_t uartScanSeqTest(void)
 
             rcvChar = UART2_ReadByte();
             if (rcvChar == 0x1B) { // if key is ESC
-                printf("\r\nGood Bye !!!\r\n");
+                TRACE_UART("\r\nGood Bye !!!\r\n");
                 break;
             }
             if (rcvChar == 'h' || rcvChar == 'H') {
@@ -1279,10 +1642,10 @@ int16_t uartScanSeqTest(void)
 
     fixedCurrentEnable = fixedCurrentEnable_sav;
     if (fixedCurrentEnable) {
-        printf("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
+        TRACE_UART("Fixed Current ON (%d,%d) (%d,%d)\r\n", Current_Test_index_X, Led_On_Time_Test_X, Current_Test_index_Y, Led_On_Time_Test_Y);
     }
     else {
-        printf("Fixed Current OFF\r\n");
+        TRACE_UART("Fixed Current OFF\r\n");
     }
 
     return 0;
