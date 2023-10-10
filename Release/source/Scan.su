@@ -1,8 +1,8 @@
 ../source/Scan.c:2098:9:averageNonBlockLevel.part.0	32	static
 ../source/Scan.c:3404:9:controlLEDLightIntensityWithTryCnt.constprop	72	static
 ../source/Scan.c:3404:9:controlLEDLightIntensityWithTryCnt.constprop	72	static
+../source/Scan.c:2493:6:setThresholdDataByAvgNonBlockLevel.constprop	36	static
 ../source/Scan.c:2493:6:setThresholdDataByAvgNonBlockLevel.constprop	48	static
-../source/Scan.c:2493:6:setThresholdDataByAvgNonBlockLevel.constprop	32	static
 ../source/Scan.c:526:6:copySequenceTbl	32	static
 ../source/Scan.c:603:6:initializeScanHW	4	static
 ../source/Scan.c:619:6:Scan_Initialize	24	static
@@ -10,7 +10,7 @@
 ../source/Scan.c:973:1:findStartScanSequenceIdx	16	static
 ../source/Scan.c:1073:6:storeAnOutAdcResult	4	static
 ../source/Scan.c:1159:9:scanAxisFull	112	static
-../source/Scan.c:4058:9:Calibration_Process.part.0	80	static
+../source/Scan.c:4058:9:Calibration_Process.part.0	88	static
 ../source/Scan.c:2098:9:averageNonBlockLevel	0	static
 ../source/Scan.c:2172:10:Scan_Data_Process	136	static
 ../source/Scan.c:2476:9:isInSideArea	0	static

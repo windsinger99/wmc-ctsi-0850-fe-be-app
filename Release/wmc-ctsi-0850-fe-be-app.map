@@ -304,7 +304,7 @@ Discarded input sections
  .text.LED_Auto_Gain_ControlWithTryCnt
                 0x00000000       0x18 ./source/Scan.o
  .text.setThresholdDataAxis
-                0x00000000      0x3c4 ./source/Scan.o
+                0x00000000      0x3c8 ./source/Scan.o
  .text.Calibration_Process
                 0x00000000       0x14 ./source/Scan.o
  .text.scanYAxisAuto
@@ -1559,13 +1559,13 @@ END GROUP
                 0x700222b8                . = ALIGN (0x4)
                 0x700222b8                __section_table_start = .
                 0x700222b8                __data_section_table = .
-                0x700222b8        0x4 LONG 0x70050a84 LOADADDR (.data)
+                0x700222b8        0x4 LONG 0x70050d64 LOADADDR (.data)
                 0x700222bc        0x4 LONG 0x20000000 ADDR (.data)
                 0x700222c0        0x4 LONG 0x518 SIZEOF (.data)
-                0x700222c4        0x4 LONG 0x7004c8f4 LOADADDR (.data_RAM2)
+                0x700222c4        0x4 LONG 0x7004cbd4 LOADADDR (.data_RAM2)
                 0x700222c8        0x4 LONG 0x0 ADDR (.data_RAM2)
                 0x700222cc        0x4 LONG 0x4190 SIZEOF (.data_RAM2)
-                0x700222d0        0x4 LONG 0x70050a84 LOADADDR (.data_RAM3)
+                0x700222d0        0x4 LONG 0x70050d64 LOADADDR (.data_RAM3)
                 0x700222d4        0x4 LONG 0x20200000 ADDR (.data_RAM3)
                 0x700222d8        0x4 LONG 0x0 SIZEOF (.data_RAM3)
                 0x700222dc                __data_section_table_end = .
@@ -1760,7 +1760,7 @@ END GROUP
 .iplt           0x70022478        0x0
  .iplt          0x70022478        0x0 ./xip/fsl_flexspi_nor_boot.o
 
-.text           0x70022478    0x2a47c
+.text           0x70022478    0x2a75c
  *(SORT_BY_ALIGNMENT(.text*))
  .text.USB_EhciPhyInit
                 0x70022478       0xc8 ./usb/phy/usb_phy.o
@@ -2367,878 +2367,881 @@ END GROUP
  .text.controlLEDLightIntensityWithTryCnt.constprop.1
                 0x70026050      0x294 ./source/Scan.o
  .text.setThresholdDataByAvgNonBlockLevel.constprop.0
-                0x700262e4      0x164 ./source/Scan.o
+                0x700262e4      0x144 ./source/Scan.o
  .text.setThresholdDataByAvgNonBlockLevel.constprop.1
-                0x70026448      0x144 ./source/Scan.o
+                0x70026428      0x1bc ./source/Scan.o
  .text.copySequenceTbl
-                0x7002658c      0x1f0 ./source/Scan.o
-                0x7002658c                copySequenceTbl
+                0x700265e4      0x1f0 ./source/Scan.o
+                0x700265e4                copySequenceTbl
  .text.initializeScanHW
-                0x7002677c      0x520 ./source/Scan.o
-                0x7002677c                initializeScanHW
+                0x700267d4      0x520 ./source/Scan.o
+                0x700267d4                initializeScanHW
  .text.Scan_Initialize
-                0x70026c9c      0x1e8 ./source/Scan.o
-                0x70026c9c                Scan_Initialize
+                0x70026cf4      0x1e8 ./source/Scan.o
+                0x70026cf4                Scan_Initialize
  .text.findStartScanSequenceIdx
-                0x70026e84       0xa8 ./source/Scan.o
-                0x70026e84                findStartScanSequenceIdx
+                0x70026edc       0xa8 ./source/Scan.o
+                0x70026edc                findStartScanSequenceIdx
  .text.Calibration_Process.part.0
-                0x70026f2c      0x4e0 ./source/Scan.o
+                0x70026f84      0x53c ./source/Scan.o
  .text.Scan_Data_Process
-                0x7002740c      0x77c ./source/Scan.o
-                0x7002740c                Scan_Data_Process
+                0x700274c0      0x77c ./source/Scan.o
+                0x700274c0                Scan_Data_Process
  .text.setThresholdDataByAvgNonBlockLevel
-                0x70027b88      0x310 ./source/Scan.o
-                0x70027b88                setThresholdDataByAvgNonBlockLevel
+                0x70027c3c      0x314 ./source/Scan.o
+                0x70027c3c                setThresholdDataByAvgNonBlockLevel
  .text.getADCResultByPdIdxAndOffset
-                0x70027e98       0xac ./source/Scan.o
-                0x70027e98                getADCResultByPdIdxAndOffset
+                0x70027f50       0xac ./source/Scan.o
+                0x70027f50                getADCResultByPdIdxAndOffset
  .text.getADCResultByLedIdxAndOffset
-                0x70027f44       0xac ./source/Scan.o
-                0x70027f44                getADCResultByLedIdxAndOffset
+                0x70027ffc       0xac ./source/Scan.o
+                0x70027ffc                getADCResultByLedIdxAndOffset
  .text.getADCResultByDeviceIdx
-                0x70027ff0       0xbc ./source/Scan.o
-                0x70027ff0                getADCResultByDeviceIdx
+                0x700280a8       0xbc ./source/Scan.o
+                0x700280a8                getADCResultByDeviceIdx
  .text.decideDeadCell
-                0x700280ac      0x358 ./source/Scan.o
-                0x700280ac                decideDeadCell
+                0x70028164      0x358 ./source/Scan.o
+                0x70028164                decideDeadCell
  .text.Scan_Process
-                0x70028404      0x168 ./source/Scan.o
-                0x70028404                Scan_Process
+                0x700284bc      0x168 ./source/Scan.o
+                0x700284bc                Scan_Process
  .text.ADC_SamplesStart
-                0x7002856c       0x2c ./source/adc.o
-                0x7002856c                ADC_SamplesStart
+                0x70028624       0x2c ./source/adc.o
+                0x70028624                ADC_SamplesStart
  .text.ADC_SamplesStop
-                0x70028598       0x14 ./source/adc.o
-                0x70028598                ADC_SamplesStop
+                0x70028650       0x14 ./source/adc.o
+                0x70028650                ADC_SamplesStop
  .text.SendTouch_Report.constprop.0.isra.0
-                0x700285ac      0x14c ./source/app.o
+                0x70028664      0x14c ./source/app.o
  .text.SendBrush_Report.constprop.0.isra.0
-                0x700286f8       0xd4 ./source/app.o
+                0x700287b0       0xd4 ./source/app.o
  .text.SendDigitizerReport.constprop.0.isra.0
-                0x700287cc      0x2ac ./source/app.o
+                0x70028884      0x2ac ./source/app.o
  .text.normalSendRes.constprop.0.isra.0
-                0x70028a78      0x200 ./source/app.o
+                0x70028b30      0x200 ./source/app.o
  .text.WDOG1_IRQHandler
-                0x70028c78       0x10 ./source/app.o
-                0x70028c78                WDOG1_IRQHandler
+                0x70028d30       0x10 ./source/app.o
+                0x70028d30                WDOG1_IRQHandler
  .text.MY_WDOG_reset_init
-                0x70028c88       0x24 ./source/app.o
-                0x70028c88                MY_WDOG_reset_init
+                0x70028d40       0x24 ./source/app.o
+                0x70028d40                MY_WDOG_reset_init
  .text.USB_OTG1_IRQHandler
-                0x70028cac       0x10 ./source/app.o
-                0x70028cac                USB_OTG1_IRQHandler
+                0x70028d64       0x10 ./source/app.o
+                0x70028d64                USB_OTG1_IRQHandler
  .text.USB_OTG2_IRQHandler
-                0x70028cbc       0x10 ./source/app.o
-                0x70028cbc                USB_OTG2_IRQHandler
+                0x70028d74       0x10 ./source/app.o
+                0x70028d74                USB_OTG2_IRQHandler
  .text.backend_process_line_data
-                0x70028ccc      0x950 ./source/app.o
-                0x70028ccc                backend_process_line_data
+                0x70028d84      0x960 ./source/app.o
+                0x70028d84                backend_process_line_data
  .text.s_get_frame_span
-                0x7002961c       0x24 ./source/app.o
-                0x7002961c                s_get_frame_span
+                0x700296e4       0x24 ./source/app.o
+                0x700296e4                s_get_frame_span
  .text.normalCmdProcess
-                0x70029640      0x1d8 ./source/app.o
-                0x70029640                normalCmdProcess
+                0x70029708      0x1d8 ./source/app.o
+                0x70029708                normalCmdProcess
  .text.normal_dlt_send_data
-                0x70029818       0x4c ./source/app.o
-                0x70029818                normal_dlt_send_data
+                0x700298e0       0x4c ./source/app.o
+                0x700298e0                normal_dlt_send_data
  .text.backendInit
-                0x70029864      0x160 ./source/app.o
-                0x70029864                backendInit
+                0x7002992c      0x160 ./source/app.o
+                0x7002992c                backendInit
  .text.backendProcess
-                0x700299c4       0x78 ./source/app.o
-                0x700299c4                backendProcess
+                0x70029a8c       0x78 ./source/app.o
+                0x70029a8c                backendProcess
  .text.ReceiveCmdParser
-                0x70029a3c      0x190 ./source/app.o
-                0x70029a3c                ReceiveCmdParser
+                0x70029b04      0x190 ./source/app.o
+                0x70029b04                ReceiveCmdParser
  .text.APP_Tasks
-                0x70029bcc     0x13e4 ./source/app.o
-                0x70029bcc                APP_Tasks
+                0x70029c94     0x13e4 ./source/app.o
+                0x70029c94                APP_Tasks
  .text.startup.main
-                0x7002afb0       0xf0 ./source/app.o
-                0x7002afb0                main
+                0x7002b078       0xf0 ./source/app.o
+                0x7002b078                main
  .text.s_init_post_processing
-                0x7002b0a0       0xcc ./source/backend_postp.o
-                0x7002b0a0                s_init_post_processing
+                0x7002b168       0xcc ./source/backend_postp.o
+                0x7002b168                s_init_post_processing
  .text.tp_init_post_processing
-                0x7002b16c       0x78 ./source/backend_postp.o
-                0x7002b16c                tp_init_post_processing
+                0x7002b234       0x78 ./source/backend_postp.o
+                0x7002b234                tp_init_post_processing
  .text.add_pos_info
-                0x7002b1e4      0x104 ./source/backend_postp.o
-                0x7002b1e4                add_pos_info
+                0x7002b2ac      0x104 ./source/backend_postp.o
+                0x7002b2ac                add_pos_info
  .text.s_cal_hor_scroll
-                0x7002b2e8      0x348 ./source/backend_postp.o
-                0x7002b2e8                s_cal_hor_scroll
+                0x7002b3b0      0x348 ./source/backend_postp.o
+                0x7002b3b0                s_cal_hor_scroll
  .text.s_touch_point_tracking
-                0x7002b630      0xe44 ./source/backend_postp.o
-                0x7002b630                s_touch_point_tracking
+                0x7002b6f8      0xe44 ./source/backend_postp.o
+                0x7002b6f8                s_touch_point_tracking
  .text.s_smooth_filter
-                0x7002c474      0x35c ./source/backend_postp.o
-                0x7002c474                s_smooth_filter
+                0x7002c53c      0x35c ./source/backend_postp.o
+                0x7002c53c                s_smooth_filter
  .text.s_coordinates_conversion
-                0x7002c7d0      0x230 ./source/backend_postp.o
-                0x7002c7d0                s_coordinates_conversion
+                0x7002c898      0x230 ./source/backend_postp.o
+                0x7002c898                s_coordinates_conversion
  .text.s_smooth_filter_brush_report_delay
-                0x7002ca00      0x160 ./source/backend_postp.o
-                0x7002ca00                s_smooth_filter_brush_report_delay
+                0x7002cac8      0x160 ./source/backend_postp.o
+                0x7002cac8                s_smooth_filter_brush_report_delay
  .text.beizerFilterAnalysis
-                0x7002cb60       0x90 ./source/bezier.o
-                0x7002cb60                beizerFilterAnalysis
+                0x7002cc28       0x90 ./source/bezier.o
+                0x7002cc28                beizerFilterAnalysis
  .text.USB_DeviceCallback
-                0x7002cbf0      0x158 ./source/composite.o
+                0x7002ccb8      0x158 ./source/composite.o
  .text.USB_DeviceApplicationInit
-                0x7002cd48       0xb8 ./source/composite.o
-                0x7002cd48                USB_DeviceApplicationInit
+                0x7002ce10       0xb8 ./source/composite.o
+                0x7002ce10                USB_DeviceApplicationInit
  .text.USB_Device_ready
-                0x7002ce00        0xc ./source/composite.o
-                0x7002ce00                USB_Device_ready
+                0x7002cec8        0xc ./source/composite.o
+                0x7002cec8                USB_Device_ready
  .text.USB_Get_Device_Handle
-                0x7002ce0c        0xc ./source/composite.o
-                0x7002ce0c                USB_Get_Device_Handle
+                0x7002ced4        0xc ./source/composite.o
+                0x7002ced4                USB_Get_Device_Handle
  .text.show_frontend_fwinfo
-                0x7002ce18      0x144 ./source/dlt.o
-                0x7002ce18                show_frontend_fwinfo
+                0x7002cee0      0x144 ./source/dlt.o
+                0x7002cee0                show_frontend_fwinfo
  .text.get_ver_string
-                0x7002cf5c       0x1c ./source/dlt.o
-                0x7002cf5c                get_ver_string
+                0x7002d024       0x1c ./source/dlt.o
+                0x7002d024                get_ver_string
  .text.copy_ofst_to_exb
-                0x7002cf78      0x27c ./source/dlt.o
-                0x7002cf78                copy_ofst_to_exb
+                0x7002d040      0x27c ./source/dlt.o
+                0x7002d040                copy_ofst_to_exb
  .text.Send_ExbBit_Data_to_USBCPU_Init
-                0x7002d1f4       0x34 ./source/dlt.o
-                0x7002d1f4                Send_ExbBit_Data_to_USBCPU_Init
+                0x7002d2bc       0x34 ./source/dlt.o
+                0x7002d2bc                Send_ExbBit_Data_to_USBCPU_Init
  .text.Send_ADC_Data_to_USBCPU
-                0x7002d228      0x504 ./source/dlt.o
-                0x7002d228                Send_ADC_Data_to_USBCPU
+                0x7002d2f0      0x504 ./source/dlt.o
+                0x7002d2f0                Send_ADC_Data_to_USBCPU
  .text.dltParmInit
-                0x7002d72c       0x5c ./source/dlt.o
-                0x7002d72c                dltParmInit
+                0x7002d7f4       0x5c ./source/dlt.o
+                0x7002d7f4                dltParmInit
  .text.dltProcess
-                0x7002d788       0xb0 ./source/dlt.o
-                0x7002d788                dltProcess
+                0x7002d850       0xb0 ./source/dlt.o
+                0x7002d850                dltProcess
  .text.USB_DeviceHidGenericCallback
-                0x7002d838       0x80 ./source/hid_generic.o
-                0x7002d838                USB_DeviceHidGenericCallback
+                0x7002d900       0x80 ./source/hid_generic.o
+                0x7002d900                USB_DeviceHidGenericCallback
  .text.USB_DeviceHidGenericSetConfigure
-                0x7002d8b8       0x20 ./source/hid_generic.o
-                0x7002d8b8                USB_DeviceHidGenericSetConfigure
+                0x7002d980       0x20 ./source/hid_generic.o
+                0x7002d980                USB_DeviceHidGenericSetConfigure
  .text.USB_DeviceHidGenericSetInterface
-                0x7002d8d8       0x34 ./source/hid_generic.o
-                0x7002d8d8                USB_DeviceHidGenericSetInterface
+                0x7002d9a0       0x34 ./source/hid_generic.o
+                0x7002d9a0                USB_DeviceHidGenericSetInterface
  .text.USB_DeviceHidGenericInit
-                0x7002d90c       0x3c ./source/hid_generic.o
-                0x7002d90c                USB_DeviceHidGenericInit
+                0x7002d9d4       0x3c ./source/hid_generic.o
+                0x7002d9d4                USB_DeviceHidGenericInit
  .text.USB_SendDigitizerReport
-                0x7002d948       0x30 ./source/hid_generic.o
-                0x7002d948                USB_SendDigitizerReport
+                0x7002da10       0x30 ./source/hid_generic.o
+                0x7002da10                USB_SendDigitizerReport
  .text.USB_DeviceHidMouseCallback
-                0x7002d978        0x4 ./source/hid_mouse.o
-                0x7002d978                USB_DeviceHidMouseCallback
+                0x7002da40        0x4 ./source/hid_mouse.o
+                0x7002da40                USB_DeviceHidMouseCallback
  .text.USB_DeviceHidMouseSetConfigure
-                0x7002d97c       0x34 ./source/hid_mouse.o
-                0x7002d97c                USB_DeviceHidMouseSetConfigure
+                0x7002da44       0x34 ./source/hid_mouse.o
+                0x7002da44                USB_DeviceHidMouseSetConfigure
  .text.USB_DeviceHidMouseSetInterface
-                0x7002d9b0       0x34 ./source/hid_mouse.o
-                0x7002d9b0                USB_DeviceHidMouseSetInterface
+                0x7002da78       0x34 ./source/hid_mouse.o
+                0x7002da78                USB_DeviceHidMouseSetInterface
  .text.USB_DeviceHidMouseInit
-                0x7002d9e4       0x1c ./source/hid_mouse.o
-                0x7002d9e4                USB_DeviceHidMouseInit
+                0x7002daac       0x1c ./source/hid_mouse.o
+                0x7002daac                USB_DeviceHidMouseInit
  .text.USB_SendMouseReport
-                0x7002da00       0x30 ./source/hid_mouse.o
-                0x7002da00                USB_SendMouseReport
+                0x7002dac8       0x30 ./source/hid_mouse.o
+                0x7002dac8                USB_SendMouseReport
  .text.USB_GetMouseBuffer
-                0x7002da30       0x10 ./source/hid_mouse.o
-                0x7002da30                USB_GetMouseBuffer
+                0x7002daf8       0x10 ./source/hid_mouse.o
+                0x7002daf8                USB_GetMouseBuffer
  .text.HardFault_Handler
-                0x7002da40       0x2c ./source/semihost_hardfault.o
-                0x7002da40                HardFault_Handler
+                0x7002db08       0x2c ./source/semihost_hardfault.o
+                0x7002db08                HardFault_Handler
  .text.USB_DeviceGetDeviceDescriptor
-                0x7002da6c       0x10 ./source/usb_device_descriptor.o
-                0x7002da6c                USB_DeviceGetDeviceDescriptor
+                0x7002db34       0x10 ./source/usb_device_descriptor.o
+                0x7002db34                USB_DeviceGetDeviceDescriptor
  .text.USB_DeviceGetConfigurationDescriptor
-                0x7002da7c       0x18 ./source/usb_device_descriptor.o
-                0x7002da7c                USB_DeviceGetConfigurationDescriptor
+                0x7002db44       0x18 ./source/usb_device_descriptor.o
+                0x7002db44                USB_DeviceGetConfigurationDescriptor
  .text.USB_DeviceGetStringDescriptor
-                0x7002da94       0x50 ./source/usb_device_descriptor.o
-                0x7002da94                USB_DeviceGetStringDescriptor
+                0x7002db5c       0x50 ./source/usb_device_descriptor.o
+                0x7002db5c                USB_DeviceGetStringDescriptor
  .text.USB_DeviceGetHidDescriptor
-                0x7002dae4        0x4 ./source/usb_device_descriptor.o
-                0x7002dae4                USB_DeviceGetHidDescriptor
+                0x7002dbac        0x4 ./source/usb_device_descriptor.o
+                0x7002dbac                USB_DeviceGetHidDescriptor
  .text.USB_DeviceGetHidReportDescriptor
-                0x7002dae8       0x2c ./source/usb_device_descriptor.o
-                0x7002dae8                USB_DeviceGetHidReportDescriptor
+                0x7002dbb0       0x2c ./source/usb_device_descriptor.o
+                0x7002dbb0                USB_DeviceGetHidReportDescriptor
  .text.USB_DeviceGetHidPhysicalDescriptor
-                0x7002db14        0x4 ./source/usb_device_descriptor.o
-                0x7002db14                USB_DeviceGetHidPhysicalDescriptor
+                0x7002dbdc        0x4 ./source/usb_device_descriptor.o
+                0x7002dbdc                USB_DeviceGetHidPhysicalDescriptor
  .text.USB_DeviceSetSpeed
-                0x7002db18       0xb4 ./source/usb_device_descriptor.o
-                0x7002db18                USB_DeviceSetSpeed
+                0x7002dbe0       0xb4 ./source/usb_device_descriptor.o
+                0x7002dbe0                USB_DeviceSetSpeed
  .text.ADC_Init
-                0x7002dbcc       0xcc ./drivers/fsl_adc.o
-                0x7002dbcc                ADC_Init
+                0x7002dc94       0xcc ./drivers/fsl_adc.o
+                0x7002dc94                ADC_Init
  .text.ADC_SetChannelConfig
-                0x7002dc98       0x14 ./drivers/fsl_adc.o
-                0x7002dc98                ADC_SetChannelConfig
+                0x7002dd60       0x14 ./drivers/fsl_adc.o
+                0x7002dd60                ADC_SetChannelConfig
  .text.ADC_DoAutoCalibration
-                0x7002dcac       0x5c ./drivers/fsl_adc.o
-                0x7002dcac                ADC_DoAutoCalibration
+                0x7002dd74       0x5c ./drivers/fsl_adc.o
+                0x7002dd74                ADC_DoAutoCalibration
  .text.CLOCK_InitExternalClk
-                0x7002dd08       0x34 ./drivers/fsl_clock.o
-                0x7002dd08                CLOCK_InitExternalClk
+                0x7002ddd0       0x34 ./drivers/fsl_clock.o
+                0x7002ddd0                CLOCK_InitExternalClk
  .text.CLOCK_SwitchOsc
-                0x7002dd3c       0x18 ./drivers/fsl_clock.o
-                0x7002dd3c                CLOCK_SwitchOsc
+                0x7002de04       0x18 ./drivers/fsl_clock.o
+                0x7002de04                CLOCK_SwitchOsc
  .text.CLOCK_InitRcOsc24M
-                0x7002dd54       0x14 ./drivers/fsl_clock.o
-                0x7002dd54                CLOCK_InitRcOsc24M
+                0x7002de1c       0x14 ./drivers/fsl_clock.o
+                0x7002de1c                CLOCK_InitRcOsc24M
  .text.CLOCK_EnableUsbhs0Clock
-                0x7002dd68       0x58 ./drivers/fsl_clock.o
-                0x7002dd68                CLOCK_EnableUsbhs0Clock
+                0x7002de30       0x58 ./drivers/fsl_clock.o
+                0x7002de30                CLOCK_EnableUsbhs0Clock
  .text.CLOCK_EnableUsbhs0PhyPllClock
-                0x7002ddc0       0x68 ./drivers/fsl_clock.o
-                0x7002ddc0                CLOCK_EnableUsbhs0PhyPllClock
+                0x7002de88       0x68 ./drivers/fsl_clock.o
+                0x7002de88                CLOCK_EnableUsbhs0PhyPllClock
  .text.CLOCK_InitArmPll
-                0x7002de28       0x4c ./drivers/fsl_clock.o
-                0x7002de28                CLOCK_InitArmPll
+                0x7002def0       0x4c ./drivers/fsl_clock.o
+                0x7002def0                CLOCK_InitArmPll
  .text.CLOCK_InitSysPll
-                0x7002de74       0x70 ./drivers/fsl_clock.o
-                0x7002de74                CLOCK_InitSysPll
+                0x7002df3c       0x70 ./drivers/fsl_clock.o
+                0x7002df3c                CLOCK_InitSysPll
  .text.CLOCK_DeinitUsb2Pll
-                0x7002dee4        0xc ./drivers/fsl_clock.o
-                0x7002dee4                CLOCK_DeinitUsb2Pll
+                0x7002dfac        0xc ./drivers/fsl_clock.o
+                0x7002dfac                CLOCK_DeinitUsb2Pll
  .text.CLOCK_DeinitAudioPll
-                0x7002def0       0x10 ./drivers/fsl_clock.o
-                0x7002def0                CLOCK_DeinitAudioPll
+                0x7002dfb8       0x10 ./drivers/fsl_clock.o
+                0x7002dfb8                CLOCK_DeinitAudioPll
  .text.CLOCK_DeinitEnetPll
-                0x7002df00       0x10 ./drivers/fsl_clock.o
-                0x7002df00                CLOCK_DeinitEnetPll
+                0x7002dfc8       0x10 ./drivers/fsl_clock.o
+                0x7002dfc8                CLOCK_DeinitEnetPll
  .text.CLOCK_GetPllFreq
-                0x7002df10      0x1e0 ./drivers/fsl_clock.o
-                0x7002df10                CLOCK_GetPllFreq
+                0x7002dfd8      0x1e0 ./drivers/fsl_clock.o
+                0x7002dfd8                CLOCK_GetPllFreq
  .text.CLOCK_InitSysPfd
-                0x7002e0f0       0x34 ./drivers/fsl_clock.o
-                0x7002e0f0                CLOCK_InitSysPfd
+                0x7002e1b8       0x34 ./drivers/fsl_clock.o
+                0x7002e1b8                CLOCK_InitSysPfd
  .text.GPIO_PinSetInterruptConfig
-                0x7002e124       0x8c ./drivers/fsl_gpio.o
-                0x7002e124                GPIO_PinSetInterruptConfig
+                0x7002e1ec       0x8c ./drivers/fsl_gpio.o
+                0x7002e1ec                GPIO_PinSetInterruptConfig
  .text.GPIO_PinInit
-                0x7002e1b0       0xbc ./drivers/fsl_gpio.o
-                0x7002e1b0                GPIO_PinInit
+                0x7002e278       0xbc ./drivers/fsl_gpio.o
+                0x7002e278                GPIO_PinInit
  .text.GPT_Init
-                0x7002e26c       0xdc ./drivers/fsl_gpt.o
-                0x7002e26c                GPT_Init
+                0x7002e334       0xdc ./drivers/fsl_gpt.o
+                0x7002e334                GPT_Init
  .text.LPUART_Init
-                0x7002e348      0x28c ./drivers/fsl_lpuart.o
-                0x7002e348                LPUART_Init
+                0x7002e410      0x28c ./drivers/fsl_lpuart.o
+                0x7002e410                LPUART_Init
  .text.LPUART_GetDefaultConfig
-                0x7002e5d4       0x20 ./drivers/fsl_lpuart.o
-                0x7002e5d4                LPUART_GetDefaultConfig
+                0x7002e69c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e69c                LPUART_GetDefaultConfig
  .text.LPUART1_DriverIRQHandler
-                0x7002e5f4       0x20 ./drivers/fsl_lpuart.o
-                0x7002e5f4                LPUART1_DriverIRQHandler
+                0x7002e6bc       0x20 ./drivers/fsl_lpuart.o
+                0x7002e6bc                LPUART1_DriverIRQHandler
  .text.LPUART2_DriverIRQHandler
-                0x7002e614       0x20 ./drivers/fsl_lpuart.o
-                0x7002e614                LPUART2_DriverIRQHandler
+                0x7002e6dc       0x20 ./drivers/fsl_lpuart.o
+                0x7002e6dc                LPUART2_DriverIRQHandler
  .text.LPUART3_DriverIRQHandler
-                0x7002e634       0x20 ./drivers/fsl_lpuart.o
-                0x7002e634                LPUART3_DriverIRQHandler
+                0x7002e6fc       0x20 ./drivers/fsl_lpuart.o
+                0x7002e6fc                LPUART3_DriverIRQHandler
  .text.LPUART4_DriverIRQHandler
-                0x7002e654       0x20 ./drivers/fsl_lpuart.o
-                0x7002e654                LPUART4_DriverIRQHandler
+                0x7002e71c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e71c                LPUART4_DriverIRQHandler
  .text.LPUART5_DriverIRQHandler
-                0x7002e674       0x20 ./drivers/fsl_lpuart.o
-                0x7002e674                LPUART5_DriverIRQHandler
+                0x7002e73c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e73c                LPUART5_DriverIRQHandler
  .text.LPUART6_DriverIRQHandler
-                0x7002e694       0x20 ./drivers/fsl_lpuart.o
-                0x7002e694                LPUART6_DriverIRQHandler
+                0x7002e75c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e75c                LPUART6_DriverIRQHandler
  .text.LPUART7_DriverIRQHandler
-                0x7002e6b4       0x20 ./drivers/fsl_lpuart.o
-                0x7002e6b4                LPUART7_DriverIRQHandler
+                0x7002e77c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e77c                LPUART7_DriverIRQHandler
  .text.LPUART8_DriverIRQHandler
-                0x7002e6d4       0x20 ./drivers/fsl_lpuart.o
-                0x7002e6d4                LPUART8_DriverIRQHandler
+                0x7002e79c       0x20 ./drivers/fsl_lpuart.o
+                0x7002e79c                LPUART8_DriverIRQHandler
  .text.QTMR_Init
-                0x7002e6f4       0xbc ./drivers/fsl_qtmr.o
-                0x7002e6f4                QTMR_Init
+                0x7002e7bc       0xbc ./drivers/fsl_qtmr.o
+                0x7002e7bc                QTMR_Init
  .text.QTMR_SetupPwm
-                0x7002e7b0       0xdc ./drivers/fsl_qtmr.o
-                0x7002e7b0                QTMR_SetupPwm
+                0x7002e878       0xdc ./drivers/fsl_qtmr.o
+                0x7002e878                QTMR_SetupPwm
  .text.WDOG_GetDefaultConfig
-                0x7002e88c       0x24 ./drivers/fsl_wdog.o
-                0x7002e88c                WDOG_GetDefaultConfig
+                0x7002e954       0x24 ./drivers/fsl_wdog.o
+                0x7002e954                WDOG_GetDefaultConfig
  .text.WDOG_Init
-                0x7002e8b0       0xd8 ./drivers/fsl_wdog.o
-                0x7002e8b0                WDOG_Init
+                0x7002e978       0xd8 ./drivers/fsl_wdog.o
+                0x7002e978                WDOG_Init
  .text.WDOG_GetStatusFlags
-                0x7002e988       0x2c ./drivers/fsl_wdog.o
-                0x7002e988                WDOG_GetStatusFlags
+                0x7002ea50       0x2c ./drivers/fsl_wdog.o
+                0x7002ea50                WDOG_GetStatusFlags
  .text.WDOG_ClearInterruptStatus
-                0x7002e9b4       0x10 ./drivers/fsl_wdog.o
-                0x7002e9b4                WDOG_ClearInterruptStatus
+                0x7002ea7c       0x10 ./drivers/fsl_wdog.o
+                0x7002ea7c                WDOG_ClearInterruptStatus
  .text.WDOG_Refresh
-                0x7002e9c4       0x18 ./drivers/fsl_wdog.o
-                0x7002e9c4                WDOG_Refresh
+                0x7002ea8c       0x18 ./drivers/fsl_wdog.o
+                0x7002ea8c                WDOG_Refresh
  .text.XBARA_SetSignalsConnection
-                0x7002e9dc       0x28 ./drivers/fsl_xbara.o
-                0x7002e9dc                XBARA_SetSignalsConnection
+                0x7002eaa4       0x28 ./drivers/fsl_xbara.o
+                0x7002eaa4                XBARA_SetSignalsConnection
  .text.SystemInitHook
-                0x7002ea04        0x4 ./device/system_MIMXRT1064.o
-                0x7002ea04                SystemInitHook
+                0x7002eacc        0x4 ./device/system_MIMXRT1064.o
+                0x7002eacc                SystemInitHook
  .text.SystemInit
-                0x7002ea08       0xe8 ./device/system_MIMXRT1064.o
-                0x7002ea08                SystemInit
+                0x7002ead0       0xe8 ./device/system_MIMXRT1064.o
+                0x7002ead0                SystemInit
  .text.HAL_UartInit
-                0x7002eaf0       0x9c ./component/uart/fsl_adapter_lpuart.o
-                0x7002eaf0                HAL_UartInit
+                0x7002ebb8       0x9c ./component/uart/fsl_adapter_lpuart.o
+                0x7002ebb8                HAL_UartInit
  .text.SerialManager_Init
-                0x7002eb8c       0x2c ./component/serial_manager/fsl_component_serial_manager.o
-                0x7002eb8c                SerialManager_Init
+                0x7002ec54       0x2c ./component/serial_manager/fsl_component_serial_manager.o
+                0x7002ec54                SerialManager_Init
  .text.SerialManager_OpenWriteHandle
-                0x7002ebb8       0x28 ./component/serial_manager/fsl_component_serial_manager.o
-                0x7002ebb8                SerialManager_OpenWriteHandle
+                0x7002ec80       0x28 ./component/serial_manager/fsl_component_serial_manager.o
+                0x7002ec80                SerialManager_OpenWriteHandle
  .text.SerialManager_OpenReadHandle
-                0x7002ebe0       0x30 ./component/serial_manager/fsl_component_serial_manager.o
-                0x7002ebe0                SerialManager_OpenReadHandle
+                0x7002eca8       0x30 ./component/serial_manager/fsl_component_serial_manager.o
+                0x7002eca8                SerialManager_OpenReadHandle
  .text.Serial_UartInit
-                0x7002ec10        0x4 ./component/serial_manager/fsl_component_serial_port_uart.o
-                0x7002ec10                Serial_UartInit
+                0x7002ecd8        0x4 ./component/serial_manager/fsl_component_serial_port_uart.o
+                0x7002ecd8                Serial_UartInit
  .text.OSA_EnterCritical
-                0x7002ec14        0xc ./component/osa/fsl_os_abstraction_bm.o
-                0x7002ec14                OSA_EnterCritical
+                0x7002ecdc        0xc ./component/osa/fsl_os_abstraction_bm.o
+                0x7002ecdc                OSA_EnterCritical
  .text.OSA_ExitCritical
-                0x7002ec20        0x8 ./component/osa/fsl_os_abstraction_bm.o
-                0x7002ec20                OSA_ExitCritical
+                0x7002ece8        0x8 ./component/osa/fsl_os_abstraction_bm.o
+                0x7002ece8                OSA_ExitCritical
  .text.BOARD_InitDebugConsole
-                0x7002ec28       0x70 ./board/board.o
-                0x7002ec28                BOARD_InitDebugConsole
+                0x7002ecf0       0x70 ./board/board.o
+                0x7002ecf0                BOARD_InitDebugConsole
  .text.BOARD_ConfigMPU
-                0x7002ec98      0x218 ./board/board.o
-                0x7002ec98                BOARD_ConfigMPU
+                0x7002ed60      0x218 ./board/board.o
+                0x7002ed60                BOARD_ConfigMPU
  .text.BOARD_BootClockRUN
-                0x7002eeb0      0x904 ./board/clock_config.o
-                0x7002eeb0                BOARD_BootClockRUN
+                0x7002ef78      0x904 ./board/clock_config.o
+                0x7002ef78                BOARD_BootClockRUN
  .text.BOARD_InitPeripherals
-                0x7002f7b4      0x164 ./board/peripherals.o
-                0x7002f7b4                BOARD_InitPeripherals
+                0x7002f87c      0x164 ./board/peripherals.o
+                0x7002f87c                BOARD_InitPeripherals
  .text.BOARD_InitBootPeripherals
-                0x7002f918        0x4 ./board/peripherals.o
-                0x7002f918                BOARD_InitBootPeripherals
+                0x7002f9e0        0x4 ./board/peripherals.o
+                0x7002f9e0                BOARD_InitBootPeripherals
  .text.BOARD_InitPins
-                0x7002f91c      0x398 ./board/pin_mux.o
-                0x7002f91c                BOARD_InitPins
+                0x7002f9e4      0x398 ./board/pin_mux.o
+                0x7002f9e4                BOARD_InitPins
  .text.epaAddInitial4.part.0.constprop.0.isra.0
-                0x7002fcb4      0x124 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7002fd7c      0x124 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
  .text.BS_make_large_pitch_tbl.isra.0
-                0x7002fdd8      0x11c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7002fea0      0x11c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
  .text.BS_set_unset2_used_led_pd
-                0x7002fef4       0x70 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x7002fef4                BS_set_unset2_used_led_pd
+                0x7002ffbc       0x70 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7002ffbc                BS_set_unset2_used_led_pd
  .text.BS_get_remained_line
-                0x7002ff64       0xf0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x7002ff64                BS_get_remained_line
+                0x7003002c       0xf0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003002c                BS_get_remained_line
  .text.BS_is_large_pitch
-                0x70030054       0x40 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030054                BS_is_large_pitch
+                0x7003011c       0x40 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003011c                BS_is_large_pitch
  .text.BS_add_epf_used
-                0x70030094       0x20 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030094                BS_add_epf_used
+                0x7003015c       0x20 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003015c                BS_add_epf_used
  .text.BS_is_epf_used
-                0x700300b4       0x2c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x700300b4                BS_is_epf_used
+                0x7003017c       0x2c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003017c                BS_is_epf_used
  .text.BS_is_set_threshold
-                0x700300e0       0x64 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x700300e0                BS_is_set_threshold
+                0x700301a8       0x64 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x700301a8                BS_is_set_threshold
  .text.BS_is_near_dead
-                0x70030144       0x74 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030144                BS_is_near_dead
+                0x7003020c       0x74 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003020c                BS_is_near_dead
  .text.BS_is_dead_cell
-                0x700301b8       0x58 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x700301b8                BS_is_dead_cell
+                0x70030280       0x58 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x70030280                BS_is_dead_cell
  .text.BS_is_dead_cell_pos
-                0x70030210       0xa8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030210                BS_is_dead_cell_pos
+                0x700302d8       0xa8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x700302d8                BS_is_dead_cell_pos
  .text.BG_init_backend
-                0x700302b8      0x384 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x700302b8                BG_init_backend
+                0x70030380      0x384 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x70030380                BG_init_backend
  .text.BS_addEpaPosMulti
-                0x7003063c      0x258 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x7003063c                BS_addEpaPosMulti
+                0x70030704      0x258 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x70030704                BS_addEpaPosMulti
  .text.BS_set_line_buffer
-                0x70030894       0xc4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030894                BS_set_line_buffer
+                0x7003095c       0xc4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x7003095c                BS_set_line_buffer
  .text.BS_is_set_line_buffer
-                0x70030958       0x54 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x70030958                BS_is_set_line_buffer
+                0x70030a20       0x54 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x70030a20                BS_is_set_line_buffer
  .text.BG_call_backend2
-                0x700309ac     0x114c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
-                0x700309ac                BG_call_backend2
+                0x70030a74     0x114c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+                0x70030a74                BG_call_backend2
  .text.multi_is_adjacent_tp_surrounded
-                0x70031af8      0x3b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70031bc0      0x3b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.touch_info_sort.constprop.0
-                0x70031eb0       0xb0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70031f78       0xb0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.addEpaValueMulti.constprop.1.isra.0
-                0x70031f60       0xfc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032028       0xfc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.addEpaValueMulti.constprop.0.isra.0
-                0x7003205c       0xf4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032124       0xf4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.clipping_var_save_result.constprop.1.isra.0
-                0x70032150       0x84 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032218       0x84 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.multi_get_initial_poly.constprop.1.isra.0
-                0x700321d4       0xa8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x7003229c       0xa8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.clipping_add_initial_polygon.isra.0
-                0x7003227c      0x110 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032344      0x110 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.make_edge_pattern_dz.isra.0
-                0x7003238c      0x194 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032454      0x194 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.multi_recal_used_line.constprop.0.isra.0
-                0x70032520      0x37c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x700325e8      0x37c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.multi_recal_used_line.constprop.1.isra.0
-                0x7003289c      0x37c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032964      0x37c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.multi_recal_min_max
-                0x70032c18      0x3d8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70032ce0      0x3d8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.BS_multi_malloc
-                0x70032ff0      0x14c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70032ff0                BS_multi_malloc
+                0x700330b8      0x14c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x700330b8                BS_multi_malloc
  .text.BS_packEdgePatternMulti_ind
-                0x7003313c      0x3ac D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x7003313c                BS_packEdgePatternMulti_ind
+                0x70033204      0x3ac D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70033204                BS_packEdgePatternMulti_ind
  .text.BG_clipping_multi_initial4
-                0x700334e8      0x564 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x700334e8                BG_clipping_multi_initial4
+                0x700335b0      0x564 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x700335b0                BG_clipping_multi_initial4
  .text.addEdgePatternHalfPad
-                0x70033a4c      0x3b4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70033a4c                addEdgePatternHalfPad
+                0x70033b14      0x3b4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70033b14                addEdgePatternHalfPad
  .text.clipping_multi_remained
-                0x70033e00      0xfe0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70033ec8      0xfe0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .text.BS_multi_is_overlap_min_max_tp
-                0x70034de0      0x260 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70034de0                BS_multi_is_overlap_min_max_tp
+                0x70034ea8      0x260 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70034ea8                BS_multi_is_overlap_min_max_tp
  .text.BG_clipping_multi
-                0x70035040      0x988 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70035040                BG_clipping_multi
+                0x70035108      0x988 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70035108                BG_clipping_multi
  .text.BG_clipping_multi_post
-                0x700359c8     0x1388 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x700359c8                BG_clipping_multi_post
+                0x70035a90     0x1388 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70035a90                BG_clipping_multi_post
  .text.BG_epaInit
-                0x70036d50       0xd8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70036d50                BG_epaInit
+                0x70036e18       0xd8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70036e18                BG_epaInit
  .text.BS_getSideFromPos
-                0x70036e28       0x64 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
-                0x70036e28                BS_getSideFromPos
+                0x70036ef0       0x64 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+                0x70036ef0                BS_getSideFromPos
  .text.BS_malloc_init
-                0x70036e8c       0x14 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70036e8c                BS_malloc_init
+                0x70036f54       0x14 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70036f54                BS_malloc_init
  .text.BS_malloc
-                0x70036ea0       0x2c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70036ea0                BS_malloc
+                0x70036f68       0x2c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70036f68                BS_malloc
  .text.BS_malloc_uint8_t2
-                0x70036ecc       0x5c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70036ecc                BS_malloc_uint8_t2
+                0x70036f94       0x5c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70036f94                BS_malloc_uint8_t2
  .text.BS_utils_malloc
-                0x70036f28       0x80 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70036f28                BS_utils_malloc
+                0x70036ff0       0x80 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70036ff0                BS_utils_malloc
  .text.BS_left_of
-                0x70036fa8       0x6c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70036fa8                BS_left_of
+                0x70037070       0x6c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037070                BS_left_of
  .text.BS_line_intersection
-                0x70037014      0x104 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70037014                BS_line_intersection
+                0x700370dc      0x104 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700370dc                BS_line_intersection
  .text.poly_e_edge_clip
-                0x70037118      0x1d4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700371e0      0x1d4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
  .text.BS_poly_e_clip
-                0x700372ec      0x134 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700372ec                BS_poly_e_clip
+                0x700373b4      0x134 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700373b4                BS_poly_e_clip
  .text.BG_calDistSquare
-                0x70037420       0x18 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70037420                BG_calDistSquare
+                0x700374e8       0x18 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700374e8                BG_calDistSquare
  .text.BS_getTouchArea
-                0x70037438       0x74 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70037438                BS_getTouchArea
+                0x70037500       0x74 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037500                BS_getTouchArea
  .text.BS_is_edge
-                0x700374ac       0xf4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700374ac                BS_is_edge
+                0x70037574       0xf4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037574                BS_is_edge
  .text.BS_getSenInBuf
-                0x700375a0       0x9c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700375a0                BS_getSenInBuf
+                0x70037668       0x9c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037668                BS_getSenInBuf
  .text.BS_getLinePosInBufSen
-                0x7003763c       0xac D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x7003763c                BS_getLinePosInBufSen
+                0x70037704       0xac D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037704                BS_getLinePosInBufSen
  .text.BS_getLinePosInBuf
-                0x700376e8      0x108 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700376e8                BS_getLinePosInBuf
+                0x700377b0      0x108 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700377b0                BS_getLinePosInBuf
  .text.BS_getSenNumPos
-                0x700377f0      0x1d4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700377f0                BS_getSenNumPos
+                0x700378b8      0x1d4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x700378b8                BS_getSenNumPos
  .text.BS_calMinMaxSen
-                0x700379c4      0x280 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700379c4                BS_calMinMaxSen
+                0x70037a8c      0x280 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037a8c                BS_calMinMaxSen
  .text.BS_get_virtual_range
-                0x70037c44      0x298 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70037c44                BS_get_virtual_range
+                0x70037d0c      0x298 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037d0c                BS_get_virtual_range
  .text.BS_get_clipping_range
-                0x70037edc      0x7f4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x70037edc                BS_get_clipping_range
+                0x70037fa4      0x7f4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70037fa4                BS_get_clipping_range
  .text.BS_adj_used_lines_tp
-                0x700386d0      0x7dc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
-                0x700386d0                BS_adj_used_lines_tp
+                0x70038798      0x7dc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+                0x70038798                BS_adj_used_lines_tp
  .text.is_cont_sen_same_slope
-                0x70038eac       0xf8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x70038f74       0xf8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_make_group3
-                0x70038fa4      0x29c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003906c      0x29c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_is_closed_eraser_min_max
-                0x70039240      0x1b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x70039308      0x1b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_shadow_get_dist_closed_tp
-                0x700393f8      0x188 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x700394c0      0x188 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_shadow_get_slope_line
-                0x70039580      0x180 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x70039648      0x180 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.is_cont_line.part.0
-                0x70039700      0x130 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x700397c8      0x130 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_is_closed_tp_min_max.constprop.0
-                0x70039830      0x120 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x700398f8      0x120 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_get_inst3.constprop.0
-                0x70039950      0x2a8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x70039a18      0x2a8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_cal_min_max3.constprop.0
-                0x70039bf8      0x6e4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x70039cc0      0x6e4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_make_group5_A.constprop.0
-                0x7003a2dc      0x798 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003a3a4      0x798 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_get_inst5.constprop.0
-                0x7003aa74      0x53c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003ab3c      0x53c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_make_grp_min_max.isra.0
-                0x7003afb0       0xa4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003b078       0xa4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_getThresholdCnt.isra.0
-                0x7003b054      0x1b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003b11c      0x1b8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_shadow_cal_cent_pos2.isra.0
-                0x7003b20c      0x9a8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003b2d4      0x9a8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_get_initial_ep5_remained.isra.0
-                0x7003bbb4      0x1e4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003bc7c      0x1e4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_remove_ghost_pre.constprop.0.isra.0
-                0x7003bd98       0xbc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003be60       0xbc D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_add_touch_data.constprop.0
-                0x7003be54      0x578 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003bf1c      0x578 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.fine_cal_coordinates5.constprop.0
-                0x7003c3cc     0x1678 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003c494     0x1678 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
  .text.BS_fine_malloc
-                0x7003da44       0x68 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003da44                BS_fine_malloc
+                0x7003db0c       0x68 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003db0c                BS_fine_malloc
  .text.BS_fine_get_initial_ep5
-                0x7003daac      0x4f8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003daac                BS_fine_get_initial_ep5
+                0x7003db74      0x4f8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003db74                BS_fine_get_initial_ep5
+ .text.BS_fine_get_initial_ep5_cent
+                0x7003e06c      0x214 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003e06c                BS_fine_get_initial_ep5_cent
  .text.BS_fine_add_remained_touch_xy
-                0x7003dfa4      0x310 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003dfa4                BS_fine_add_remained_touch_xy
+                0x7003e280      0x310 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003e280                BS_fine_add_remained_touch_xy
  .text.BS_fine_add_remained_touch_shadow
-                0x7003e2b4      0x88c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003e2b4                BS_fine_add_remained_touch_shadow
+                0x7003e590      0x88c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003e590                BS_fine_add_remained_touch_shadow
  .text.BS_fine_add_remained_touch_edge_x
-                0x7003eb40      0x1e0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003eb40                BS_fine_add_remained_touch_edge_x
+                0x7003ee1c      0x1e0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003ee1c                BS_fine_add_remained_touch_edge_x
  .text.BS_fine_add_remained_touch_edge_y
-                0x7003ed20      0x1e0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003ed20                BS_fine_add_remained_touch_edge_y
+                0x7003effc      0x1e0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003effc                BS_fine_add_remained_touch_edge_y
  .text.BS_fine_add_remained_touch_brush
-                0x7003ef00      0x5c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003ef00                BS_fine_add_remained_touch_brush
+                0x7003f1dc      0x5c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003f1dc                BS_fine_add_remained_touch_brush
  .text.BS_fine_add_remained_touch_brush2
-                0x7003f4c0      0x7c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003f4c0                BS_fine_add_remained_touch_brush2
+                0x7003f79c      0x7c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003f79c                BS_fine_add_remained_touch_brush2
  .text.BG_clipping_fine5
-                0x7003fc80      0xb2c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                0x7003fc80                BG_clipping_fine5
- .text.malloc   0x700407ac       0xc8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
-                0x700407ac                malloc
+                0x7003ff5c      0xb30 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x7003ff5c                BG_clipping_fine5
+ .text.malloc   0x70040a8c       0xc8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
+                0x70040a8c                malloc
  .text._Csys_alloc
-                0x70040874       0x20 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
-                0x70040874                _Csys_alloc
- .text._initio  0x70040894       0x78 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(initio.o)
-                0x70040894                _initio
+                0x70040b54       0x20 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
+                0x70040b54                _Csys_alloc
+ .text._initio  0x70040b74       0x78 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(initio.o)
+                0x70040b74                _initio
  .text.__vfprintf
-                0x7004090c      0xbf8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
-                0x7004090c                __vfprintf
+                0x70040bec      0xbf8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
+                0x70040bec                __vfprintf
  .text._vsnprintf
-                0x70041504       0x68 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
-                0x70041504                _vsnprintf
- .text._printf  0x7004156c       0x54 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
-                0x7004156c                _printf
- .text.ch_val   0x700415c0       0x30 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
+                0x700417e4       0x68 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
+                0x700417e4                _vsnprintf
+ .text._printf  0x7004184c       0x54 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
+                0x7004184c                _printf
+ .text.ch_val   0x700418a0       0x30 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
  .text._strtoul
-                0x700415f0       0xb8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
- .text.strtol   0x700416a8       0x7c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
-                0x700416a8                strtol
- .text._sbrk    0x70041724       0x3c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_cr_sbrk.o)
-                0x70041724                _sbrk
+                0x700418d0       0xb8 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
+ .text.strtol   0x70041988       0x7c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(scanf.o)
+                0x70041988                strtol
+ .text._sbrk    0x70041a04       0x3c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_cr_sbrk.o)
+                0x70041a04                _sbrk
  .text._Cwritebuf
-                0x70041760       0x6c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_writebuf.o)
-                0x70041760                _Cwritebuf
- .text.fflush   0x700417cc       0x3c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fflush.o)
-                0x700417cc                fflush
- .text.fseek    0x70041808       0xfc c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fseek.o)
-                0x70041808                fseek
- .text.ftell    0x70041904       0x44 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(ftell.o)
-                0x70041904                ftell
+                0x70041a40       0x6c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_writebuf.o)
+                0x70041a40                _Cwritebuf
+ .text.fflush   0x70041aac       0x3c c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fflush.o)
+                0x70041aac                fflush
+ .text.fseek    0x70041ae8       0xfc c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fseek.o)
+                0x70041ae8                fseek
+ .text.ftell    0x70041be4       0x44 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(ftell.o)
+                0x70041be4                ftell
  .text.__check_heap_overflow
-                0x70041948       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_cr_check_heap.o)
-                0x70041948                __check_heap_overflow
+                0x70041c28       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_cr_check_heap.o)
+                0x70041c28                __check_heap_overflow
  .text.__aeabi_dmul
-                0x70041960       0xfc c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
-                0x70041960                __aeabi_dmul
+                0x70041c40       0xfc c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
+                0x70041c40                __aeabi_dmul
  .text.__aeabi_d2f
-                0x70041a5c       0x58 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
-                0x70041a5c                __aeabi_d2f
- .text.__main   0x70041ab4        0xe c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(_cr__main.o)
-                0x70041ab4                __main
- .text.memcpy   0x70041ac2        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(memcpy.o)
-                0x70041ac2                memcpy
- .text.memset   0x70041ac6        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(memset.o)
-                0x70041ac6                memset
- .text.free     0x70041aca       0x30 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
-                0x70041aca                free
+                0x70041d3c       0x58 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
+                0x70041d3c                __aeabi_d2f
+ .text.__main   0x70041d94        0xe c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(_cr__main.o)
+                0x70041d94                __main
+ .text.memcpy   0x70041da2        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(memcpy.o)
+                0x70041da2                memcpy
+ .text.memset   0x70041da6        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(memset.o)
+                0x70041da6                memset
+ .text.free     0x70041daa       0x30 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
+                0x70041daa                free
  .text.no_fp_display
-                0x70041afa        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
- .text.setvbuf  0x70041afe       0x3e c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(setvbuf.o)
-                0x70041afe                setvbuf
- .text.strchr   0x70041b3c       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(strchr.o)
-                0x70041b3c                strchr
- .text.strlen   0x70041b54       0x48 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(strlen.o)
-                0x70041b54                strlen
+                0x70041dda        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
+ .text.setvbuf  0x70041dde       0x3e c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(setvbuf.o)
+                0x70041dde                setvbuf
+ .text.strchr   0x70041e1c       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(strchr.o)
+                0x70041e1c                strchr
+ .text.strlen   0x70041e34       0x48 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(strlen.o)
+                0x70041e34                strlen
  .text._deferredlazyseek
-                0x70041b9c       0x40 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_deferredlazyseek.o)
-                0x70041b9c                _deferredlazyseek
+                0x70041e7c       0x40 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_deferredlazyseek.o)
+                0x70041e7c                _deferredlazyseek
  .text.__flsbuf
-                0x70041bdc      0x140 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_deferredlazyseek.o)
-                0x70041bdc                __flsbuf
- .text._fdopen  0x70041d1c       0x68 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_fdopen.o)
-                0x70041d1c                _fdopen
- .text._fflush  0x70041d84       0x52 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_fflush.o)
-                0x70041d84                _fflush
- .text.fclose   0x70041dd6       0x58 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fclose.o)
-                0x70041dd6                fclose
- .text.remove   0x70041e2e       0x14 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(remove.o)
-                0x70041e2e                remove
+                0x70041ebc      0x140 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_deferredlazyseek.o)
+                0x70041ebc                __flsbuf
+ .text._fdopen  0x70041ffc       0x68 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_fdopen.o)
+                0x70041ffc                _fdopen
+ .text._fflush  0x70042064       0x52 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_fflush.o)
+                0x70042064                _fflush
+ .text.fclose   0x700420b6       0x58 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(fclose.o)
+                0x700420b6                fclose
+ .text.remove   0x7004210e       0x14 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(remove.o)
+                0x7004210e                remove
  .text._do_fflush
-                0x70041e42       0x40 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_do_fflush.o)
-                0x70041e42                _do_fflush
+                0x70042122       0x40 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(_do_fflush.o)
+                0x70042122                _do_fflush
  .text.__aeabi_division_uldivmod
-                0x70041e82      0x174 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(division_64.o)
-                0x70041e82                __aeabi_uldivmod
-                0x70041e86                __bhs_ldivmod1
+                0x70042162      0x174 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(division_64.o)
+                0x70042162                __aeabi_uldivmod
+                0x70042166                __bhs_ldivmod1
  .text.__aeabi_division_idiv0
-                0x70041ff6        0x2 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(division_idiv0.o)
-                0x70041ff6                __aeabi_idiv0
+                0x700422d6        0x2 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(division_idiv0.o)
+                0x700422d6                __aeabi_idiv0
  .text.__bhs_ui2d
-                0x70041ff8       0x46 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
-                0x70041ff8                __bhs_ui2d
+                0x700422d8       0x46 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
+                0x700422d8                __bhs_ui2d
  .text.__aeabi_i2d
-                0x7004203e       0x12 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
-                0x7004203e                __aeabi_i2d
+                0x7004231e       0x12 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(double.o)
+                0x7004231e                __aeabi_i2d
  .text.__aeabi_memcpy
-                0x70042050       0x34 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(memcpy.o)
-                0x70042050                __aeabi_memcpy
-                0x7004205a                __aeabi_memcpy8
-                0x7004205a                __aeabi_memcpy4
+                0x70042330       0x34 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(memcpy.o)
+                0x70042330                __aeabi_memcpy
+                0x7004233a                __aeabi_memcpy8
+                0x7004233a                __aeabi_memcpy4
  .text.__aeabi_memset_lowlevel
-                0x70042084       0x32 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(memcpy.o)
-                0x70042084                __aeabi_lowlevel_memset
+                0x70042364       0x32 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard\libcr_eabihelpers.a(memcpy.o)
+                0x70042364                __aeabi_lowlevel_memset
  .text.__sys_appexit
-                0x700420b6        0x2 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_appexit.o)
-                0x700420b6                __sys_appexit
-                0x700420b6                __exit
+                0x70042396        0x2 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_appexit.o)
+                0x70042396                __sys_appexit
+                0x70042396                __exit
  .text.__sys_close
-                0x700420b8        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_close.o)
-                0x700420b8                __sys_close
+                0x70042398        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_close.o)
+                0x70042398                __sys_close
  .text.__sys_flen
-                0x700420be        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_flen.o)
-                0x700420be                __sys_flen
+                0x7004239e        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_flen.o)
+                0x7004239e                __sys_flen
  .text.__sys_istty
-                0x700420c4        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_istty.o)
-                0x700420c4                __sys_istty
+                0x700423a4        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_istty.o)
+                0x700423a4                __sys_istty
  .text.__sys_remove
-                0x700420ca        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_remove.o)
-                0x700420ca                __sys_remove
+                0x700423aa        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_remove.o)
+                0x700423aa                __sys_remove
  .text.__sys_seek
-                0x700420d0        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_seek.o)
-                0x700420d0                __sys_seek
+                0x700423b0        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_seek.o)
+                0x700423b0                __sys_seek
  .text.__sys_tmpnam
-                0x700420d6        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_tmpnam.o)
-                0x700420d6                __sys_tmpnam
+                0x700423b6        0x6 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_tmpnam.o)
+                0x700423b6                __sys_tmpnam
  .text.__sys_write
-                0x700420dc        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_write.o)
-                0x700420dc                __sys_write
+                0x700423bc        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_write.o)
+                0x700423bc                __sys_write
  .text.__sys_write.__stub
-                0x700420e0        0x8 linker stubs
+                0x700423c0        0x8 linker stubs
  *(SORT_BY_ALIGNMENT(.rodata) SORT_BY_ALIGNMENT(.rodata.*) SORT_BY_ALIGNMENT(.constdata) SORT_BY_ALIGNMENT(.constdata.*))
  .rodata.s_UsbDeviceStandardRequest
-                0x700420e8       0x34 ./usb/device/source/usb_device_ch9.o
+                0x700423c8       0x34 ./usb/device/source/usb_device_ch9.o
  .rodata.s_UsbDeviceEhciInterface
-                0x7004211c       0x18 ./usb/device/source/usb_device_dci.o
+                0x700423fc       0x18 ./usb/device/source/usb_device_dci.o
  .rodata.Scan_Process.str1.4
-                0x70042134       0x1d ./source/Scan.o
- *fill*         0x70042151        0x3 
+                0x70042414       0x1d ./source/Scan.o
+ *fill*         0x70042431        0x3 
  .rodata.StartLedIndexOfBd
-                0x70042154        0x7 ./source/Scan.o
-                0x70042154                StartLedIndexOfBd
- *fill*         0x7004215b        0x1 
+                0x70042434        0x7 ./source/Scan.o
+                0x70042434                StartLedIndexOfBd
+ *fill*         0x7004243b        0x1 
  .rodata.StartLedIndexOfGroupOffset
-                0x7004215c        0x7 ./source/Scan.o
-                0x7004215c                StartLedIndexOfGroupOffset
- *fill*         0x70042163        0x1 
+                0x7004243c        0x7 ./source/Scan.o
+                0x7004243c                StartLedIndexOfGroupOffset
+ *fill*         0x70042443        0x1 
  .rodata.GPT_1_config
-                0x70042164       0x10 ./source/app.o
-                0x70042164                GPT_1_config
+                0x70042444       0x10 ./source/app.o
+                0x70042444                GPT_1_config
  .rodata.crc_table
-                0x70042174       0x20 ./source/app.o
+                0x70042454       0x20 ./source/app.o
  .rodata.verStrFe
-                0x70042194        0x5 ./source/app.o
-                0x70042194                verStrFe
- *fill*         0x70042199        0x3 
+                0x70042474        0x5 ./source/app.o
+                0x70042474                verStrFe
+ *fill*         0x70042479        0x3 
  .rodata.Real_Pressure
-                0x7004219c       0xb4 ./source/backend_postp.o
-                0x7004219c                Real_Pressure
- .rodata        0x70042250        0x3 ./source/composite.o
- *fill*         0x70042253        0x1 
+                0x7004247c       0xb4 ./source/backend_postp.o
+                0x7004247c                Real_Pressure
+ .rodata        0x70042530        0x3 ./source/composite.o
+ *fill*         0x70042533        0x1 
  .rodata.getLedOnTime.str1.4
-                0x70042254       0x37 ./source/dlt.o
- *fill*         0x7004228b        0x1 
+                0x70042534       0x37 ./source/dlt.o
+ *fill*         0x7004256b        0x1 
  .rodata.getLedCurrentIdx.str1.4
-                0x7004228c       0x3b ./source/dlt.o
- *fill*         0x700422c7        0x1 
+                0x7004256c       0x3b ./source/dlt.o
+ *fill*         0x700425a7        0x1 
  .rodata.aarea_end_x__
-                0x700422c8        0x4 ./source/pitch_table.o
-                0x700422c8                aarea_end_x__
+                0x700425a8        0x4 ./source/pitch_table.o
+                0x700425a8                aarea_end_x__
  .rodata.aarea_end_y__
-                0x700422cc        0x4 ./source/pitch_table.o
-                0x700422cc                aarea_end_y__
+                0x700425ac        0x4 ./source/pitch_table.o
+                0x700425ac                aarea_end_y__
  .rodata.aarea_zero_x__
-                0x700422d0        0x4 ./source/pitch_table.o
-                0x700422d0                aarea_zero_x__
+                0x700425b0        0x4 ./source/pitch_table.o
+                0x700425b0                aarea_zero_x__
  .rodata.aarea_zero_y__
-                0x700422d4        0x4 ./source/pitch_table.o
-                0x700422d4                aarea_zero_y__
+                0x700425b4        0x4 ./source/pitch_table.o
+                0x700425b4                aarea_zero_y__
  .rodata.sensor_XLED_Pos__
-                0x700422d8      0x210 ./source/pitch_table.o
-                0x700422d8                sensor_XLED_Pos__
+                0x700425b8      0x210 ./source/pitch_table.o
+                0x700425b8                sensor_XLED_Pos__
  .rodata.sensor_XPD_Pos__
-                0x700424e8      0x210 ./source/pitch_table.o
-                0x700424e8                sensor_XPD_Pos__
+                0x700427c8      0x210 ./source/pitch_table.o
+                0x700427c8                sensor_XPD_Pos__
  .rodata.sensor_YLED_Pos__
-                0x700426f8      0x198 ./source/pitch_table.o
-                0x700426f8                sensor_YLED_Pos__
+                0x700429d8      0x198 ./source/pitch_table.o
+                0x700429d8                sensor_YLED_Pos__
  .rodata.sensor_YPD_Pos__
-                0x70042890      0x198 ./source/pitch_table.o
-                0x70042890                sensor_YPD_Pos__
+                0x70042b70      0x198 ./source/pitch_table.o
+                0x70042b70                sensor_YPD_Pos__
  .rodata.sensor_end_x__
-                0x70042a28        0x4 ./source/pitch_table.o
-                0x70042a28                sensor_end_x__
+                0x70042d08        0x4 ./source/pitch_table.o
+                0x70042d08                sensor_end_x__
  .rodata.sensor_end_y__
-                0x70042a2c        0x4 ./source/pitch_table.o
-                0x70042a2c                sensor_end_y__
+                0x70042d0c        0x4 ./source/pitch_table.o
+                0x70042d0c                sensor_end_y__
  .rodata.sensor_zero_x__
-                0x70042a30        0x4 ./source/pitch_table.o
-                0x70042a30                sensor_zero_x__
+                0x70042d10        0x4 ./source/pitch_table.o
+                0x70042d10                sensor_zero_x__
  .rodata.sensor_zero_y__
-                0x70042a34        0x4 ./source/pitch_table.o
-                0x70042a34                sensor_zero_y__
+                0x70042d14        0x4 ./source/pitch_table.o
+                0x70042d14                sensor_zero_y__
  .rodata.xAxisSequenceTbl_flash
-                0x70042a38      0x6dc ./source/scan_table.o
-                0x70042a38                xAxisSequenceTbl_flash
+                0x70042d18      0x6dc ./source/scan_table.o
+                0x70042d18                xAxisSequenceTbl_flash
  .rodata.xPdIdxAtANOutTbl_flash
-                0x70043114     0x2928 ./source/scan_table.o
-                0x70043114                xPdIdxAtANOutTbl_flash
+                0x700433f4     0x2928 ./source/scan_table.o
+                0x700433f4                xPdIdxAtANOutTbl_flash
  .rodata.xUOffsetAtANOutTbl_flash
-                0x70045a3c     0x2928 ./source/scan_table.o
-                0x70045a3c                xUOffsetAtANOutTbl_flash
+                0x70045d1c     0x2928 ./source/scan_table.o
+                0x70045d1c                xUOffsetAtANOutTbl_flash
  .rodata.yAxisSequenceTbl_flash
-                0x70048364      0x522 ./source/scan_table.o
-                0x70048364                yAxisSequenceTbl_flash
- *fill*         0x70048886        0x2 
+                0x70048644      0x522 ./source/scan_table.o
+                0x70048644                yAxisSequenceTbl_flash
+ *fill*         0x70048b66        0x2 
  .rodata.yPdIdxAtANOutTbl_flash
-                0x70048888     0x1ecc ./source/scan_table.o
-                0x70048888                yPdIdxAtANOutTbl_flash
+                0x70048b68     0x1ecc ./source/scan_table.o
+                0x70048b68                yPdIdxAtANOutTbl_flash
  .rodata.yUOffsetAtANOutTbl_flash
-                0x7004a754     0x1ecc ./source/scan_table.o
-                0x7004a754                yUOffsetAtANOutTbl_flash
+                0x7004aa34     0x1ecc ./source/scan_table.o
+                0x7004aa34                yUOffsetAtANOutTbl_flash
  .rodata.enetRefClkFreq.1
-                0x7004c620       0x10 ./drivers/fsl_clock.o
+                0x7004c900       0x10 ./drivers/fsl_clock.o
  .rodata.s_gpioClock
-                0x7004c630        0xc ./drivers/fsl_gpio.o
+                0x7004c910        0xc ./drivers/fsl_gpio.o
  .rodata.s_lpuartClock
-                0x7004c63c       0x12 ./drivers/fsl_lpuart.o
- *fill*         0x7004c64e        0x2 
+                0x7004c91c       0x12 ./drivers/fsl_lpuart.o
+ *fill*         0x7004c92e        0x2 
  .rodata.s_LpuartAdapterBase
-                0x7004c650       0x24 ./component/uart/fsl_adapter_lpuart.o
+                0x7004c930       0x24 ./component/uart/fsl_adapter_lpuart.o
  .rodata.armPllConfig_BOARD_BootClockRUN
-                0x7004c674        0x8 ./board/clock_config.o
-                0x7004c674                armPllConfig_BOARD_BootClockRUN
+                0x7004c954        0x8 ./board/clock_config.o
+                0x7004c954                armPllConfig_BOARD_BootClockRUN
  .rodata.sysPllConfig_BOARD_BootClockRUN
-                0x7004c67c       0x14 ./board/clock_config.o
-                0x7004c67c                sysPllConfig_BOARD_BootClockRUN
+                0x7004c95c       0x14 ./board/clock_config.o
+                0x7004c95c                sysPllConfig_BOARD_BootClockRUN
  .rodata.BOARD_ADC1_channels_config
-                0x7004c690        0x8 ./board/peripherals.o
-                0x7004c690                BOARD_ADC1_channels_config
+                0x7004c970        0x8 ./board/peripherals.o
+                0x7004c970                BOARD_ADC1_channels_config
  .rodata.BOARD_ADC1_config
-                0x7004c698        0xb ./board/peripherals.o
-                0x7004c698                BOARD_ADC1_config
- *fill*         0x7004c6a3        0x1 
+                0x7004c978        0xb ./board/peripherals.o
+                0x7004c978                BOARD_ADC1_config
+ *fill*         0x7004c983        0x1 
  .rodata.BOARD_ADC2_channels_config
-                0x7004c6a4        0x8 ./board/peripherals.o
-                0x7004c6a4                BOARD_ADC2_channels_config
+                0x7004c984        0x8 ./board/peripherals.o
+                0x7004c984                BOARD_ADC2_channels_config
  .rodata.BOARD_ADC2_config
-                0x7004c6ac        0xb ./board/peripherals.o
-                0x7004c6ac                BOARD_ADC2_config
- *fill*         0x7004c6b7        0x1 
+                0x7004c98c        0xb ./board/peripherals.o
+                0x7004c98c                BOARD_ADC2_config
+ *fill*         0x7004c997        0x1 
  .rodata.BOARD_GPT1_config
-                0x7004c6b8       0x10 ./board/peripherals.o
-                0x7004c6b8                BOARD_GPT1_config
+                0x7004c998       0x10 ./board/peripherals.o
+                0x7004c998                BOARD_GPT1_config
  .rodata.BOARD_GPT2_config
-                0x7004c6c8       0x10 ./board/peripherals.o
-                0x7004c6c8                BOARD_GPT2_config
+                0x7004c9a8       0x10 ./board/peripherals.o
+                0x7004c9a8                BOARD_GPT2_config
  .rodata.BOARD_LPUART1_config
-                0x7004c6d8       0x14 ./board/peripherals.o
-                0x7004c6d8                BOARD_LPUART1_config
+                0x7004c9b8       0x14 ./board/peripherals.o
+                0x7004c9b8                BOARD_LPUART1_config
  .rodata.BOARD_TMR1_Channel_0_config
-                0x7004c6ec        0x7 ./board/peripherals.o
-                0x7004c6ec                BOARD_TMR1_Channel_0_config
- *fill*         0x7004c6f3        0x1 
+                0x7004c9cc        0x7 ./board/peripherals.o
+                0x7004c9cc                BOARD_TMR1_Channel_0_config
+ *fill*         0x7004c9d3        0x1 
  .rodata.BOARD_TMR2_Channel_3_config
-                0x7004c6f4        0x7 ./board/peripherals.o
-                0x7004c6f4                BOARD_TMR2_Channel_3_config
- *fill*         0x7004c6fb        0x1 
+                0x7004c9d4        0x7 ./board/peripherals.o
+                0x7004c9d4                BOARD_TMR2_Channel_3_config
+ *fill*         0x7004c9db        0x1 
  .rodata.BOARD_TMR3_Channel_0_config
-                0x7004c6fc        0x7 ./board/peripherals.o
-                0x7004c6fc                BOARD_TMR3_Channel_0_config
- *fill*         0x7004c703        0x1 
+                0x7004c9dc        0x7 ./board/peripherals.o
+                0x7004c9dc                BOARD_TMR3_Channel_0_config
+ *fill*         0x7004c9e3        0x1 
  .rodata.BOARD_TMR4_Channel_3_config
-                0x7004c704        0x7 ./board/peripherals.o
-                0x7004c704                BOARD_TMR4_Channel_3_config
- *fill*         0x7004c70b        0x1 
+                0x7004c9e4        0x7 ./board/peripherals.o
+                0x7004c9e4                BOARD_TMR4_Channel_3_config
+ *fill*         0x7004c9eb        0x1 
  .rodata.BOARD_WDOG1_config
-                0x7004c70c        0xe ./board/peripherals.o
-                0x7004c70c                BOARD_WDOG1_config
- *fill*         0x7004c71a        0x2 
+                0x7004c9ec        0xe ./board/peripherals.o
+                0x7004c9ec                BOARD_WDOG1_config
+ *fill*         0x7004c9fa        0x2 
  .rodata.__num_Ciob_streams
-                0x7004c71c        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__ciob.o)
-                0x7004c71c                __num_Ciob_streams
+                0x7004c9fc        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__ciob.o)
+                0x7004c9fc                __num_Ciob_streams
  .rodata._Csys_alloc.str1.1
-                0x7004c720       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
+                0x7004ca00       0x18 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(alloc.o)
  .rodata._initio.str1.1
-                0x7004c738        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(initio.o)
+                0x7004ca18        0x4 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(initio.o)
  .rodata.__vfprintf.str1.1
-                0x7004c73c       0x37 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
+                0x7004ca1c       0x37 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(printf.o)
                                  0x38 (size before relaxing)
  .rodata.__ctype
-                0x7004c773      0x180 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(ctype.o)
-                0x7004c773                __ctype
-                0x7004c8f4                . = ALIGN (0x4)
- *fill*         0x7004c8f3        0x1 
+                0x7004ca53      0x180 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_c.a(ctype.o)
+                0x7004ca53                __ctype
+                0x7004cbd4                . = ALIGN (0x4)
+ *fill*         0x7004cbd3        0x1 
 
 .ARM.extab
  *(SORT_BY_ALIGNMENT(.ARM.extab*) SORT_BY_ALIGNMENT(.gnu.linkonce.armextab.*))
-                0x7004c8f4                __exidx_start = .
+                0x7004cbd4                __exidx_start = .
 
 .ARM.exidx
  *(SORT_BY_ALIGNMENT(.ARM.exidx*) SORT_BY_ALIGNMENT(.gnu.linkonce.armexidx.*))
-                0x7004c8f4                __exidx_end = .
-                0x7004c8f4                _etext = .
+                0x7004cbd4                __exidx_end = .
+                0x7004cbd4                _etext = .
 
-.data_RAM2      0x00000000     0x4190 load address 0x7004c8f4
+.data_RAM2      0x00000000     0x4190 load address 0x7004cbd4
  FILL mask 0xff
                 [!provide]                PROVIDE (__start_data_RAM2 = .)
  *(SORT_BY_ALIGNMENT(.ramfunc.$RAM2))
@@ -3256,10 +3259,10 @@ END GROUP
                 0x00004190                . = ALIGN (0x4)
                 [!provide]                PROVIDE (__end_data_RAM2 = .)
 
-.rel.dyn        0x00004190        0x0 load address 0x70050a84
+.rel.dyn        0x00004190        0x0 load address 0x70050d64
  .rel.iplt      0x00004190        0x0 ./xip/fsl_flexspi_nor_boot.o
 
-.data_RAM3      0x20200000        0x0 load address 0x70050a84
+.data_RAM3      0x20200000        0x0 load address 0x70050d64
  FILL mask 0xff
                 [!provide]                PROVIDE (__start_data_RAM3 = .)
  *(SORT_BY_ALIGNMENT(.ramfunc.$RAM3))
@@ -3278,7 +3281,7 @@ END GROUP
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _end_uninit_RESERVED = .
 
-.data           0x20000000      0x518 load address 0x70050a84
+.data           0x20000000      0x518 load address 0x70050d64
  FILL mask 0xff
                 0x20000000                _data = .
  *(SORT_BY_ALIGNMENT(vtable))
@@ -3387,7 +3390,7 @@ END GROUP
                 0x20000518                . = ALIGN (0x4)
                 0x20000518                _edata = .
 
-.igot.plt       0x20000518        0x0 load address 0x70050f9c
+.igot.plt       0x20000518        0x0 load address 0x7005127c
  .igot.plt      0x20000518        0x0 ./xip/fsl_flexspi_nor_boot.o
 
 .bss_RAM2       0x00004190    0x14e90
@@ -4129,12 +4132,12 @@ END GROUP
                 0x2001c000                . = ALIGN (0x4)
                 0x20020000                _vStackTop = (. + _StackSize)
                 0x70022000                _image_start = LOADADDR (.text)
-                0x70050f9c                _image_end = (LOADADDR (.data) + SIZEOF (.data))
-                0x0002ef9c                _image_size = (_image_end - _image_start)
+                0x7005127c                _image_end = (LOADADDR (.data) + SIZEOF (.data))
+                0x0002f27c                _image_size = (_image_end - _image_start)
 OUTPUT(wmc-ctsi-0850-fe-be-app.axf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000    0x5f2b2
+.debug_info     0x00000000    0x5f6ab
  .debug_info    0x00000000      0x84a ./xip/evkmimxrt1064_flexspi_nor_config.o
  .debug_info    0x0000084a      0x46b ./xip/fsl_flexspi_nor_boot.o
  .debug_info    0x00000cb5     0x1641 ./utilities/fsl_debug_console.o
@@ -4145,42 +4148,42 @@ LOAD linker stubs
  .debug_info    0x00008e24     0x14ca ./usb/device/class/hid/usb_device_hid.o
  .debug_info    0x0000a2ee     0x1342 ./usb/device/class/usb_device_class.o
  .debug_info    0x0000b630     0x15de ./startup/startup_mimxrt1064.o
- .debug_info    0x0000cc0e     0x5291 ./source/Scan.o
- .debug_info    0x00011e9f      0x3d0 ./source/adc.o
- .debug_info    0x0001226f     0x424b ./source/app.o
- .debug_info    0x000164ba     0x3384 ./source/backend_postp.o
- .debug_info    0x0001983e       0xf5 ./source/bezier.o
- .debug_info    0x00019933     0x1c34 ./source/composite.o
- .debug_info    0x0001b567     0x1b99 ./source/dlt.o
- .debug_info    0x0001d100      0x8da ./source/hid_generic.o
- .debug_info    0x0001d9da      0x8e7 ./source/hid_mouse.o
- .debug_info    0x0001e2c1      0x497 ./source/pitch_table.o
- .debug_info    0x0001e758      0x524 ./source/scan_table.o
- .debug_info    0x0001ec7c       0x38 ./source/semihost_hardfault.o
- .debug_info    0x0001ecb4     0x1168 ./source/usb_device_descriptor.o
- .debug_info    0x0001fe1c     0x1593 ./drivers/fsl_adc.o
- .debug_info    0x000213af     0x59bc ./drivers/fsl_clock.o
- .debug_info    0x00026d6b      0xfab ./drivers/fsl_gpio.o
- .debug_info    0x00027d16      0xff6 ./drivers/fsl_gpt.o
- .debug_info    0x00028d0c     0x3cd1 ./drivers/fsl_lpuart.o
- .debug_info    0x0002c9dd     0x184b ./drivers/fsl_qtmr.o
- .debug_info    0x0002e228     0x1738 ./drivers/fsl_wdog.o
- .debug_info    0x0002f960     0x1ddc ./drivers/fsl_xbara.o
- .debug_info    0x0003173c      0xca0 ./device/system_MIMXRT1064.o
- .debug_info    0x000323dc      0xc5e ./component/uart/fsl_adapter_lpuart.o
- .debug_info    0x0003303a     0x1296 ./component/serial_manager/fsl_component_serial_manager.o
- .debug_info    0x000342d0      0x5ae ./component/serial_manager/fsl_component_serial_port_uart.o
- .debug_info    0x0003487e     0x1dc4 ./component/osa/fsl_os_abstraction_bm.o
- .debug_info    0x00036642     0x1202 ./board/board.o
- .debug_info    0x00037844     0x9334 ./board/clock_config.o
- .debug_info    0x00040b78     0x1f8f ./board/peripherals.o
- .debug_info    0x00042b07     0x42ae ./board/pin_mux.o
- .debug_info    0x00046db5     0x3a8c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
- .debug_info    0x0004a841     0x64c8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
- .debug_info    0x00050d09     0x353f D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
- .debug_info    0x00054248      0x2a1 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(IRTP_layout.o)
- .debug_info    0x000544e9       0xff D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
- .debug_info    0x000545e8     0xacca D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+ .debug_info    0x0000cc0e     0x5433 ./source/Scan.o
+ .debug_info    0x00012041      0x3d0 ./source/adc.o
+ .debug_info    0x00012411     0x4258 ./source/app.o
+ .debug_info    0x00016669     0x3384 ./source/backend_postp.o
+ .debug_info    0x000199ed       0xf5 ./source/bezier.o
+ .debug_info    0x00019ae2     0x1c34 ./source/composite.o
+ .debug_info    0x0001b716     0x1b99 ./source/dlt.o
+ .debug_info    0x0001d2af      0x8da ./source/hid_generic.o
+ .debug_info    0x0001db89      0x8e7 ./source/hid_mouse.o
+ .debug_info    0x0001e470      0x497 ./source/pitch_table.o
+ .debug_info    0x0001e907      0x524 ./source/scan_table.o
+ .debug_info    0x0001ee2b       0x38 ./source/semihost_hardfault.o
+ .debug_info    0x0001ee63     0x1168 ./source/usb_device_descriptor.o
+ .debug_info    0x0001ffcb     0x1593 ./drivers/fsl_adc.o
+ .debug_info    0x0002155e     0x59bc ./drivers/fsl_clock.o
+ .debug_info    0x00026f1a      0xfab ./drivers/fsl_gpio.o
+ .debug_info    0x00027ec5      0xff6 ./drivers/fsl_gpt.o
+ .debug_info    0x00028ebb     0x3cd1 ./drivers/fsl_lpuart.o
+ .debug_info    0x0002cb8c     0x184b ./drivers/fsl_qtmr.o
+ .debug_info    0x0002e3d7     0x1738 ./drivers/fsl_wdog.o
+ .debug_info    0x0002fb0f     0x1ddc ./drivers/fsl_xbara.o
+ .debug_info    0x000318eb      0xca0 ./device/system_MIMXRT1064.o
+ .debug_info    0x0003258b      0xc5e ./component/uart/fsl_adapter_lpuart.o
+ .debug_info    0x000331e9     0x1296 ./component/serial_manager/fsl_component_serial_manager.o
+ .debug_info    0x0003447f      0x5ae ./component/serial_manager/fsl_component_serial_port_uart.o
+ .debug_info    0x00034a2d     0x1dc4 ./component/osa/fsl_os_abstraction_bm.o
+ .debug_info    0x000367f1     0x1202 ./board/board.o
+ .debug_info    0x000379f3     0x9334 ./board/clock_config.o
+ .debug_info    0x00040d27     0x1f8f ./board/peripherals.o
+ .debug_info    0x00042cb6     0x42ae ./board/pin_mux.o
+ .debug_info    0x00046f64     0x3a8c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+ .debug_info    0x0004a9f0     0x64c8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+ .debug_info    0x00050eb8     0x353f D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+ .debug_info    0x000543f7      0x2a1 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(IRTP_layout.o)
+ .debug_info    0x00054698       0xff D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
+ .debug_info    0x00054797     0xaf14 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
 .debug_abbrev   0x00000000     0x8812
  .debug_abbrev  0x00000000      0x107 ./xip/evkmimxrt1064_flexspi_nor_config.o
@@ -4230,7 +4233,7 @@ LOAD linker stubs
  .debug_abbrev  0x000082fa       0x64 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
  .debug_abbrev  0x0000835e      0x4b4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
-.debug_aranges  0x00000000     0x19a0
+.debug_aranges  0x00000000     0x19a8
  .debug_aranges
                 0x00000000       0x18 ./xip/evkmimxrt1064_flexspi_nor_config.o
  .debug_aranges
@@ -4322,9 +4325,9 @@ LOAD linker stubs
  .debug_aranges
                 0x00001890       0x18 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
  .debug_aranges
-                0x000018a8       0xf8 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                0x000018a8      0x100 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
-.debug_line     0x00000000    0x43b80
+.debug_line     0x00000000    0x43f61
  .debug_line    0x00000000      0x13e ./xip/evkmimxrt1064_flexspi_nor_config.o
  .debug_line    0x0000013e      0x126 ./xip/fsl_flexspi_nor_boot.o
  .debug_line    0x00000264      0xb56 ./utilities/fsl_debug_console.o
@@ -4335,44 +4338,44 @@ LOAD linker stubs
  .debug_line    0x00004cb1      0xc87 ./usb/device/class/hid/usb_device_hid.o
  .debug_line    0x00005938      0x8d6 ./usb/device/class/usb_device_class.o
  .debug_line    0x0000620e     0x17c8 ./startup/startup_mimxrt1064.o
- .debug_line    0x000079d6     0xb075 ./source/Scan.o
- .debug_line    0x00012a4b      0x335 ./source/adc.o
- .debug_line    0x00012d80     0x4297 ./source/app.o
- .debug_line    0x00017017     0x3d3f ./source/backend_postp.o
- .debug_line    0x0001ad56       0xd0 ./source/bezier.o
- .debug_line    0x0001ae26      0x872 ./source/composite.o
- .debug_line    0x0001b698     0x16d3 ./source/dlt.o
- .debug_line    0x0001cd6b      0x464 ./source/hid_generic.o
- .debug_line    0x0001d1cf      0x3c0 ./source/hid_mouse.o
- .debug_line    0x0001d58f       0x96 ./source/pitch_table.o
- .debug_line    0x0001d625      0x137 ./source/scan_table.o
- .debug_line    0x0001d75c       0x59 ./source/semihost_hardfault.o
- .debug_line    0x0001d7b5      0x42e ./source/usb_device_descriptor.o
- .debug_line    0x0001dbe3      0x6e6 ./drivers/fsl_adc.o
- .debug_line    0x0001e2c9     0x3b07 ./drivers/fsl_clock.o
- .debug_line    0x00021dd0      0x449 ./drivers/fsl_gpio.o
- .debug_line    0x00022219      0x45e ./drivers/fsl_gpt.o
- .debug_line    0x00022677     0x22fe ./drivers/fsl_lpuart.o
- .debug_line    0x00024975      0xae5 ./drivers/fsl_qtmr.o
- .debug_line    0x0002545a      0x51e ./drivers/fsl_wdog.o
- .debug_line    0x00025978      0x422 ./drivers/fsl_xbara.o
- .debug_line    0x00025d9a      0x44e ./device/system_MIMXRT1064.o
- .debug_line    0x000261e8      0x400 ./component/uart/fsl_adapter_lpuart.o
- .debug_line    0x000265e8      0x766 ./component/serial_manager/fsl_component_serial_manager.o
- .debug_line    0x00026d4e      0x23c ./component/serial_manager/fsl_component_serial_port_uart.o
- .debug_line    0x00026f8a      0xffa ./component/osa/fsl_os_abstraction_bm.o
- .debug_line    0x00027f84      0x870 ./board/board.o
- .debug_line    0x000287f4     0x334f ./board/clock_config.o
- .debug_line    0x0002bb43      0x435 ./board/peripherals.o
- .debug_line    0x0002bf78      0xdea ./board/pin_mux.o
- .debug_line    0x0002cd62     0x2ea4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
- .debug_line    0x0002fc06     0x6a96 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
- .debug_line    0x0003669c     0x33a2 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
- .debug_line    0x00039a3e       0x6b D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(IRTP_layout.o)
- .debug_line    0x00039aa9       0x5d D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
- .debug_line    0x00039b06     0xa07a D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+ .debug_line    0x000079d6     0xb110 ./source/Scan.o
+ .debug_line    0x00012ae6      0x335 ./source/adc.o
+ .debug_line    0x00012e1b     0x42bf ./source/app.o
+ .debug_line    0x000170da     0x3d3f ./source/backend_postp.o
+ .debug_line    0x0001ae19       0xd0 ./source/bezier.o
+ .debug_line    0x0001aee9      0x872 ./source/composite.o
+ .debug_line    0x0001b75b     0x16d3 ./source/dlt.o
+ .debug_line    0x0001ce2e      0x464 ./source/hid_generic.o
+ .debug_line    0x0001d292      0x3c0 ./source/hid_mouse.o
+ .debug_line    0x0001d652       0x96 ./source/pitch_table.o
+ .debug_line    0x0001d6e8      0x137 ./source/scan_table.o
+ .debug_line    0x0001d81f       0x59 ./source/semihost_hardfault.o
+ .debug_line    0x0001d878      0x42e ./source/usb_device_descriptor.o
+ .debug_line    0x0001dca6      0x6e6 ./drivers/fsl_adc.o
+ .debug_line    0x0001e38c     0x3b07 ./drivers/fsl_clock.o
+ .debug_line    0x00021e93      0x449 ./drivers/fsl_gpio.o
+ .debug_line    0x000222dc      0x45e ./drivers/fsl_gpt.o
+ .debug_line    0x0002273a     0x22fe ./drivers/fsl_lpuart.o
+ .debug_line    0x00024a38      0xae5 ./drivers/fsl_qtmr.o
+ .debug_line    0x0002551d      0x51e ./drivers/fsl_wdog.o
+ .debug_line    0x00025a3b      0x422 ./drivers/fsl_xbara.o
+ .debug_line    0x00025e5d      0x44e ./device/system_MIMXRT1064.o
+ .debug_line    0x000262ab      0x400 ./component/uart/fsl_adapter_lpuart.o
+ .debug_line    0x000266ab      0x766 ./component/serial_manager/fsl_component_serial_manager.o
+ .debug_line    0x00026e11      0x23c ./component/serial_manager/fsl_component_serial_port_uart.o
+ .debug_line    0x0002704d      0xffa ./component/osa/fsl_os_abstraction_bm.o
+ .debug_line    0x00028047      0x870 ./board/board.o
+ .debug_line    0x000288b7     0x334f ./board/clock_config.o
+ .debug_line    0x0002bc06      0x435 ./board/peripherals.o
+ .debug_line    0x0002c03b      0xdea ./board/pin_mux.o
+ .debug_line    0x0002ce25     0x2ea4 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+ .debug_line    0x0002fcc9     0x6a96 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+ .debug_line    0x0003675f     0x33a2 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+ .debug_line    0x00039b01       0x6b D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(IRTP_layout.o)
+ .debug_line    0x00039b6c       0x5d D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
+ .debug_line    0x00039bc9     0xa398 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
-.debug_str      0x00000000    0x17178
+.debug_str      0x00000000    0x171cb
  .debug_str     0x00000000     0x121f ./xip/evkmimxrt1064_flexspi_nor_config.o
                                0x1249 (size before relaxing)
  .debug_str     0x0000121f       0x83 ./xip/fsl_flexspi_nor_boot.o
@@ -4397,9 +4400,9 @@ LOAD linker stubs
                                0x24db (size before relaxing)
  .debug_str     0x000073cf      0x12f ./source/adc.o
                                 0x309 (size before relaxing)
- .debug_str     0x000074fe     0x14b3 ./source/app.o
-                               0x2495 (size before relaxing)
- .debug_str     0x000089b1      0xb87 ./source/backend_postp.o
+ .debug_str     0x000074fe     0x14c5 ./source/app.o
+                               0x24a7 (size before relaxing)
+ .debug_str     0x000089c3      0xb75 ./source/backend_postp.o
                                0x1b55 (size before relaxing)
  .debug_str     0x00009538       0x3c ./source/bezier.o
                                 0x18b (size before relaxing)
@@ -4463,8 +4466,8 @@ LOAD linker stubs
                                 0x304 (size before relaxing)
  .debug_str     0x00015c2c       0x17 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_debug.o)
                                 0x1f2 (size before relaxing)
- .debug_str     0x00015c43     0x1535 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
-                               0x22b5 (size before relaxing)
+ .debug_str     0x00015c43     0x1588 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+                               0x2308 (size before relaxing)
 
 .comment        0x00000000       0x49
  .comment       0x00000000       0x49 ./xip/evkmimxrt1064_flexspi_nor_config.o
@@ -4721,7 +4724,7 @@ LOAD linker stubs
  .ARM.attributes
                 0x000010a0       0x34 c:/nxp/mcuxpressoide_11.7.0_9198/ide/plugins/com.nxp.mcuxpresso.tools.win32_11.7.0.202209140929/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libcr_nohost_nf.a(__sys_write.o)
 
-.debug_loc      0x00000000    0x5d4e4
+.debug_loc      0x00000000    0x5dd5a
  .debug_loc     0x00000000      0xd8e ./utilities/fsl_debug_console.o
  .debug_loc     0x00000d8e      0x42e ./usb/phy/usb_phy.o
  .debug_loc     0x000011bc     0x2148 ./usb/device/source/ehci/usb_device_ehci.o
@@ -4730,39 +4733,39 @@ LOAD linker stubs
  .debug_loc     0x000073f3     0x13f0 ./usb/device/class/hid/usb_device_hid.o
  .debug_loc     0x000087e3      0xa9e ./usb/device/class/usb_device_class.o
  .debug_loc     0x00009281      0x7e0 ./startup/startup_mimxrt1064.o
- .debug_loc     0x00009a61     0x848f ./source/Scan.o
- .debug_loc     0x00011ef0       0xc0 ./source/adc.o
- .debug_loc     0x00011fb0     0x4a42 ./source/app.o
- .debug_loc     0x000169f2     0x4a0a ./source/backend_postp.o
- .debug_loc     0x0001b3fc       0xfe ./source/bezier.o
- .debug_loc     0x0001b4fa      0x946 ./source/composite.o
- .debug_loc     0x0001be40     0x2360 ./source/dlt.o
- .debug_loc     0x0001e1a0      0x387 ./source/hid_generic.o
- .debug_loc     0x0001e527      0x262 ./source/hid_mouse.o
- .debug_loc     0x0001e789      0x1d7 ./source/usb_device_descriptor.o
- .debug_loc     0x0001e960      0x5b9 ./drivers/fsl_adc.o
- .debug_loc     0x0001ef19     0x52a0 ./drivers/fsl_clock.o
- .debug_loc     0x000241b9      0x59e ./drivers/fsl_gpio.o
- .debug_loc     0x00024757      0x30d ./drivers/fsl_gpt.o
- .debug_loc     0x00024a64     0x2a07 ./drivers/fsl_lpuart.o
- .debug_loc     0x0002746b      0xdae ./drivers/fsl_qtmr.o
- .debug_loc     0x00028219      0x309 ./drivers/fsl_wdog.o
- .debug_loc     0x00028522      0x452 ./drivers/fsl_xbara.o
- .debug_loc     0x00028974       0xce ./device/system_MIMXRT1064.o
- .debug_loc     0x00028a42      0x307 ./component/uart/fsl_adapter_lpuart.o
- .debug_loc     0x00028d49      0xc3b ./component/serial_manager/fsl_component_serial_manager.o
- .debug_loc     0x00029984      0x275 ./component/serial_manager/fsl_component_serial_port_uart.o
- .debug_loc     0x00029bf9     0x1418 ./component/osa/fsl_os_abstraction_bm.o
- .debug_loc     0x0002b011      0x18d ./board/board.o
- .debug_loc     0x0002b19e     0x5a92 ./board/clock_config.o
- .debug_loc     0x00030c30      0x165 ./board/peripherals.o
- .debug_loc     0x00030d95     0x2358 ./board/pin_mux.o
- .debug_loc     0x000330ed     0x4780 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
- .debug_loc     0x0003786d     0xadc7 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
- .debug_loc     0x00042634     0x8b94 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
- .debug_loc     0x0004b1c8    0x1231c D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+ .debug_loc     0x00009a61     0x87ff ./source/Scan.o
+ .debug_loc     0x00012260       0xc0 ./source/adc.o
+ .debug_loc     0x00012320     0x4a42 ./source/app.o
+ .debug_loc     0x00016d62     0x4a0a ./source/backend_postp.o
+ .debug_loc     0x0001b76c       0xfe ./source/bezier.o
+ .debug_loc     0x0001b86a      0x946 ./source/composite.o
+ .debug_loc     0x0001c1b0     0x2360 ./source/dlt.o
+ .debug_loc     0x0001e510      0x387 ./source/hid_generic.o
+ .debug_loc     0x0001e897      0x262 ./source/hid_mouse.o
+ .debug_loc     0x0001eaf9      0x1d7 ./source/usb_device_descriptor.o
+ .debug_loc     0x0001ecd0      0x5b9 ./drivers/fsl_adc.o
+ .debug_loc     0x0001f289     0x52a0 ./drivers/fsl_clock.o
+ .debug_loc     0x00024529      0x59e ./drivers/fsl_gpio.o
+ .debug_loc     0x00024ac7      0x30d ./drivers/fsl_gpt.o
+ .debug_loc     0x00024dd4     0x2a07 ./drivers/fsl_lpuart.o
+ .debug_loc     0x000277db      0xdae ./drivers/fsl_qtmr.o
+ .debug_loc     0x00028589      0x309 ./drivers/fsl_wdog.o
+ .debug_loc     0x00028892      0x452 ./drivers/fsl_xbara.o
+ .debug_loc     0x00028ce4       0xce ./device/system_MIMXRT1064.o
+ .debug_loc     0x00028db2      0x307 ./component/uart/fsl_adapter_lpuart.o
+ .debug_loc     0x000290b9      0xc3b ./component/serial_manager/fsl_component_serial_manager.o
+ .debug_loc     0x00029cf4      0x275 ./component/serial_manager/fsl_component_serial_port_uart.o
+ .debug_loc     0x00029f69     0x1418 ./component/osa/fsl_os_abstraction_bm.o
+ .debug_loc     0x0002b381      0x18d ./board/board.o
+ .debug_loc     0x0002b50e     0x5a92 ./board/clock_config.o
+ .debug_loc     0x00030fa0      0x165 ./board/peripherals.o
+ .debug_loc     0x00031105     0x2358 ./board/pin_mux.o
+ .debug_loc     0x0003345d     0x4780 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+ .debug_loc     0x00037bdd     0xadc7 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+ .debug_loc     0x000429a4     0x8b94 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+ .debug_loc     0x0004b538    0x12822 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
-.debug_ranges   0x00000000     0xa6e8
+.debug_ranges   0x00000000     0xa7c8
  .debug_ranges  0x00000000      0x268 ./utilities/fsl_debug_console.o
  .debug_ranges  0x00000268       0xf0 ./usb/phy/usb_phy.o
  .debug_ranges  0x00000358      0x1e8 ./usb/device/source/ehci/usb_device_ehci.o
@@ -4771,40 +4774,40 @@ LOAD linker stubs
  .debug_ranges  0x000009f0      0x1e8 ./usb/device/class/hid/usb_device_hid.o
  .debug_ranges  0x00000bd8      0x1d8 ./usb/device/class/usb_device_class.o
  .debug_ranges  0x00000db0      0x5a0 ./startup/startup_mimxrt1064.o
- .debug_ranges  0x00001350      0xbc8 ./source/Scan.o
- .debug_ranges  0x00001f18       0x70 ./source/adc.o
- .debug_ranges  0x00001f88      0xea8 ./source/app.o
- .debug_ranges  0x00002e30      0x400 ./source/backend_postp.o
- .debug_ranges  0x00003230       0x18 ./source/bezier.o
- .debug_ranges  0x00003248       0x78 ./source/composite.o
- .debug_ranges  0x000032c0      0x380 ./source/dlt.o
- .debug_ranges  0x00003640       0x50 ./source/hid_generic.o
- .debug_ranges  0x00003690       0xa8 ./source/hid_mouse.o
- .debug_ranges  0x00003738       0x10 ./source/semihost_hardfault.o
- .debug_ranges  0x00003748       0x60 ./source/usb_device_descriptor.o
- .debug_ranges  0x000037a8      0x158 ./drivers/fsl_adc.o
- .debug_ranges  0x00003900     0x1610 ./drivers/fsl_clock.o
- .debug_ranges  0x00004f10       0x98 ./drivers/fsl_gpio.o
- .debug_ranges  0x00004fa8      0x108 ./drivers/fsl_gpt.o
- .debug_ranges  0x000050b0      0x5f8 ./drivers/fsl_lpuart.o
- .debug_ranges  0x000056a8      0x148 ./drivers/fsl_qtmr.o
- .debug_ranges  0x000057f0       0xd0 ./drivers/fsl_wdog.o
- .debug_ranges  0x000058c0       0xd8 ./drivers/fsl_xbara.o
- .debug_ranges  0x00005998       0x20 ./device/system_MIMXRT1064.o
- .debug_ranges  0x000059b8       0x88 ./component/uart/fsl_adapter_lpuart.o
- .debug_ranges  0x00005a40      0x1e8 ./component/serial_manager/fsl_component_serial_manager.o
- .debug_ranges  0x00005c28       0x38 ./component/serial_manager/fsl_component_serial_port_uart.o
- .debug_ranges  0x00005c60      0x498 ./component/osa/fsl_os_abstraction_bm.o
- .debug_ranges  0x000060f8       0xd0 ./board/board.o
- .debug_ranges  0x000061c8     0x12f0 ./board/clock_config.o
- .debug_ranges  0x000074b8      0x1b8 ./board/peripherals.o
- .debug_ranges  0x00007670      0x1c0 ./board/pin_mux.o
- .debug_ranges  0x00007830      0x348 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
- .debug_ranges  0x00007b78      0xd88 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
- .debug_ranges  0x00008900      0x7c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
- .debug_ranges  0x000090c0     0x1628 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+ .debug_ranges  0x00001350      0xca0 ./source/Scan.o
+ .debug_ranges  0x00001ff0       0x70 ./source/adc.o
+ .debug_ranges  0x00002060      0xea8 ./source/app.o
+ .debug_ranges  0x00002f08      0x400 ./source/backend_postp.o
+ .debug_ranges  0x00003308       0x18 ./source/bezier.o
+ .debug_ranges  0x00003320       0x78 ./source/composite.o
+ .debug_ranges  0x00003398      0x380 ./source/dlt.o
+ .debug_ranges  0x00003718       0x50 ./source/hid_generic.o
+ .debug_ranges  0x00003768       0xa8 ./source/hid_mouse.o
+ .debug_ranges  0x00003810       0x10 ./source/semihost_hardfault.o
+ .debug_ranges  0x00003820       0x60 ./source/usb_device_descriptor.o
+ .debug_ranges  0x00003880      0x158 ./drivers/fsl_adc.o
+ .debug_ranges  0x000039d8     0x1610 ./drivers/fsl_clock.o
+ .debug_ranges  0x00004fe8       0x98 ./drivers/fsl_gpio.o
+ .debug_ranges  0x00005080      0x108 ./drivers/fsl_gpt.o
+ .debug_ranges  0x00005188      0x5f8 ./drivers/fsl_lpuart.o
+ .debug_ranges  0x00005780      0x148 ./drivers/fsl_qtmr.o
+ .debug_ranges  0x000058c8       0xd0 ./drivers/fsl_wdog.o
+ .debug_ranges  0x00005998       0xd8 ./drivers/fsl_xbara.o
+ .debug_ranges  0x00005a70       0x20 ./device/system_MIMXRT1064.o
+ .debug_ranges  0x00005a90       0x88 ./component/uart/fsl_adapter_lpuart.o
+ .debug_ranges  0x00005b18      0x1e8 ./component/serial_manager/fsl_component_serial_manager.o
+ .debug_ranges  0x00005d00       0x38 ./component/serial_manager/fsl_component_serial_port_uart.o
+ .debug_ranges  0x00005d38      0x498 ./component/osa/fsl_os_abstraction_bm.o
+ .debug_ranges  0x000061d0       0xd0 ./board/board.o
+ .debug_ranges  0x000062a0     0x12f0 ./board/clock_config.o
+ .debug_ranges  0x00007590      0x1b8 ./board/peripherals.o
+ .debug_ranges  0x00007748      0x1c0 ./board/pin_mux.o
+ .debug_ranges  0x00007908      0x348 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+ .debug_ranges  0x00007c50      0xd88 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
+ .debug_ranges  0x000089d8      0x7c0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
+ .debug_ranges  0x00009198     0x1630 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
-.debug_frame    0x00000000     0x5388
+.debug_frame    0x00000000     0x53d4
  .debug_frame   0x00000000      0x280 ./utilities/fsl_debug_console.o
  .debug_frame   0x00000280       0xc8 ./usb/phy/usb_phy.o
  .debug_frame   0x00000348      0x208 ./usb/device/source/ehci/usb_device_ehci.o
@@ -4844,7 +4847,7 @@ LOAD linker stubs
  .debug_frame   0x00004194      0x288 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
  .debug_frame   0x0000441c      0x468 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_multi.o)
  .debug_frame   0x00004884      0x3b0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
- .debug_frame   0x00004c34      0x754 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
+ .debug_frame   0x00004c34      0x7a0 D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 
 Cross Reference Table
 
@@ -5074,6 +5077,7 @@ BS_fine_add_remained_touch_xy                     D:\Project\21.IR_Touch\BE_FW\w
 BS_fine_get_crossed_lines                         D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 BS_fine_get_initial_ep5                           D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
                                                   D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
+BS_fine_get_initial_ep5_cent                      D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
 BS_fine_malloc                                    D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_fine.o)
                                                   D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_main.o)
 BS_getLinePosInBuf                                D:\Project\21.IR_Touch\BE_FW\wmc-ctsi-0850-fe-be-app\lib/libbackend_irt650_nxp2.a(backend_utils.o)
@@ -6638,6 +6642,7 @@ s_prevTime                                        ./source/gpt.o
 s_prevTime2                                       ./source/gpt.o
 s_prevTouchCnt                                    ./source/backend_postp.o
 s_prevTouchCntPen                                 ./source/backend_postp.o
+                                                  ./source/app.o
 s_ratioXforP2L                                    ./source/backend_postp.o
 s_ratioYforP2L                                    ./source/backend_postp.o
 s_scroll_Flag                                     ./source/backend_postp.o

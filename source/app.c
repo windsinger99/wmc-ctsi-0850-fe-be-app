@@ -1069,6 +1069,7 @@ int backend_process_line_data(void)
 #endif
 #if 1 //for test
     APP_TIME_ADD(2);
+    nextScan.numTouch = s_prevTouchCntPen;
     if (BG_call_backend2((DEF_PD_INFO *)InBuf, (DEF_DATA_INFO2 *)OutBuf2, (next_scan_t *)&nextScan) != NO_BACKEND_ERROR)
     {
         TRACE_ERROR("(&)");
@@ -1083,7 +1084,7 @@ int backend_process_line_data(void)
 //        if (contError > MAX_CONT_ERROR_CNT) {
         	//contError = 0;
             if (g_forcedagc.rmFrameCnt < 0xFF) {
-            	g_forcedagc.rmFrameCnt += 5;
+            	g_forcedagc.rmFrameCnt += 2;		//5;
             }
         //}
 #endif
@@ -1117,7 +1118,7 @@ int backend_process_line_data(void)
             TRACEYJ("g_HostVendorGeneric.rmFrameCnt= %d (%d,%d)", g_forcedagc.rmFrameCnt, nextScan.x1 , nextScan.y1);
             if (g_forcedagc.rmFrameCnt < 0xFF) {
                 //g_HostVendorGeneric.rmFrameCnt++;
-            	g_forcedagc.rmFrameCnt += 2;
+            	g_forcedagc.rmFrameCnt += 1;
             }
         }
         else {
@@ -1140,7 +1141,7 @@ int backend_process_line_data(void)
         if (contTouch > MAX_CONT_TOUCH_CNT) {
             if ((nextScan.x1 + nextScan.y1) >= FRAME_REMAINED_LINE_MAX_X) {
                 if (g_forcedagc.rmFrameCnt < 0xFF) {
-                	g_forcedagc.rmFrameCnt += 2;
+                	g_forcedagc.rmFrameCnt += 1; 	//2;	//YJ@230817
                 }
             }
             else {
@@ -1835,7 +1836,7 @@ static void getVerString(uint8_t *txBuff, int idx)
     char *verStr = (char *)&txBuff[idx];
 
     memset(verStrBe, 0xFF, MAX_VER_STRING); //reset
-#if 0	// (MODEL_SPT == MODEL_CTSK_N650_V100)		//YJ@230223	for new boot		//YJ230616 for virtual hex FE
+#if (MODEL_SPT == MODEL_CTSK_N650_V100)		//YJ@230223	for new boot
     get_fw_version((char *)header1.ind.fwVersion, (char *)verStrBe, 3);
     TRACE("verStrBe= [%s][%s]", verStrBe, header1.ind.fwVersion);
     //memcpy((void *)&verStr[0], (void *)&verStrFe[0],  2);
@@ -2380,11 +2381,11 @@ void APP_Tasks(void)
         	set_DelayTimerUsec(6000);	// 6ms
 #endif
             scan_status = Scan_Process();
-            //APP_TIME_ADD(0);
+            APP_TIME_ADD(0);
 #ifdef BACKEND_TEST_DATA
             Make_Test_Data();
 #endif
-           // APP_TIME_ADD(1);
+            APP_TIME_ADD(1);
             if(scan_status == SCAN_INIT_COMPLETE)
             {
                 //TRACE("APP_MODE_BACKEND..\r\n");

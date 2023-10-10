@@ -437,8 +437,8 @@ typedef enum {
 #define THRESHOLD_DROP_PERCENT_ENABLE              TRUE
 #define THRESHOLD_DROP_PERCENT_SATURATION            40 //30 //nsmoon@220330
 
-#define Y_CORNER_THRESHOLD_DROP_PERCENT              40	//50
-#define X_CORNER_THRESHOLD_DROP_PERCENT              50
+#define Y_CORNER_THRESHOLD_DROP_PERCENT              30//40	//50
+#define X_CORNER_THRESHOLD_DROP_PERCENT              30	//50
 /*****************************************************************************/
 
 
