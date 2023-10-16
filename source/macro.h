@@ -520,7 +520,7 @@ extern uint8_t gLedSftClkCnt;
 #define MCU_LED_CELL_EN_COMP1_VALUE     TMR_1US     //LED OFF Time
 #define MCU_LED_CELL_EN_COMP2_VALUE     TMR_800NS     //LED ON Time
 #endif
-#elif (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)
+#elif (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)||(MODEL_TYPE ==  WMC_0850_NXP_VE)
 //=============================================================================
 // QTMR COM1, COM2 Value -> Used : QTMR_Init
 // Operating at 150Mhz
