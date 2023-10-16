@@ -1069,7 +1069,7 @@ int backend_process_line_data(void)
 #endif
 #if 1 //for test
     APP_TIME_ADD(2);
-    nextScan.numTouch = s_prevTouchCntPen;
+    nextScan.numTouch = 0;	//s_prevTouchCntPen;	//YJ@231016 after Tuning 4pen
     if (BG_call_backend2((DEF_PD_INFO *)InBuf, (DEF_DATA_INFO2 *)OutBuf2, (next_scan_t *)&nextScan) != NO_BACKEND_ERROR)
     {
         TRACE_ERROR("(&)");
