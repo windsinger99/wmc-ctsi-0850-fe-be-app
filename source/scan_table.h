@@ -214,7 +214,7 @@ typedef struct {
 
 		#define LED_ON_DAC_MIN_Y         100	// LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_Y         254	// 254
-		#define LED_ON_DAC_INIT_Y        120  	// 220
+		#define LED_ON_DAC_INIT_Y        180  	// 220
 
 		#define LED_GAIN_INIT_X			 1
 		#define LED_GAIN_INIT_Y			 1//3
