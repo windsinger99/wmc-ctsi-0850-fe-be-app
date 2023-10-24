@@ -1591,6 +1591,13 @@ int s_cal_hor_scroll(vec_t edgeData_in)
 #define SIZE_YCORD_L			(s_aarea_end_y *0.13f) +s_aarea_zero_y
 #define SIZE_YCORD_R			s_aarea_end_y *0.87f
 
+#ifdef SIZE_DEFINE_BORDER
+#define SIZE_XCORD_BORDER_L			(s_aarea_end_x *0.06f) +s_aarea_zero_x
+#define SIZE_XCORD_BORDER_R			s_aarea_end_x *0.94f
+#define SIZE_YCORD_BORDER_L			(s_aarea_end_y *0.05f) +s_aarea_zero_y
+#define SIZE_YCORD_BORDER_R			s_aarea_end_y *0.95f
+#endif
+
 #ifdef MARKER_TOP_AAREA
 #define MARKER_TOP_YT			(s_aarea_end_y - 200.0f)		//65VE end_y = 833.15f;
 #define MARKER_TOP_YB			(s_aarea_zero_y + 200.0f)		//65VE end_y = 833.15f;
@@ -1682,9 +1689,11 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
     float tmpSizeMin = GET_MIN(pCurDataIn[idx].xSize, pCurDataIn[idx].ySize);
 
     // float size50Min = GET_MIN(th10WidthX,th10WidthY);
-    //float thX_ratio = pCurDataIn[idx].th50CntX /pCurDataIn[idx].th10CntX;
-    //float thY_ratio = pCurDataIn[idx].th50CntY /pCurDataIn[idx].th10CntY;
-    //float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);
+#ifdef SIZE_DEFINE_BORDER
+    float thX_ratio = pCurDataIn[idx].th10CntX /pCurDataIn[idx].th50CntX;
+    float thY_ratio = pCurDataIn[idx].th10CntY /pCurDataIn[idx].th50CntY;
+    float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);
+#endif
     int size_type = ENUM_SIZE_UNKNOWN;
 
 
@@ -1692,6 +1701,17 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 
     float vfXAxisInfo[4]= { s_aarea_zero_x, SIZE_XCORD_L, SIZE_XCORD_R, s_aarea_end_x};
     float vfYAxisInfo[4]= { s_aarea_zero_y, SIZE_YCORD_L, SIZE_YCORD_R, s_aarea_end_y};
+#ifdef SIZE_DEFINE_BORDER
+    float vfXAxisInfoBr[4]= { s_aarea_zero_x, SIZE_XCORD_BORDER_L, SIZE_XCORD_BORDER_R, s_aarea_end_x};
+    float vfYAxisInfoBr[4]= { s_aarea_zero_y, SIZE_YCORD_BORDER_L, SIZE_YCORD_BORDER_R, s_aarea_end_y};
+    uint8_t border = 0;
+
+    if(IsSide(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4)
+    		|| IsEdge(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4))
+    {
+    	border = 1;
+    }
+#endif
 
     if(IsSide(posX, posY, vfXAxisInfo, 4, vfYAxisInfo, 4))
     {
@@ -1815,7 +1835,26 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
         	else size_type = ENUM_SIZE_UNKNOWN; //unknown
 
 #else
+#ifdef SIZE_DEFINE_BORDER
+        	if(border == 1)
+        	{
+        		if(th_min_ratio > 0.8)
+        		{
+        			pCurDataIn[idx].status = TOUCH_DOWN_STATE;
+        			size_type = ENUM_SIZE_MARKER;
+        		}
+        		else if(th_min_ratio < 0.7)
+        		{
+        			pCurDataIn[idx].status = TOUCH_DOWN_STATE;
+        			size_type = ENUM_SIZE_PEN;
+        		}
+        		else size_type = ENUM_SIZE_UNKNOWN;
+        	}
+        	else size_type = ENUM_SIZE_UNKNOWN;
+
+#else
         	 size_type = ENUM_SIZE_UNKNOWN; //unknown
+#endif
 #endif
 #endif
         }
