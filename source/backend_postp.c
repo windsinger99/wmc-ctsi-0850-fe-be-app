@@ -2065,7 +2065,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
                 //check down threshold
                 //  if (thr10_50 > DOWN_THR10_50_RATIO)
 
-#define THR10_50_RATIO_DOWN	0.17f  //0.2f	//
+#define THR10_50_RATIO_DOWN	0.15f  //0.2f	//
                 if (thr10_50 > THR10_50_RATIO_DOWN)
                 {
 

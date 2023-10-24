@@ -395,8 +395,8 @@ instance:
         - debugMode: 'kQTMR_RunNormalInDebug'
         - timerModeInit: 'pwmOutput'
         - pwmMode:
-          - freq_value_str: '320'
-          - dutyCyclePercent: '50'
+          - freq_value_str: '435'
+          - dutyCyclePercent: '34'
           - outputPolarity: 'true'
         - dmaIntMode: 'polling'
     - interruptVector:
@@ -423,7 +423,7 @@ static void BOARD_TMR1_init(void) {
   /* Quad timer channel Channel_0 peripheral initialization */
   QTMR_Init(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, &BOARD_TMR1_Channel_0_config);
   /* Setup the PWM mode of the timer channel */
-  QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, 468750UL, 50U, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
+  QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, 344828UL, 34U, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
 }
 
 /***********************************************************************************************************************
@@ -457,8 +457,8 @@ instance:
         - debugMode: 'kQTMR_RunNormalInDebug'
         - timerModeInit: 'pwmOutput'
         - pwmMode:
-          - freq_value_str: '320'
-          - dutyCyclePercent: '50'
+          - freq_value_str: '435'
+          - dutyCyclePercent: '34'
           - outputPolarity: 'true'
         - dmaIntMode: 'polling'
     - interruptVector:
@@ -485,7 +485,7 @@ static void BOARD_TMR2_init(void) {
   /* Quad timer channel Channel_3 peripheral initialization */
   QTMR_Init(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, &BOARD_TMR2_Channel_3_config);
   /* Setup the PWM mode of the timer channel */
-  QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, 468750UL, 50U, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
+  QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, 344828UL, 34U, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
 }
 
 /***********************************************************************************************************************
@@ -519,7 +519,7 @@ instance:
         - debugMode: 'kQTMR_RunNormalInDebug'
         - timerModeInit: 'pwmOutput'
         - pwmMode:
-          - freq_value_str: '330'
+          - freq_value_str: '445'
           - dutyCyclePercent: '10'
           - outputPolarity: 'false'
         - dmaIntMode: 'polling'
@@ -547,7 +547,7 @@ static void BOARD_TMR3_init(void) {
   /* Quad timer channel Channel_0 peripheral initialization */
   QTMR_Init(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, &BOARD_TMR3_Channel_0_config);
   /* Setup the PWM mode of the timer channel */
-  QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, 454545UL, 10U, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
+  QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, 337079UL, 10U, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
 }
 
 /***********************************************************************************************************************

@@ -181,8 +181,8 @@ extern int s_debug_size_type, s_debug_edge;
 #define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
 #define MAX_SIZE_MARKER_1      	12.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
 
-#define MAX_SIZE_PEN_E2         6.0f	//7.0f	//12.5f			//  < w_max  2
-#define MAX_SIZE_MARKER_E1      7.0f	//7.5f	//13.0f			//  > w_min  4
+#define MAX_SIZE_PEN_E2         9.0f	//6.0f	//7.0f	//12.5f			//  < w_max  2
+#define MAX_SIZE_MARKER_E1      9.5f	//7.0f	//7.5f	//13.0f			//  > w_min  4
 
 #define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31
 

@@ -96,7 +96,7 @@
 
 #ifdef FRONTEND_LINE_THRESHOLD
 #define LINE_THRESHOLD_SIZE		(1)
-#define LINE_THRESHOLD_VALUE	(75)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
+#define LINE_THRESHOLD_VALUE	(75)	//(75)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
 #endif
 
 #if (_DEBUG == 1) || defined(DEBUG)
