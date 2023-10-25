@@ -2280,9 +2280,9 @@ uint32_t Scan_Data_Process(void)
         {
 #if 1 //nsmoon@210716
             ledIdx = offset + pdIdx;
-            if ( ledIdx < 0 && ledIdx >= X_CELL_SIZE ) {
-                continue;
-            }
+            if ( ledIdx < 0 && ledIdx >= X_CELL_SIZE ) {  //&& => ||	//YJ@231025
+                            continue;
+           }
 #endif
 #if (ENABLE_UART_CMD_PROCESS && ENABLE_CAL_DEBUG_PRINT > 1) //nsmoon@211213
             if (showCnt_test > 0 && scan_axis_test == X_AXIS) {
@@ -2365,9 +2365,9 @@ uint32_t Scan_Data_Process(void)
         {
 #if 1 //nsmoon@210716
             ledIdx = offset + pdIdx;
-            if ( ledIdx < 0 && ledIdx >= Y_CELL_SIZE ) {
-                continue;
-            }
+            if ( ledIdx < 0 && ledIdx >= Y_CELL_SIZE ) {  //&& => ||	//YJ@231025
+                                       continue;
+           }
 #endif
 #if (ENABLE_UART_CMD_PROCESS && ENABLE_CAL_DEBUG_PRINT > 1) //nsmoon@211213
             if (showCnt_test > 0 && scan_axis_test == Y_AXIS) {
