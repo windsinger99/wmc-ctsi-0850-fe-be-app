@@ -1072,7 +1072,9 @@ int backend_process_line_data(void)
     nextScan.numTouch = 0;	//s_prevTouchCntPen;	//YJ@231016 after Tuning 4pen
     if (BG_call_backend2((DEF_PD_INFO *)InBuf, (DEF_DATA_INFO2 *)OutBuf2, (next_scan_t *)&nextScan) != NO_BACKEND_ERROR)
     {
-        TRACE_ERROR("(&)");
+#if (ENABLE_DEBUG_MESSAGE != 1)
+    	TRACE_ERROR("(&)");
+#endif
         //g_HostVendorGeneric.rmFrameCnt ++;	//= 4;	//YJ@211201
 #if 1
 #define MAX_CONT_ERROR_CNT	200 //100
@@ -2207,7 +2209,10 @@ uint8_t backendProcess(void)
         }
         else
         {
-        	TRACE_ERROR("BackEnd Line Data Error!!!\r\n");
+            if (appMode == APP_MODE_BACKEND) { 	//YJ@231025
+            	TRACE_ERROR("BackEnd Line Data Error!!!\r\n");
+            }
+
         }
         break;
 

@@ -1689,11 +1689,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
     float tmpSizeMin = GET_MIN(pCurDataIn[idx].xSize, pCurDataIn[idx].ySize);
 
     // float size50Min = GET_MIN(th10WidthX,th10WidthY);
-#ifdef SIZE_DEFINE_BORDER
-    float thX_ratio = pCurDataIn[idx].th10CntX /pCurDataIn[idx].th50CntX;
-    float thY_ratio = pCurDataIn[idx].th10CntY /pCurDataIn[idx].th50CntY;
-    float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);
-#endif
+
     int size_type = ENUM_SIZE_UNKNOWN;
 
 
@@ -1709,7 +1705,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
     if(IsSide(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4)
     		|| IsEdge(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4))
     {
-    	border = 1;
+    	border += 1;
     }
 #endif
 
@@ -1836,8 +1832,12 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 
 #else
 #ifdef SIZE_DEFINE_BORDER
-        	if(border == 1)
+        	if(border > 0)
         	{
+        		float thX_ratio = (float)pCurDataIn[idx].th10CntX /pCurDataIn[idx].th50CntX;
+        		float thY_ratio = (float)pCurDataIn[idx].th10CntY /pCurDataIn[idx].th50CntY;
+        		float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);
+
         		if(th_min_ratio > 0.8)
         		{
         			pCurDataIn[idx].status = TOUCH_DOWN_STATE;

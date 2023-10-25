@@ -176,8 +176,8 @@ extern int s_debug_size_type, s_debug_edge;
 #define MAX_SIZE_MARKER_2_SIDE  13.0f	//11.0f	R004
 #elif (MODEL_SPT == MODEL_CTSK_650_V100)||(MODEL_SPT == MODEL_CTSK_N650_V100)||(MODEL_SPT == MODEL_CTSK_N750_V100)||(MODEL_SPT == MODEL_CTSK_N850_V100)
 #define START_FRAME_LIMIT			7	//7	//10//7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
-#define START_FRAME_MULTI3			5
-#define START_FRAME_ERASE			5
+#define START_FRAME_MULTI3			3	//5
+#define START_FRAME_ERASE			3	//5
 #define LIB_0418		1
 #ifdef LIB_0418
 #define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
