@@ -208,11 +208,11 @@ typedef struct {
 		#define LED_ON_DAC_MIN           120		// == 95mA
 		#define LED_ON_DAC_UINT           2
 
-		#define LED_ON_DAC_MIN_X         80	// 180	//LED_ON_DAC_MIN
+		#define LED_ON_DAC_MIN_X         120	// 180	//LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_X         254	// 254
 		#define LED_ON_DAC_INIT_X        120	// 150 ~ 이상
 
-		#define LED_ON_DAC_MIN_Y         100	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MIN_Y         120	// LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_Y         254	// 254
 		#define LED_ON_DAC_INIT_Y        180  	// 220
 
@@ -224,7 +224,7 @@ typedef struct {
 
 		#define PD_GAIN_OFFSET_1		70
 		#define PD_GAIN_OFFSET_2		90
-		#define PD_GAIN_OFFSET_3		110
+		#define PD_GAIN_OFFSET_3		100
 
 #endif
 extern  ledSinkControl_t LedSinkCurrentTbl[LED_SINK_CONTROL_STEPS];

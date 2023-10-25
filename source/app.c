@@ -2151,6 +2151,7 @@ uint8_t backendProcess(void)
         //TRACEBE("z");
         if(backend_process_line_data() == BACKEND_OK)
         {
+
             //while(isDelayScanTimerExpired() ==0);
             //setDelayScanTimer10Msec(100);
             //delay_test(5000);
