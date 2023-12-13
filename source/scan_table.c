@@ -30,6 +30,8 @@
 #include "WMC_0850_NXP_scan_table_4343.h"
 #elif (MODEL_TYPE ==  SLIM_0320_NXP)
 #include "SLIM_0320_NXP_scan_table_2963.h"
+#elif (MODEL_TYPE ==  WMC_0850_NXP_VE)
+#include "WMC_0850_VE_NXP_scan_table_3863.h"
 #else
 #error "not defined MODEL_TYPE"
 

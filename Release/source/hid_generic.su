@@ -1,5 +1,0 @@
-../source/hid_generic.c:58:14:USB_DeviceHidGenericCallback	8	static
-../source/hid_generic.c:221:14:USB_DeviceHidGenericSetConfigure	0	static
-../source/hid_generic.c:247:14:USB_DeviceHidGenericSetInterface	4	static
-../source/hid_generic.c:278:14:USB_DeviceHidGenericInit	4	static
-../source/hid_generic.c:295:5:USB_SendDigitizerReport	16	static

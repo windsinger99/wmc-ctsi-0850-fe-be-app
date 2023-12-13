@@ -1,6 +1,0 @@
-../source/hid_mouse.c:121:14:USB_DeviceHidMouseCallback	0	static
-../source/hid_mouse.c:152:14:USB_DeviceHidMouseSetConfigure	8	static
-../source/hid_mouse.c:162:14:USB_DeviceHidMouseSetInterface	8	static
-../source/hid_mouse.c:172:14:USB_DeviceHidMouseInit	0	static
-../source/hid_mouse.c:179:5:USB_SendMouseReport	16	static
-../source/hid_mouse.c:202:10:USB_GetMouseBuffer	0	static

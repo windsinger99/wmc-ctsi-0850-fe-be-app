@@ -1,9 +1,0 @@
-../drivers/fsl_adc.c:64:6:ADC_Init	4	static
-../drivers/fsl_adc.c:114:6:ADC_Deinit	0	static
-../drivers/fsl_adc.c:142:6:ADC_GetDefaultConfig	8	static
-../drivers/fsl_adc.c:189:6:ADC_SetChannelConfig	0	static
-../drivers/fsl_adc.c:224:10:ADC_DoAutoCalibration	8	static
-../drivers/fsl_adc.c:284:6:ADC_SetOffsetConfig	0	static
-../drivers/fsl_adc.c:311:6:ADC_SetHardwareCompareConfig	0	static
-../drivers/fsl_adc.c:359:6:ADC_SetHardwareAverageConfig	0	static
-../drivers/fsl_adc.c:382:6:ADC_ClearStatusFlags	0	static

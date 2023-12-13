@@ -1,7 +1,0 @@
-../source/usb_device_descriptor.c:987:14:USB_DeviceGetDeviceDescriptor	0	static
-../source/usb_device_descriptor.c:1005:14:USB_DeviceGetConfigurationDescriptor	0	static
-../source/usb_device_descriptor.c:1018:14:USB_DeviceGetStringDescriptor	8	static
-../source/usb_device_descriptor.c:1055:14:USB_DeviceGetHidDescriptor	0	static
-../source/usb_device_descriptor.c:1061:14:USB_DeviceGetHidReportDescriptor	0	static
-../source/usb_device_descriptor.c:1082:14:USB_DeviceGetHidPhysicalDescriptor	0	static
-../source/usb_device_descriptor.c:1095:14:USB_DeviceSetSpeed	8	static
