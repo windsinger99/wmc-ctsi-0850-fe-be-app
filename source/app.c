@@ -2153,6 +2153,7 @@ uint8_t backendProcess(void)
         //TRACEBE("z");
         if(backend_process_line_data() == BACKEND_OK)
         {
+
             //while(isDelayScanTimerExpired() ==0);
             //setDelayScanTimer10Msec(100);
             //delay_test(5000);
@@ -2165,7 +2166,6 @@ uint8_t backendProcess(void)
 #ifdef HOR_EDGE_TOUCH_ENABLE
             if (s_output_buffer.len == 0 && s_wheel_delta != 0)
             {
-
 #ifdef WHEEL_REPORT_TIME_FIX
                 wheel_Send_time +=s_wheel_get_time_diff();
                 while(wheel_Send_time < 60)		//60	100us

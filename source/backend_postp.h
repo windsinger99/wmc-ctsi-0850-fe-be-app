@@ -107,8 +107,13 @@ extern int s_debug_size_type, s_debug_edge;
 #define STAY_FRAME_LIMIT			10
 #define START_FRAME_LIMIT_ERASER	6	//5	//10		//YJ1127
 
+#if 1	//YJ@231227
+#define D2MIN_LIMIT_INITIAL			2000	//8000 //1500
+#define D2MIN_LIMIT_PEN				5000	//80000 //15000
+#else
 #define D2MIN_LIMIT_INITIAL			8000 //1500
 #define D2MIN_LIMIT_PEN				80000 //15000
+#endif
 #define D2MIN_ACCEL_MFINGER			5000
 #define ACCEL_LIMIT_PEN				3 //5
 //#define ACCEL_LIMIT_MFINGER			20

@@ -229,6 +229,10 @@ void setProcessExtLightTimerMsec( uint32_t delay_ms);
 void clearProcessExtLightTimer(void);
 int16_t isProcessExtLightTimerExpired(void);
 
+void setTestTimerMsec(uint32_t val);
+void clearTestControlTimer(void);
+int16_t isTestControlTimerExpired(void);
+
 uint16_t decideDeadCell(void);
 
 void software_reset(void);

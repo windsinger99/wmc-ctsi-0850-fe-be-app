@@ -27,7 +27,7 @@ extern void print_scan_threshold(const char *dbgStr, uint8_t axis, int16_t ledId
 #define TRACE_VCOM(...)    DbgConsole_Printf(__VA_ARGS__);
 #define TRACE_MENU(...)    DbgConsole_Printf(__VA_ARGS__);vcom_delay(100);		//for usb tx delay
 #define DEBUG_BUF_MAX					256
-#define HIS_MAX							3
+#define HIS_MAX							6	//3
 #define CMD_MAX							30
 #define WRONG							"\n\r\033[1;31m Wrong Command...Try again...\033[0m \n\r"
 #define VCOM_SHELL_MODE					0
@@ -40,6 +40,7 @@ extern void Current_adj_mode(uint8_t val);
 extern void display_menu(void);
 
 extern uint8_t vcom_mode, nr_option;
+extern uint8_t testFlag, testblockedlinecnt;
 
 int vcom_delay(uint32_t cnt);
 

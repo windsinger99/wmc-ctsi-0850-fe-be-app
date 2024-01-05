@@ -17,6 +17,7 @@ int HisIndex = 0;
 uint16_t setValueDAC, getValueDAC;
 uint16_t setADCSel, getADCSel;
 uint8_t vcom_mode, nr_option;
+uint8_t testFlag, testblockedlinecnt;
 
 static const char *delim = " \f\n\r\t\v";
 
@@ -114,6 +115,10 @@ void display_menu(void)
 	TRACE_MENU("\r\n %d. AGCD	:	AGC Calibration data Display", i++);
 	TRACE_MENU("\r\n %d. DAC		:	Fixed Current mode ", i++);
 	TRACE_MENU("\r\n %d. THD		:	DLT Display Threshold	1 = on, 0 = off ", i++);
+	TRACE_MENU("\r\n %d. FOC		:	Forced AGC", i++);
+	TRACE_MENU("\r\n %d. TIME	:	GPT2 Timer,  Value X 10ms, T1", i++);
+	TRACE_MENU("\r\n %d. FLAG	:	Timer test delay flag", i++);
+	TRACE_MENU("\r\n %d. BLOCK	:	Block line cnt test", i++);
 	TRACE_MENU("\r\n ex) cmd xx xx ... enter  -> xx max = 255");
 	TRACE_MENU("\r\n/********************************************/\r\n");
 }
@@ -222,6 +227,46 @@ int forcedAgc_test(int argc, char **argv)
 	return 0;
 }
 
+
+int Timertest(int argc, char **argv)
+{
+	int i = 0;	//, j = 0 ;
+	i = (uint16_t)atoi(argv[1]);
+
+	if(i > 0)
+	{
+		setTestTimerMsec(i);
+		TRACE_VCOM("\r\nTimer Set (%d) \r\n", i);
+	}
+	return 0;
+}
+
+int Flagtest(int argc, char **argv)
+{
+	int i = 0;
+	i = (uint8_t)atoi(argv[1]);
+	if(i > 0)
+	{
+		testFlag = i;
+		TRACE_VCOM("\r\nFlag Set (%d) \r\n", i);
+	}
+	else testFlag = 0;
+
+	return 0;
+}
+
+int Blocklinetest(int argc, char **argv)
+{
+	int i = 0;
+	i = (uint8_t)atoi(argv[1]);
+	testblockedlinecnt = i;
+	TRACE_VCOM("\r\nBlocked Line cnt (%d) \r\n", i );
+
+	return 0;
+}
+
+
+
 TCommand Cmds[CMD_MAX] = 	{
 							{	"?"						,	CmdContents							},
 							{	"TEST"					,	testprint							},
@@ -230,6 +275,9 @@ TCommand Cmds[CMD_MAX] = 	{
 							{	"DAC"					,	DAC_test_mode						},
 							{	"THD"					,	dlt_TH_display						},
 							{	"FOC"					,	forcedAgc_test						},
+							{	"TIME"					,	Timertest							},
+							{	"FLAG"					,	Flagtest							},
+							{	"BLOCK"					,	Blocklinetest							},
 							{	"NULL"					,	NULL								}
 };
 
