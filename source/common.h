@@ -41,6 +41,8 @@
 #define WMC_0650_VE_NXP		50000
 #define SLIM_0320_NXP		60000
 #define WMC_0850_NXP_VE 	70000
+#define SLIM_0750_NXP_VE 	80000
+#define WMC_0750_NXP_VE 	90000
 
 #define MODEL_TYPE          WMC_0850_NXP_VE
 //-----------------------------------------------------------------------------
@@ -91,6 +93,20 @@
 #define SPM_MODE_ENABLE         TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
 #elif (MODEL_TYPE == WMC_0850_NXP_VE)
+#define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
+#define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
+#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
+#define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
+#define SPM_MODE_ENABLE         		   TRUE
+#define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
+#elif (MODEL_TYPE == SLIM_0750_NXP_VE)
+#define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
+#define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
+#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
+#define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
+#define SPM_MODE_ENABLE         		   TRUE
+#define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
+#elif (MODEL_TYPE == WMC_0750_NXP_VE)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
 #define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
@@ -158,6 +174,10 @@
 #elif (MODEL_TYPE == SLIM_0320_NXP)
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #elif (MODEL_TYPE == WMC_0850_NXP_VE)
+#define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
+#elif (MODEL_TYPE == SLIM_0750_NXP_VE)
+#define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
+#elif (MODEL_TYPE == WMC_0750_NXP_VE)
 #define DLT_THRESHOLD_ENABLE                FALSE   // nsmoon@220119
 #endif
 
@@ -330,6 +350,10 @@
 #elif (MODEL_TYPE == SLIM_0320_NXP)
 #define PD_LEVEL_LOW                130  //<==default 130
 #elif (MODEL_TYPE == WMC_0850_NXP_VE)
+#define PD_LEVEL_LOW                130  //<==default 130
+#elif (MODEL_TYPE == SLIM_0750_NXP_VE)
+#define PD_LEVEL_LOW                130  //<==default 130
+#elif (MODEL_TYPE == WMC_0750_NXP_VE)
 #define PD_LEVEL_LOW                130  //<==default 130
 #endif
 #define PD_LEVEL_TOLERANCE_X        30

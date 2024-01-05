@@ -483,6 +483,142 @@ typedef enum {
 #define LED_BD_INDEX_END        (TOTAL_LED_BD_NUM - 1)          // 0,1,2,3,4,5
 /*****************************************************************************/
 
+#elif (MODEL_TYPE == SLIM_0750_NXP_VE)
+#define X_CELL_SIZE             132	//96     // No. of devices on X-Axis (Top or Bottom B'd)
+#define Y_CELL_SIZE             92          // No. of devices on Y-Axis (Right or Left B'd)
+#define X_MAX_OFFSET            MAX_X_SLOPE_VAL //38        // x tilt
+#define Y_MAX_OFFSET            MAX_Y_SLOPE_VAL //38        //
+
+#define CELLS_PER_CS            12  //10  //9 // number of PDs per one chip-select
+#define ENABLED_CS_NUM          1             // number of enabled chip-select for PD
+#define ADC_NUM                 2   //3       // number of ADCs to simultaneously read the PD signal level
+#define PD_SIGNAL_OUT_NUM       12  //9       // number of output of PD signals
+#define ADC_GROUP_NUM           2   //3       // PD_SIGNAL_OUT_NUM / ADC_NUM
+#define NUM_PD_NOT_ALIGNED      4   //8       // see last PD board(Y(R2)) //nsmoon@210708, FIXME!!
+
+#define X_LED_BD_NUM            4
+#define X_LED_BD1_CELL_NUM      41  //34  //37
+#define X_LED_BD2_CELL_NUM      28  //27  //30
+#define X_LED_BD3_CELL_NUM      25  //35  //38
+#define X_LED_BD4_CELL_NUM      38  //35  //38
+
+#define Y_LED_BD_NUM            2
+#define Y_LED_BD1_CELL_NUM      47  //41  //45
+#define Y_LED_BD2_CELL_NUM      45  //37  //37
+
+#define X_PD_BD_NUM             4
+#define X_PD_BD1_CELL_NUM       40  //34  //36
+#define X_PD_BD2_CELL_NUM       27  //28  //31
+#define X_PD_BD3_CELL_NUM       27  //34  //38
+#define X_PD_BD4_CELL_NUM       38  //34  //38
+
+#define Y_PD_BD_NUM             2
+#define Y_PD_BD1_CELL_NUM       46  //43  //450
+#define Y_PD_BD2_CELL_NUM       46  //35  //37
+//------------------------------------------------------------------------------
+
+#define ADC_DMA_SIZE    12
+#define ADC_SIZE    12
+
+/*****************************************************************************/
+//
+/*****************************************************************************/
+
+#define TOTAL_CELL_NUM          (X_CELL_SIZE + Y_CELL_SIZE)   // Total No. of devices (LED or PD)
+#define X_TOTAL_OFFSET          (X_MAX_OFFSET * 2 + 1)
+#define Y_TOTAL_OFFSET          (Y_MAX_OFFSET * 2 + 1)
+
+/* TOTAL_X_PD_SHIFT_MAX */
+#define X_PD_SHIFT_BD_1         (X_PD_BD1_CELL_NUM / CELLS_PER_CS)          // 37/12 => 3 group(+7 pd)
+#define X_PD_SHIFT_BD_2         ((X_PD_BD2_CELL_NUM / CELLS_PER_CS) + 1)    // 23/10 => 3 group(+3 pd)
+#define X_PD_SHIFT_BD_3         ((X_PD_BD3_CELL_NUM / CELLS_PER_CS) + 1)    // 24/10 => 3 group(+4 pd)
+#define X_PD_SHIFT_BD_4         ((X_PD_BD3_CELL_NUM / CELLS_PER_CS))        // 33/10 => 3 group(+3 pd)
+#define TOTAL_X_PD_SHIFT_MAX    (X_PD_SHIFT_BD_1 + X_PD_SHIFT_BD_2 + X_PD_SHIFT_BD_3 + X_PD_SHIFT_BD_4)   // 12 group 17
+
+
+/* TOTAL_Y_PD_SHIFT_MAX */
+#define Y_PD_SHIFT_BD_1         (Y_PD_BD1_CELL_NUM / CELLS_PER_CS)          // 45/10 => 4 group(+5 pd)
+#define Y_PD_SHIFT_BD_2         ((Y_PD_BD2_CELL_NUM / CELLS_PER_CS) + 1)    // 45/10 => 5 group(+5 pd)
+#define TOTAL_Y_PD_SHIFT_MAX    (Y_PD_SHIFT_BD_1 + Y_PD_SHIFT_BD_2)         // 9 group 10
+
+/* miss calculation */
+#define X_PD_SHIFT_MAX          (TOTAL_X_PD_SHIFT_MAX)  // 12 group
+#define Y_PD_SHIFT_MAX          (TOTAL_Y_PD_SHIFT_MAX)  // 9 group
+#define TOTAL_PD_SHIFT_MAX      (X_PD_SHIFT_MAX + Y_PD_SHIFT_MAX + 1)   // 21
+
+/* */
+#define TOTAL_LED_BD_NUM        (X_LED_BD_NUM + Y_LED_BD_NUM)   // 6
+#define LED_BD_INDEX_END        (TOTAL_LED_BD_NUM - 1)          // 0,1,2,3,4,5
+/*****************************************************************************/
+
+#elif (MODEL_TYPE == WMC_0750_NXP_VE)
+#define X_CELL_SIZE             129	//96     // No. of devices on X-Axis (Top or Bottom B'd)
+#define Y_CELL_SIZE             90          // No. of devices on Y-Axis (Right or Left B'd)
+#define X_MAX_OFFSET            MAX_X_SLOPE_VAL //38        // x tilt
+#define Y_MAX_OFFSET            MAX_Y_SLOPE_VAL //38        //
+
+#define CELLS_PER_CS            12  //10  //9 // number of PDs per one chip-select
+#define ENABLED_CS_NUM          1             // number of enabled chip-select for PD
+#define ADC_NUM                 2   //3       // number of ADCs to simultaneously read the PD signal level
+#define PD_SIGNAL_OUT_NUM       12  //9       // number of output of PD signals
+#define ADC_GROUP_NUM           6   //3       // PD_SIGNAL_OUT_NUM / ADC_NUM
+#define NUM_PD_NOT_ALIGNED      6   //8       // see last PD board(Y(R2)) //nsmoon@210708, FIXME!!
+
+#define X_LED_BD_NUM            4
+#define X_LED_BD1_CELL_NUM      39  //34  //37
+#define X_LED_BD2_CELL_NUM      28  //27  //30
+#define X_LED_BD3_CELL_NUM      26  //35  //38
+#define X_LED_BD4_CELL_NUM      36  //35  //38
+
+#define Y_LED_BD_NUM            2
+#define Y_LED_BD1_CELL_NUM      47  //41  //45
+#define Y_LED_BD2_CELL_NUM      43  //37  //37
+
+#define X_PD_BD_NUM             4
+#define X_PD_BD1_CELL_NUM       35  //34  //36
+#define X_PD_BD2_CELL_NUM       29  //28  //31
+#define X_PD_BD3_CELL_NUM       30  //34  //38
+#define X_PD_BD4_CELL_NUM       35  //34  //38
+
+#define Y_PD_BD_NUM             2
+#define Y_PD_BD1_CELL_NUM       47  //43  //450
+#define Y_PD_BD2_CELL_NUM       43  //35  //37
+//------------------------------------------------------------------------------
+
+#define ADC_DMA_SIZE    12
+#define ADC_SIZE    12
+
+/*****************************************************************************/
+//
+/*****************************************************************************/
+
+#define TOTAL_CELL_NUM          (X_CELL_SIZE + Y_CELL_SIZE)   // Total No. of devices (LED or PD)
+#define X_TOTAL_OFFSET          (X_MAX_OFFSET * 2 + 1)
+#define Y_TOTAL_OFFSET          (Y_MAX_OFFSET * 2 + 1)
+
+/* TOTAL_X_PD_SHIFT_MAX */
+#define X_PD_SHIFT_BD_1         (X_PD_BD1_CELL_NUM / CELLS_PER_CS)          // 37/12 => 3 group(+7 pd)
+#define X_PD_SHIFT_BD_2         ((X_PD_BD2_CELL_NUM / CELLS_PER_CS) + 1)    // 23/10 => 3 group(+3 pd)
+#define X_PD_SHIFT_BD_3         ((X_PD_BD3_CELL_NUM / CELLS_PER_CS) + 1)    // 24/10 => 3 group(+4 pd)
+#define X_PD_SHIFT_BD_4         ((X_PD_BD3_CELL_NUM / CELLS_PER_CS))        // 33/10 => 3 group(+3 pd)
+#define TOTAL_X_PD_SHIFT_MAX    (X_PD_SHIFT_BD_1 + X_PD_SHIFT_BD_2 + X_PD_SHIFT_BD_3 + X_PD_SHIFT_BD_4)   // 12 group 17
+
+
+/* TOTAL_Y_PD_SHIFT_MAX */
+#define Y_PD_SHIFT_BD_1         (Y_PD_BD1_CELL_NUM / CELLS_PER_CS)          // 45/10 => 4 group(+5 pd)
+#define Y_PD_SHIFT_BD_2         ((Y_PD_BD2_CELL_NUM / CELLS_PER_CS) + 1)    // 45/10 => 5 group(+5 pd)
+#define TOTAL_Y_PD_SHIFT_MAX    (Y_PD_SHIFT_BD_1 + Y_PD_SHIFT_BD_2)         // 9 group 10
+
+/* miss calculation */
+#define X_PD_SHIFT_MAX          (TOTAL_X_PD_SHIFT_MAX)  // 12 group
+#define Y_PD_SHIFT_MAX          (TOTAL_Y_PD_SHIFT_MAX)  // 9 group
+#define TOTAL_PD_SHIFT_MAX      (X_PD_SHIFT_MAX + Y_PD_SHIFT_MAX + 1)   // 21
+
+/* */
+#define TOTAL_LED_BD_NUM        (X_LED_BD_NUM + Y_LED_BD_NUM)   // 6
+#define LED_BD_INDEX_END        (TOTAL_LED_BD_NUM - 1)          // 0,1,2,3,4,5
+/*****************************************************************************/
+
 
 #else
 #   error "MODEL_TYPE is not defined"

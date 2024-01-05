@@ -360,7 +360,7 @@ extern uint8_t gLedSftClkCnt;
 #define M_PD_SHIFT_CLK_High()       (MCU_PD_SHIFT_CLK_Set())
 #define M_PD_SHIFT_CLK_Low()        (MCU_PD_SHIFT_CLK_Clear())    // Initial state
 
-#define M_PD_SHIFT_DELAY_IO		 M_NOP_Delay_200nsec();
+#define M_PD_SHIFT_DELAY_IO		 M_NOP_Delay_600nsec();
 
 // M_PD_SHIFT_CLK_OnePulse -> 610ns
 #define M_PD_SHIFT_CLK_OnePulse() {  \
@@ -467,7 +467,7 @@ extern uint8_t gLedSftClkCnt;
 }
 
 
-
+#if 0 //Not Used
 
 #if (MODEL_TYPE == CTSI_0650_NXP)||(MODEL_TYPE == WMC_0650_NXP)||(MODEL_TYPE == WMC_0650_VE_NXP)||(MODEL_TYPE == SLIM_0320_NXP)
 //=============================================================================
@@ -580,7 +580,7 @@ extern uint8_t gLedSftClkCnt;
 #endif
 #endif
 
-#if 0 //Not Used
+
 //=============================================================================
 // PD Signal OP Amp control
 #define M_1stOpAmp_Coupling_SIG1_High()     (MCU_COUPLING_SIG1_Set())

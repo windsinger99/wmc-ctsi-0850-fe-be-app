@@ -2153,7 +2153,6 @@ uint8_t backendProcess(void)
         //TRACEBE("z");
         if(backend_process_line_data() == BACKEND_OK)
         {
-
             //while(isDelayScanTimerExpired() ==0);
             //setDelayScanTimer10Msec(100);
             //delay_test(5000);
@@ -2409,7 +2408,7 @@ void APP_Tasks(void)
         }
 
 		M_NOP_Delay_2usec();
-
+		M_NOP_Delay_1usec();
 
     }
     break;

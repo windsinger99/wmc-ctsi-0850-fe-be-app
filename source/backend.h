@@ -37,6 +37,14 @@
 #define TILT_EA    3863     //4545//final //3578    //3133  //3578  //3564  //3335
 #define MODEL_CTSK_N850_V100  8502 //samsung, nxp stand alone
 #define MODEL_SPT       MODEL_CTSK_N850_V100 //MODEL_CTKS_750_V120
+#elif (MODEL_TYPE ==  SLIM_0750_NXP_VE)
+#define TILT_EA    3763     //4545//final //3578    //3133  //3578  //3564  //3335
+#define MODEL_CTSK_N650_V100  6502 //samsung, nxp stand alone
+#define MODEL_SPT       MODEL_CTSK_N650_V100 //MODEL_CTKS_750_V120
+#elif (MODEL_TYPE ==  WMC_0750_NXP_VE)
+#define TILT_EA    3563     //4545//final //3578    //3133  //3578  //3564  //3335
+#define MODEL_CTSK_N750_V100  7502  //samsung, nxp stand alone
+#define MODEL_SPT       MODEL_CTSK_N750_V100 //MODEL_CTKS_750_V120
 #else
 #endif
 
@@ -219,6 +227,12 @@ extern int DbgConsole_Printf(const char *formatString, ...);
 #elif (MODEL_TYPE ==  WMC_0850_NXP_VE)
 #define MAX_X_SLOPE_VAL     38//38//26 //256, 8-bits
 #define MAX_Y_SLOPE_VAL     63//63//63 //256, 8-bits
+#elif (MODEL_TYPE ==  SLIM_0750_NXP_VE)
+#define MAX_X_SLOPE_VAL     37//38//26 //256, 8-bits
+#define MAX_Y_SLOPE_VAL     63//63//63 //256, 8-bits
+#elif (MODEL_TYPE ==  WMC_0750_NXP_VE)
+#define MAX_X_SLOPE_VAL     35//38//26 //256, 8-bits
+#define MAX_Y_SLOPE_VAL     63//63//63 //256, 8-bits
 #endif
 //#else
 //#ERROR MODEL_SPT NOT DEFINED!
@@ -307,6 +321,19 @@ extern int DbgConsole_Printf(const char *formatString, ...);
 #define TEST_LOGICAL_Y_MAX    16848 //10530*1.6 = 1684.8
 #define TEST_PHYSICAL_X_MAX   18720 //1900.00-28.00 = 1872.0
 #define TEST_PHYSICAL_Y_MAX   10530 //1081.00-28.00 = 1053.0
+
+#elif (MODEL_TYPE ==  SLIM_0750_NXP_VE)
+#define TEST_LOGICAL_X_MAX     26469//16502*1.6 = 2995.2
+#define TEST_LOGICAL_Y_MAX     14883//10530*1.6 = 1684.8
+#define TEST_PHYSICAL_X_MAX    16543//1900.00-28.00 = 1872.0
+#define TEST_PHYSICAL_Y_MAX    9302//1081.00-28.00 = 1053.0
+
+#elif (MODEL_TYPE ==  WMC_0750_NXP_VE)
+#define TEST_LOGICAL_X_MAX     26403//16502*1.6 = 2640.3
+#define TEST_LOGICAL_Y_MAX     14852//9282*1.6 = 1684.8
+#define TEST_PHYSICAL_X_MAX    16502//1650.24-29.48 = 1650.24
+#define TEST_PHYSICAL_Y_MAX    9282//957.73-29.47 = 928.26
+
 
 #else
 #endif

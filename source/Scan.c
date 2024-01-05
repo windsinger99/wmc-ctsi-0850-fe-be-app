@@ -402,7 +402,92 @@ const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
     13,
     15
 };
+#elif (MODEL_TYPE == SLIM_0750_NXP_VE)
 
+const uint8_t X_LedNumOfBd[X_LED_BD_NUM] = {
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD2_CELL_NUM,
+    X_LED_BD3_CELL_NUM,
+    X_LED_BD4_CELL_NUM,
+};
+
+const uint8_t X_StartLedIndexOfBd[X_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM + X_LED_BD3_CELL_NUM,
+};
+
+const uint8_t Y_LedNumOfBd[Y_LED_BD_NUM] = {
+    Y_LED_BD1_CELL_NUM,
+    Y_LED_BD2_CELL_NUM,
+};
+
+const uint8_t Y_StartLedIndexOfBd[Y_LED_BD_NUM] = {
+    0,
+    Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t StartLedIndexOfBd[TOTAL_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM + X_LED_BD3_CELL_NUM,
+    X_CELL_SIZE,
+    X_CELL_SIZE + Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
+	0,
+	1,
+	3,
+	8,
+	12,
+	13
+};
+#elif (MODEL_TYPE == WMC_0750_NXP_VE)
+
+const uint8_t X_LedNumOfBd[X_LED_BD_NUM] = {
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD2_CELL_NUM,
+    X_LED_BD3_CELL_NUM,
+    X_LED_BD4_CELL_NUM,
+};
+
+const uint8_t X_StartLedIndexOfBd[X_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM + X_LED_BD3_CELL_NUM,
+};
+
+const uint8_t Y_LedNumOfBd[Y_LED_BD_NUM] = {
+    Y_LED_BD1_CELL_NUM,
+    Y_LED_BD2_CELL_NUM,
+};
+
+const uint8_t Y_StartLedIndexOfBd[Y_LED_BD_NUM] = {
+    0,
+    Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t StartLedIndexOfBd[TOTAL_LED_BD_NUM] = {
+    0,
+    X_LED_BD1_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM,
+    X_LED_BD1_CELL_NUM + X_LED_BD2_CELL_NUM + X_LED_BD3_CELL_NUM,
+    X_CELL_SIZE,
+    X_CELL_SIZE + Y_LED_BD1_CELL_NUM,
+};
+
+const uint8_t StartLedIndexOfGroupOffset[TOTAL_LED_BD_NUM] = {
+	0,
+	3,
+	5,
+	9,
+	9,
+	10
+};
 
 #else
 #error "StartLedIndexOfBd is not defined!!!"
@@ -1460,7 +1545,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         adc_value[6] = BOARD_ADC1_PERIPHERAL->R[0];
         adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
-#if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)||(MODEL_TYPE == WMC_0850_NXP_VE)
+#if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)||(MODEL_TYPE == WMC_0850_NXP_VE)||(MODEL_TYPE == SLIM_0750_NXP_VE)||(MODEL_TYPE == WMC_0750_NXP_VE)
             M_ADC_MUX_DATA_SET(5);
             while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
@@ -1587,7 +1672,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
             adc_value[7] = BOARD_ADC2_PERIPHERAL->R[0];
 
             //              M_NOP_Delay_40nsec();
-#if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)||(MODEL_TYPE == WMC_0850_NXP_VE)
+#if (MODEL_TYPE == WMC_0750_NXP)||(MODEL_TYPE == WMC_0850_NXP)||(MODEL_TYPE == WMC_0850_NXP_VE)||(MODEL_TYPE == SLIM_0750_NXP_VE)||(MODEL_TYPE == WMC_0750_NXP_VE)
             M_ADC_MUX_DATA_SET(5);
             while ((BOARD_ADC1_PERIPHERAL->HS & 1UL) == 0 && (BOARD_ADC2_PERIPHERAL->HS & 1UL) == 0 ) {
                 ;   // 8,9
@@ -1626,6 +1711,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
             else {
                 yStoreAll_ADCResult(curScanSequenceIdx);
             }
+
             //----------------------------------------------------------------------
 
             //M_DebugTP2_Low();
