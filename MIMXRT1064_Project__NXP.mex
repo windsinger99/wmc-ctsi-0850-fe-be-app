@@ -1633,7 +1633,7 @@
                               <setting name="debugMode" value="kQTMR_RunNormalInDebug"/>
                               <setting name="timerModeInit" value="pwmOutput"/>
                               <struct name="pwmMode">
-                                 <setting name="freq_value_str" value="25"/>
+                                 <setting name="freq_value_str" value="75"/>
                                  <setting name="dutyCyclePercent" value="50"/>
                                  <setting name="outputPolarity" value="false"/>
                               </struct>

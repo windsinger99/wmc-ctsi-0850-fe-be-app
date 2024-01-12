@@ -1572,15 +1572,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 
 		ADC_SamplesStop();
 #endif
-#if 0
-		ledOnTimeCtrl = ledDacIdx[curScanSequenceIdx];
-		ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[curScanSequenceIdx]].sinkCurrentControl;
 
-		selectLED_PDshift((uint16_t)(nextLedIdx + baseLedIdx), axisType);
-#endif
-
-			M_PD_GAIN_CTRL_SET(ledCurrentCtrl);         //80ns
-			M_DAC_DATA_SET(ledOnTimeCtrl);     // @hj check
 //        DEBUG_TP2_LOW();
 //----------------------------------------------------------------------
 // ADC Result Save   == 100ns
