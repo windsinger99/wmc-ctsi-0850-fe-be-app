@@ -2309,10 +2309,10 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 #ifdef SIZE_UP_FILTER_ENABLE
 #define THR10_50_RATIO_UP		0.1f//0.25f	//0.1f
 #define THR10_50_RATIO_UP_2ND	0.50f
-#define UP_CON_SIZE				1.75f	//2.4f//2.20f //REF
-#define UP_CON_SIZE_EDGE		1.5f
-#define UP_CON_SIZE_SIDE		1.5f
-#define UP_CON_SIZE_ERASE		1.7f
+#define UP_CON_SIZE				1.25f	//1.35f	//1.75f
+#define UP_CON_SIZE_EDGE		1.1f  //1.2f      //1.5f
+#define UP_CON_SIZE_SIDE		1.1f  //1.2f   //1.5f
+#define UP_CON_SIZE_ERASE		1.0f			//1.7f
 
                 if(s_eraserFlag)
                 {
@@ -2345,7 +2345,6 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
                     }
                 }
 #endif
-
 
 #if 0 //nsmoon@200909, to fix 750 1st sample
                 //if (s_eraserFlag)

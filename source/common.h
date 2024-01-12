@@ -95,7 +95,7 @@
 #elif (MODEL_TYPE == WMC_0850_NXP_VE)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
-#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
+#define FORCED_FULL_SCAN                   FALSE	//TRUE   //YJ@240108
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE         		   TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
@@ -381,7 +381,7 @@
 //-----------------------------------------------------------------------------
 #define VALID_LINE_MIN_1ST              0
 #define VALID_LINE_MIN_2ND              5
-#define PARTIAL_SEARCH_AREA_ADD_WIDTH   15
+#define PARTIAL_SEARCH_AREA_ADD_WIDTH   12//15
 #define X_PARTIAL_ENTRY_PERCENT_WIDTH   70
 #if FORCED_FULL_SCAN
 #define X_PARTIAL_ENTRY_WIDTH           0

@@ -1,3 +1,9 @@
+# [240108] (feature/240108)
+ - 85VE 구버전 베이스 기준 (Lib : libbackend_irt_nxp3_malloc_231016A )
+   구역 별 Pen/Marker size 튜닝.
+ - THR10_50_RATIO_DOWN 0.15f -> 0.14f 변경
+ - Threshold 50, Sub 75 기준 #define X_CORNER_CELL_SIZE 8 -> 12 변경 
+ - SIZE_UP_FILTER_ENABLE 튜닝
 # [231017] (feature/231020)  
  - 1000_231020B   
  - LED On/Off time : 1/1.5us,  1/2.4us   

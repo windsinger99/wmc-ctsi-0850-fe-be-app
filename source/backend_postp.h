@@ -108,8 +108,8 @@ extern int s_debug_size_type, s_debug_edge;
 #define START_FRAME_LIMIT_ERASER	6	//5	//10		//YJ1127
 
 #if 1	//YJ@231227
-#define D2MIN_LIMIT_INITIAL			2000	//8000 //1500
-#define D2MIN_LIMIT_PEN				5000	//80000 //15000
+#define D2MIN_LIMIT_INITIAL			8000//2000	//8000 //1500    
+#define D2MIN_LIMIT_PEN				80000//5000	//80000 //15000
 #else
 #define D2MIN_LIMIT_INITIAL			8000 //1500
 #define D2MIN_LIMIT_PEN				80000 //15000
@@ -185,20 +185,20 @@ extern int s_debug_size_type, s_debug_edge;
 #define START_FRAME_ERASE			3	//5
 #define LIB_0418		1
 #ifdef LIB_0418
-#define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
+#define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2					 
 #define MAX_SIZE_MARKER_1      	12.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
 
 #define MAX_SIZE_PEN_E2         9.0f	//6.0f	//7.0f	//12.5f			//  < w_max  2
 #define MAX_SIZE_MARKER_E1      9.5f	//7.0f	//7.5f	//13.0f			//  > w_min  4
 
-#define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31
+#define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31																					
 
-#define MAX_SIZE_PEN_2_EDGE     11.0f	//11.0f R0004
-#define MAX_SIZE_MARKER_1_EDGE  15.0f	//11.0f	R0004
+#define MAX_SIZE_PEN_2_EDGE     13.0f	//11.0f R0004  // 11
+#define MAX_SIZE_MARKER_1_EDGE  14.0f	//11.0f	R0004   15.0f
 #define MAX_SIZE_MARKER_2_EDGE  26.0f	//12.0f R0004
 
-#define MAX_SIZE_PEN_2_SIDE     11.0f	//8.0f R0004
-#define MAX_SIZE_MARKER_1_SIDE  15.0f	//8.0f R0004
+#define MAX_SIZE_PEN_2_SIDE     11.0f	//8.0f R0004																								
+#define MAX_SIZE_MARKER_1_SIDE  11.5f	//8.0f R0004
 #define MAX_SIZE_MARKER_2_SIDE  26.0f	//11.0f	R004
 #ifdef MARKER_TOP_AAREA
 #define MAX_SIZE_PEN_1_MTOP     2.5f

@@ -633,8 +633,8 @@ typedef enum {
 /*****************************************************************************/
 //Corner Cell Range Setting (for valid signal for light reflection)
 /*****************************************************************************/
-#define Y_CORNER_CELL_SIZE      8
-#define X_CORNER_CELL_SIZE      8
+#define Y_CORNER_CELL_SIZE      12//8
+#define X_CORNER_CELL_SIZE      12//8
 
 
 /*****************************************************************************/
