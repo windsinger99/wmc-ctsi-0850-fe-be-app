@@ -1,0 +1,138 @@
+libbackend_irt750_nxp3_malloc_210512A
+- scroll bug fix for multi
+
+libbackend_irt750_nxp3_malloc_210510A
+- disable "skip multi-2"
+
+libbackend_irt750_nxp3_malloc_210430A
+- FRONTEND_FORCED_AGC
+
+libbackend_irt750_nxp3_malloc_210319A
+- 4-pen fast move bug-fix
+- refer to libbackend_irt850_nxp3_malloc_210319A
+
+libbackend_irt750_nxp3_malloc_210315A.a
+- MULTI_SKIP_USED_VB    //nsmoon@210218
+- @210222 bug-fix
+
+libbackend_irt750_nxp3_malloc_210222A.a
+- (bug-fix) pen 4 => 8-touch
+- improve speed of finger(nail) touch
+=> bug!! not use
+
+libbackend_irt750_nxp3_malloc_f8_210127a.a
+- pen+marker drawing (dist 50mm), marker size error
+
+libbackend_irt750_nxp3_malloc_f8_210121a.a
+- pen 4 => 8-touch
+
+libbackend_irt750_nxp3_malloc_201203A
+libbackend_irt750_nxp3_malloc_201202A
+- improve edge touch for scroll
+
+libbackend_irt750_nxp3_malloc_201127A
+- (bug-fix) palm + 1-pen, writing near palm
+
+libbackend_irt750_nxp3_malloc_201126A
+- (bug-fix) palm + 1-pen, fast & short down drawing
+
+libbackend_irt750_nxp3_malloc_201118A.a
+- improve edge touch for scroll
+
+libbackend_irt750_nxp3_201110A.a
+libbackend_irt750_nxp3_malloc_201110A.a
+- bug fix 2-pen at edge
+
+libbackend_irt750_nxp3_malloc_201022b
+- backend malloc
+
+libbackend_irt750_nxp3_20p_200922a
+- bug fix 2-pen edge
+
+libbackend_irt750_nxp3_0522A
+- same as libbackend_irt850_nxp3_0513F
+
+libbackend_irt750_nxp3_0513A
+- bug fix 2p 30mm 45degree
+
+libbackend_irt850_nxp3_hedge_0507A
+- fix init "backend_initialized"
+
+libbackend_irt750_nxp3_hedge_0504A
+- bug fix for reporting position in black area 
+
+libbackend_irt750_nxp3_brush_0427A.a
+- bug fix for changing from brush to pen
+
+libbackend_irt750_nxp3_0425A
+- remove adjustment of marker threshold10-size
+
+libbackend_irt750_nxp3_0408.a
+- adjust groupping rule of old fine at edge
+
+libbackend_irt750_nxp3_0406b.a
+- multi touch (2-market) at edge
+
+libbackend_irt750_nxp3_brush_0403a.a
+- brush mode
+
+libbackend_irt750_nxp3_0402a.a
+- finger-5 speed-up (3)
+
+libbackend_irt750_nxp3_0331b
+- multi touch (finger) speed-up (2) & marker bug fix
+
+libbackend_irt750_nxp3_0330g
+- multi touch (finger) speed-up (1)
+
+libbackend_irt750_nxp3_om_0320A.a
+- fast movement of 1-marker
+
+libbackend_irt750_nxp3_0319A.a
+- 1-palm+1-pen @edge
+  line limit(x/y): 8/12 => 4/6
+
+libbackend_irt750_nxp3_0318B.a
+- extend edge area at initial y-grp (25 => 50)
+
+libbackend_irt750_nxp3_0318A.a
+- 1-palm+1-pen @ top-side
+
+libbackend_irt750_nxp3_0316A
+- merge finger eraser
+
+libbackend_irt750_nxp3_0311a
+- change palm size and ratio (0.75, 6000)
+
+libbackend_irt750_nxp3_0309a
+- edge performance for 2-pen
+
+libbackend_irt750_nxp3_0306K
+- speed up for 1-palm+1-pen
+
+libbackend_irt750_nxp3_0302a
+- min th10 size 9999 => 0
+- 2-pen/5-finegr edge performance
+
+libbackend_irt750_nxp3_brush_0227B
+- TP 30mm 이내에 brush mode 동작 하지 않도록 수정
+
+libbackend_irt750_nxp3_brush_0227A
+- small line for brush mode 
+
+libbackend_irt750_nxp3_200226D.a
+- libbackend_irt750_nxp3_200226C.a 기능취소
+- 같은 좌표 중복발생 제거
+
+libbackend_irt750_nxp3_200226C.a
+- edge에서 최소 line 5개에서 3개로 수정
+  (2-pen drawing 성능 저하예상)
+
+libbackend_irt750_nxp3_200226B.a
+- 큰물체 옆, 작은 물체 개선 
+
+libbackend_irt750_nxp3_200226A.a
+- new fine algorithm 
+
+libbackend_irt750_nxp2_200225A.a
+- th50 size보다 th10 size가 커지는 문제개선
