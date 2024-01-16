@@ -173,7 +173,7 @@ ATTR_BACKEND_RAM3  __attribute__((aligned(4))) float s_pd_pos_y[MAX_NUM_PD_Y_DLT
 //static void get_slope_mask(axis_t axis, uint16_t slope_idx, slope_mask_t *sm);
 //static void get_slope_val(axis_t axis, int stIdx, int pd, unsigned char *pRcv, slope_mask_t *slopeVal);
 
-#if 0 //for test
+#if 0 //for test  count time
 #define APP_TIME_LEN 5
 #define APP_TIME_STR_LEN 80
 uint32_t curTime, prevTime;
