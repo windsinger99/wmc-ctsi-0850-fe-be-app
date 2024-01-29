@@ -359,8 +359,8 @@ extern uint8_t gLedSftClkCnt;
 #define M_PD_SHIFT_DATA_Low()       (MCU_PD_SHIFT_DATA_Clear())
 #define M_PD_SHIFT_CLK_High()       (MCU_PD_SHIFT_CLK_Set())
 #define M_PD_SHIFT_CLK_Low()        (MCU_PD_SHIFT_CLK_Clear())    // Initial state
-//#define M_PD_SHIFT_DELAY_IO		Ctrl_Delay(10);
-#define M_PD_SHIFT_DELAY_IO   M_NOP_Delay_200nsec();
+#define M_PD_SHIFT_DELAY_IO		Ctrl_Delay(15);		//10 = 200ns
+//#define M_PD_SHIFT_DELAY_IO   M_NOP_Delay_200nsec();
 
 // M_PD_SHIFT_CLK_OnePulse -> 610ns
 #define M_PD_SHIFT_CLK_OnePulse() {  \

@@ -99,6 +99,7 @@
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE         		   TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
+#define TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
 #elif (MODEL_TYPE == SLIM_0750_NXP_VE)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test

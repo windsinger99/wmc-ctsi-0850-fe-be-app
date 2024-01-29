@@ -119,6 +119,7 @@ void display_menu(void)
 	TRACE_MENU("\r\n %d. TIME	:	GPT2 Timer,  Value X 10ms, T1", i++);
 	TRACE_MENU("\r\n %d. FLAG	:	Timer test delay flag", i++);
 	TRACE_MENU("\r\n %d. BLOCK	:	Block line cnt test", i++);
+	TRACE_MENU("\r\n %d. LED	:	on off time, uint = 0.1us, ex)10=1us, 25=2.5us ", i++);
 	TRACE_MENU("\r\n ex) cmd xx xx ... enter  -> xx max = 255");
 	TRACE_MENU("\r\n/********************************************/\r\n");
 }
@@ -265,7 +266,16 @@ int Blocklinetest(int argc, char **argv)
 	return 0;
 }
 
+int LedonoffTimeControl(int argc, char **argv)
+{
+	int ontime = 0, offtime = 0;
+	ontime = (uint8_t)atoi(argv[1]);
+	offtime = (uint8_t)atoi(argv[2]);
 
+	TRACE_VCOM("\r\nLED on : (%0.1f), off (%0.1f)\r\n", (float)(ontime)/10, (float)(offtime)/10 );
+
+	return 0;
+}
 
 TCommand Cmds[CMD_MAX] = 	{
 							{	"?"						,	CmdContents							},
@@ -277,7 +287,8 @@ TCommand Cmds[CMD_MAX] = 	{
 							{	"FOC"					,	forcedAgc_test						},
 							{	"TIME"					,	Timertest							},
 							{	"FLAG"					,	Flagtest							},
-							{	"BLOCK"					,	Blocklinetest							},
+							{	"BLOCK"					,	Blocklinetest						},
+							{	"LED"					,	LedonoffTimeControl					},
 							{	"NULL"					,	NULL								}
 };
 

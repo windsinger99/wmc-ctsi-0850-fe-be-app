@@ -857,6 +857,103 @@ void Scan_Initialize(void)
     subThresholdDropPercent = LINE_THRESHOLD_VALUE;
 }
 
+
+#ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
+#define TSPM_LED_ONTIME_X			1.0f	//1us
+#define TSPM_LED_OFFTIME_X			1.5f	//1.5us
+#define TSPM_LED_ONTIME_Y			1.5f
+#define TSPM_LED_OFFTIME_Y			2.5f
+
+#define TSPM_ONTIMEOFFSET_X			0.1f		//90%
+#define TSPM_ONTIMEOFFSET_Y			0.1f		//90%
+#define TSPM_OFFTIMEOFFSET_X		0.9f		//10%
+#define TSPM_OFFTIMEOFFSET_Y		0.9f		//10%
+
+#define TSPM_SAMPLE_ON_OFFSET_VAL	0.000006666f
+#define TSPM_SAMPLE_OFF_OFFSET_VAL	0.00006f
+
+#define TSPM_ONTIME_CALC_X		(TSPM_LED_ONTIME_X/1000)
+#define TSPM_ONTIME_CALC_Y		(TSPM_LED_ONTIME_Y/1000)
+
+#define TSPM_OFFTIME_CALC_X		((TSPM_LED_OFFTIME_X/1000)-0.0005f)
+#define TSPM_OFFTIME_CALC_Y		((TSPM_LED_OFFTIME_Y/1000)-0.0005f)
+
+#define TSPM_PWM_TIMESUM_X		(TSPM_ONTIME_CALC_X + TSPM_OFFTIME_CALC_X)
+#define TSPM_PWM_TIMESUM_Y		(TSPM_ONTIME_CALC_Y + TSPM_OFFTIME_CALC_Y)
+
+#define TSPM_PWM_CLK_T3_ON_X	(TSPM_PWM_TIMESUM_X*TSPM_ONTIMEOFFSET_X + TSPM_SAMPLE_ON_OFFSET_VAL)
+#define TSPM_PWM_CLK_T3_ON_Y	(TSPM_PWM_TIMESUM_Y*TSPM_ONTIMEOFFSET_Y + TSPM_SAMPLE_ON_OFFSET_VAL)
+#define TSPM_PWM_CLK_T3_OFF_X	(TSPM_PWM_TIMESUM_X*TSPM_OFFTIMEOFFSET_X + TSPM_SAMPLE_OFF_OFFSET_VAL)
+#define TSPM_PWM_CLK_T3_OFF_Y	(TSPM_PWM_TIMESUM_Y*TSPM_OFFTIMEOFFSET_Y + TSPM_SAMPLE_OFF_OFFSET_VAL)
+
+//pwm freq
+#define TSPM_PWM_CLK_T1_2_X		(1/TSPM_PWM_TIMESUM_X)*1000
+#define TSPM_PWM_CLK_T1_2_Y		(1/TSPM_PWM_TIMESUM_Y)*1000
+#define TSPM_PWM_CLK_T3_X		(1/(TSPM_PWM_CLK_T3_ON_X + TSPM_PWM_CLK_T3_OFF_X)*1000)
+#define TSPM_PWM_CLK_T3_Y		(1/(TSPM_PWM_CLK_T3_ON_Y + TSPM_PWM_CLK_T3_OFF_Y)*1000)
+
+//pwm duty
+#define TSPM_PWM_DUTY_T1_2_X	((TSPM_ONTIME_CALC_X / TSPM_PWM_TIMESUM_X)*100)
+#define TSPM_PWM_DUTY_T1_2_Y	((TSPM_ONTIME_CALC_Y / TSPM_PWM_TIMESUM_Y)*100)
+
+#define TSPM_PWM_DUTY_T3_X		((TSPM_PWM_CLK_T3_ON_X / (TSPM_PWM_CLK_T3_ON_X + TSPM_PWM_CLK_T3_OFF_X))*100)
+#define TSPM_PWM_DUTY_T3_Y		((TSPM_PWM_CLK_T3_ON_Y / (TSPM_PWM_CLK_T3_ON_Y + TSPM_PWM_CLK_T3_OFF_Y))*100)
+
+
+typedef struct {
+    uint32_t pwmFreqHz;
+    uint8_t duty;
+} spmtimer;
+
+spmtimer timergp[3];
+
+void onofftime_freq_Calc(voide)
+{
+	uint32_t pwmFreqHz;
+	float calc;
+
+	fOntime = fOntime/1000;
+	fOfftime = (fOfftime/1000)=0.0005f;
+	calc = fOntime+fOfftime;
+
+	if(timer > 2)
+	{
+
+	}
+
+}
+
+void init_Axis_timer_Setup(axis_type_enum axisType)
+{
+	uint32_t pwmFreqHz_t1_2, pwmFreqHz_t3;
+	uint8_t dutyCyclePercent_t1_2, dutyCyclePercent_t3;
+
+	if(axisType == X_AXIS)
+	{
+		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_X;
+		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_X;
+		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_X;
+		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_X;
+	}
+	else
+	{
+		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_Y;
+		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_Y;
+		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_Y;
+		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_Y;
+	}
+
+	//DEBUG_PRINTF("\n\r (%d)timer pwm clk, duty : (1, 2) %d, %d	, (3) %d, %d",
+			//axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
+
+	QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
+	QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
+	QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, pwmFreqHz_t3, dutyCyclePercent_t3, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
+}
+
+
+#endif
+
 inline __attribute__((always_inline)) void disableAllLEDBoard(void)
 {
 //    M_LED_CELL_Disable_High();
@@ -1309,7 +1406,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 	uint8_t pdShiftDelayUsec;
 	// uint8_t PdShiftDelayFlag = 0;
 	uint16_t firstSequence = 2; //10;//5; //TRUE; // kjs 210315 add
-	uint16_t partialFirstDac;
+	//uint16_t partialFirstDac;
 //  uint8_t  i = 0;
 
 //    uint8_t adc_idx =0;
@@ -1341,7 +1438,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		basePdIdx = Y_CELL_SIZE;
 		baseLedIdx = 0;
 
-		partialFirstDac = LED_ON_DAC_MAX_X;
+		//partialFirstDac = LED_ON_DAC_MAX_X;
 
 	} else { // Y_AXIS
 		DEBUG_TP2_HIGH();
@@ -1355,8 +1452,11 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		basePdIdx = 0;
 		baseLedIdx = X_CELL_SIZE;
 
-		partialFirstDac = LED_ON_DAC_MAX_Y;
+		//partialFirstDac = LED_ON_DAC_MAX_Y;
 	}
+#ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
+	init_Axis_timer_Setup(axisType);
+#endif
 
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
 	//__builtin_disable_interrupts(); // kjsxy
@@ -1497,13 +1597,13 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 			  nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
 			  nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
 		  }
-
+		  M_TSPM_Triger_Set();
 		}
 		else {
 		  firstSequence--;
-		  M_DAC_DATA_SET(partialFirstDac);     // @JJH 240112
+		  //M_DAC_DATA_SET(partialFirstDac);     // @JJH 240112
 		}
-		M_TSPM_Triger_Set();
+
 		//----------------------------------------------------------------------
 //    TRACSCAN("\r\n%d,%d,%d", currentStartPdIdx , nextLedIdx, prevScanSequenceIdx);
 		// M_NOP_Delay_1usec();
@@ -1802,6 +1902,9 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         basePdIdx = 0;
         baseLedIdx = X_CELL_SIZE;
     }
+#ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
+    init_Axis_timer_Setup(axisType);
+#endif
 
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
     //__builtin_disable_interrupts(); // kjsxy
@@ -1844,6 +1947,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     }
 
     selectPDGroup((int16_t)(nextStartPdIdx + basePdIdx));
+
 
     //--------------------------------------------------------------------------
     // delay for first PD Shift
