@@ -381,7 +381,7 @@
 //-----------------------------------------------------------------------------
 #define VALID_LINE_MIN_1ST              0
 #define VALID_LINE_MIN_2ND              5
-#define PARTIAL_SEARCH_AREA_ADD_WIDTH   12//15
+#define PARTIAL_SEARCH_AREA_ADD_WIDTH   15
 #define X_PARTIAL_ENTRY_PERCENT_WIDTH   70
 #if FORCED_FULL_SCAN
 #define X_PARTIAL_ENTRY_WIDTH           0

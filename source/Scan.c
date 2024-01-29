@@ -1305,7 +1305,8 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 	uint8_t pdShiftDelayUsec;
 	// uint8_t PdShiftDelayFlag = 0;
 	uint16_t firstSequence = 2; //10;//5; //TRUE; // kjs 210315 add
-//  uint8_t  i = 0;
+	uint16_t partialFirstDac;
+	//  uint8_t  i = 0;
 
 //    uint8_t adc_idx =0;
 //   uint8_t AdcStoreTempBuf[9];
@@ -1336,6 +1337,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		basePdIdx = Y_CELL_SIZE;
 		baseLedIdx = 0;
 
+		partialFirstDac = LED_ON_DAC_MAX_X;
 
 	} else { // Y_AXIS
 		DEBUG_TP2_HIGH();
@@ -1348,6 +1350,8 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 
 		basePdIdx = 0;
 		baseLedIdx = X_CELL_SIZE;
+
+		partialFirstDac = LED_ON_DAC_MAX_Y;
 	}
 
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
@@ -1424,7 +1428,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 	M_NOP_Delay_10usec();
 #else
 	CORETIMER_DelayUs(pdShiftDelayUsec);
-	Ctrl_Delay(100);
 //    M_NOP_Delay_1usec();
 #endif
 
@@ -1456,7 +1459,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		//----------------------------------------------------------------------
 		//    M_Wait_LedOff_Timer_Expired();
 		//    DEBUG_TP2_HIGH();
-#if 1
 #ifdef ENABLE_UART_CMD_PROCESS
 	if(fixedCurrentEnable)
 	{
@@ -1476,7 +1478,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 
 		M_PD_GAIN_CTRL_SET(ledCurrentCtrl);         //80ns
 		M_DAC_DATA_SET(ledOnTimeCtrl);     // @hj check
-#endif
 		//    DEBUG_TP2_LOW();
 		//----------------------------------------------------------------------
 		//----------------------------------------------------------------------
@@ -1486,7 +1487,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		currentStartPdIdx = nextStartPdIdx;
 		//currentLedIdx = nextLedIdx;
 		curScanSequenceIdx = nextScanSequenceIdx;
-
 		if (!firstSequence) {
 		  if (++nextScanSequenceIdx < totalScanSteps) {
 			  nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
@@ -1495,7 +1495,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		}
 		else {
 		  firstSequence--;
-		  M_DAC_DATA_SET(LED_ON_DAC_MAX_X);     // @hj check
+		  M_DAC_DATA_SET(partialFirstDac);     // @JJH 240112
 		}
 		M_TSPM_Triger_Set();
 		//----------------------------------------------------------------------
@@ -1572,15 +1572,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 
 		ADC_SamplesStop();
 #endif
-#if 0
-		ledOnTimeCtrl = ledDacIdx[curScanSequenceIdx];
-		ledCurrentCtrl = LedSinkCurrentTbl[ledCurrentTblIdx[curScanSequenceIdx]].sinkCurrentControl;
-
-		selectLED_PDshift((uint16_t)(nextLedIdx + baseLedIdx), axisType);
-#endif
-
-			M_PD_GAIN_CTRL_SET(ledCurrentCtrl);         //80ns
-			M_DAC_DATA_SET(ledOnTimeCtrl);     // @hj check
 //        DEBUG_TP2_LOW();
 //----------------------------------------------------------------------
 // ADC Result Save   == 100ns
@@ -1857,7 +1848,6 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     //--------------------------------------------------------------------------
     // select first LED
     //--------------------------------------------------------------------------
-
     nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
     //currentLedIdx = nextLedIdx;
 #if 1 //must be checked
@@ -1892,6 +1882,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     //--------------------------------------------------------------------------
     while (TRUE) {
         //__builtin_disable_interrupts(); // kjsxy
+
         __disable_irq();
 #ifdef TIMER2_CH3_LAST
         while((BOARD_TMR2_PERIPHERAL->CHANNEL[BOARD_TMR2_CHANNEL_3_CHANNEL].CTRL & 0xe000) >0) {
@@ -1944,12 +1935,12 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
               nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
               nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
           }
-         M_TSPM_Triger_Set();
+          M_TSPM_Triger_Set();
         }
         else {
           firstSequence--;
         }
-        //M_TSPM_Triger_Set();
+
         //----------------------------------------------------------------------
 //    TRACSCAN("\r\n%d,%d,%d", currentStartPdIdx , nextLedIdx, prevScanSequenceIdx);
         // M_NOP_Delay_1usec();
@@ -2205,7 +2196,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     prevCYC = 0xff;
 #endif
     // uint32_t regPrimask;
-    uint8_t firstScan = 2;
+    uint8_t firstScan = 1;
 
 
 //    setDelayScanTimer10Msec(1);
@@ -2448,8 +2439,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         curScanSequenceIdx = nextScanSequenceIdx;
         if (!firstScan) {
             if (++nextScanSequenceIdx < totalScanSteps) {
-                nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
-                nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
+                nextStartPdIdx hquenceTbl[nextScanSequenceIdx][1];
             }
         }
         //----------------------------------------------------------------------

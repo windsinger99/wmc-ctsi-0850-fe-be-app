@@ -1,3 +1,14 @@
+# [240129] (feature/240129)     
+- partial 튀는 현상 개선 추가     
+
+scan.c     
+- partialFirstDac 변수 추가    
+- M_DAC_DATA_SET(partialFirstDac); 추가    
+- M_TSPM_Triger_Set(); 위치 변경     
+
+TSP_Layout.h     
+- corner threshold 값 40 으로 설정      
+
 # [240108] (feature/240108)
  - 85VE 구버전 베이스 기준 (Lib : libbackend_irt_nxp3_malloc_231016A )
    구역 별 Pen/Marker size 튜닝.
