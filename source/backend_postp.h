@@ -181,7 +181,7 @@ extern int s_debug_size_type, s_debug_edge;
 #define MAX_SIZE_MARKER_2_SIDE  13.0f	//11.0f	R004
 #elif (MODEL_SPT == MODEL_CTSK_650_V100)||(MODEL_SPT == MODEL_CTSK_N650_V100)||(MODEL_SPT == MODEL_CTSK_N750_V100)||(MODEL_SPT == MODEL_CTSK_N850_V100)
 #define START_FRAME_LIMIT			7	//7	//10//7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
-#define START_FRAME_MULTI3			3	//5
+#define START_FRAME_MULTI3			5	//5
 #define START_FRAME_ERASE			3	//5
 #define LIB_0418		1
 #ifdef LIB_0418
@@ -193,12 +193,12 @@ extern int s_debug_size_type, s_debug_edge;
 
 #define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31																					
 
-#define MAX_SIZE_PEN_2_EDGE     14.0f	//11.0f R0004  // 11    // 15.0 4pen
-#define MAX_SIZE_MARKER_1_EDGE  15.0f	//11.0f	R0004   15.0f	// 16.0	4pen
+#define MAX_SIZE_PEN_2_EDGE     16.0f	//11.0f R0004  // 11    // 15.0 4pen
+#define MAX_SIZE_MARKER_1_EDGE  17.0f	//11.0f	R0004   15.0f	// 16.0	4pen
 #define MAX_SIZE_MARKER_2_EDGE  26.0f	//12.0f R0004
 
-#define MAX_SIZE_PEN_2_SIDE     14.0f	//8.0f R0004    // 16.0 4pen
-#define MAX_SIZE_MARKER_1_SIDE  15.0f	//8.0f R0004	//	16.0 4pen
+#define MAX_SIZE_PEN_2_SIDE     12.0f	//8.0f R0004    // 16.0 4pen
+#define MAX_SIZE_MARKER_1_SIDE  13.0f	//8.0f R0004	//	16.0 4pen
 #define MAX_SIZE_MARKER_2_SIDE  26.0f	//11.0f	R004
 #ifdef MARKER_TOP_AAREA
 #define MAX_SIZE_PEN_1_MTOP     2.5f
@@ -418,7 +418,7 @@ typedef enum {
 #if 0
 typedef struct {
     float distSq;
-    float accelX, accelY;
+    float accelX, accelY;-
 } dist_sq_t;
 #endif
 
