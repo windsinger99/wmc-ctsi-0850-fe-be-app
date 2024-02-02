@@ -141,8 +141,8 @@ int testprint(int argc, char **argv)
 
 	if(argc > 1)
 	{
-		i = (uint8_t)atoi(argv[1]);
-		j = (uint8_t)atoi(argv[2]);
+		i = (int)atoi(argv[1]);
+		j = (int)atoi(argv[2]);
 		TRACE_VCOM( "\r\n>>Test argv 1: %d, argv 2: %d", i, j);
 	}
 	return 0;
@@ -151,7 +151,7 @@ int testprint(int argc, char **argv)
 int AGC_onoff_test(int argc, char **argv)
 {
 	int i = 0;
-	i = (uint8_t)atoi(argv[1]);
+	i = (int)atoi(argv[1]);
 
 	if (i == 0 )
 	{
@@ -188,7 +188,7 @@ int DAC_test_mode(int argc, char **argv)
 int dlt_TH_display(int argc, char **argv)
 {
 	int i = 0;
-	i = (uint8_t)atoi(argv[1]);
+	i = (int)atoi(argv[1]);
 
 	if (i == 0 )
 	{
@@ -231,7 +231,7 @@ int forcedAgc_test(int argc, char **argv)
 
 int Timertest(int argc, char **argv)
 {
-	int i = 0;	//, j = 0 ;
+	uint16_t i = 0;	//, j = 0 ;
 	i = (uint16_t)atoi(argv[1]);
 
 	if(i > 0)
@@ -244,8 +244,8 @@ int Timertest(int argc, char **argv)
 
 int Flagtest(int argc, char **argv)
 {
-	int i = 0;
-	i = (uint8_t)atoi(argv[1]);
+	uint16_t i = 0;
+	i = (uint16_t)atoi(argv[1]);
 	if(i > 0)
 	{
 		testFlag = i;
@@ -258,7 +258,7 @@ int Flagtest(int argc, char **argv)
 
 int Blocklinetest(int argc, char **argv)
 {
-	int i = 0;
+	uint8_t i = 0;
 	i = (uint8_t)atoi(argv[1]);
 	testblockedlinecnt = i;
 	TRACE_VCOM("\r\nBlocked Line cnt (%d) \r\n", i );
@@ -268,12 +268,15 @@ int Blocklinetest(int argc, char **argv)
 
 int LedonoffTimeControl(int argc, char **argv)
 {
-	int ontime = 0, offtime = 0;
+	uint8_t ontime = 0, offtime = 0;
 	ontime = (uint8_t)atoi(argv[1]);
 	offtime = (uint8_t)atoi(argv[2]);
+	TRACE_VCOM("\r\nLED on : (%d), off (%d)\r\n", ontime, offtime );
+	ontime_Adj = (float)(ontime/10);
+	offtime_Adj = (float)(offtime/10);
 
-	TRACE_VCOM("\r\nLED on : (%0.1f), off (%0.1f)\r\n", (float)(ontime)/10, (float)(offtime)/10 );
-
+	TRACE_VCOM("\r\nLED on : (%f), off (%f)\r\n", ontime_Adj, offtime_Adj );
+	init_Axis_timer_Setup_adj(1);
 	return 0;
 }
 

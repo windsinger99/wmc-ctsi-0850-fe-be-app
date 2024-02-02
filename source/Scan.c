@@ -909,17 +909,19 @@ enum {
 	PWM_TIMER_1_2 = 0,
 	PWM_TIMER_3
 };
+
 spmtimer timergp[2];
-/*
+uint8_t ontime_Adj, offtime_Adj;
+
 void onofftime_freq_Calc(axis_type_enum axisType, float Ontime, float Offtime)
 {
 	float sum;
 	float t3_on_calc, t3_off_calc;
 
 	Ontime /= 1000;
-	Offtime = (Offtime/1000)=0.0005f;
+	Offtime = (Offtime/1000)-0.0005f;
 	sum = Ontime+Offtime;
-	timergp[PWM_TIMER_1_2].pwmFreqHz = (uint32)(1/calc*1000);
+	timergp[PWM_TIMER_1_2].pwmFreqHz = (uint32_t)(1/sum*1000);
 	timergp[PWM_TIMER_1_2].duty = (uint8_t)(Ontime/sum*100);
 
 	if(axisType == X_AXIS)
@@ -933,8 +935,8 @@ void onofftime_freq_Calc(axis_type_enum axisType, float Ontime, float Offtime)
 		t3_off_calc = sum*TSPM_OFFTIMEOFFSET_Y +TSPM_SAMPLE_OFF_OFFSET_VAL;
 	}
 	sum = t3_on_calc+t3_off_calc;
-	timergp[PWM_TIMER_3].pwmFreqHz =(uint32)(1/sum*1000);
-	timergp[PWM_TIMER_3].duty =(uint32)(t3_on_calc/sum*100);
+	timergp[PWM_TIMER_3].pwmFreqHz =(uint32_t)(1/sum*1000);
+	timergp[PWM_TIMER_3].duty =(uint32_t)(t3_on_calc/sum*100);
 }
 
 
@@ -945,7 +947,7 @@ void init_Axis_timer_Setup_adj(axis_type_enum axisType)
 
 	if(axisType == X_AXIS)
 	{
-		onofftime_freq_Calc(X_AXIS, ontime, offtime);
+		onofftime_freq_Calc(X_AXIS, ontime_Adj, offtime_Adj);
 		pwmFreqHz_t1_2 = timergp[PWM_TIMER_1_2].pwmFreqHz;
 		pwmFreqHz_t3 = timergp[PWM_TIMER_3].pwmFreqHz;
 		dutyCyclePercent_t1_2 = timergp[PWM_TIMER_1_2].duty;
@@ -953,20 +955,21 @@ void init_Axis_timer_Setup_adj(axis_type_enum axisType)
 	}
 	else
 	{
+		onofftime_freq_Calc(Y_AXIS, ontime_Adj, offtime_Adj);
 		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_Y;
 		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_Y;
 		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_Y;
 		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_Y;
 	}
 
-	//DEBUG_PRINTF("\n\r (%d)timer pwm clk, duty : (1, 2) %d, %d	, (3) %d, %d",
-			//axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
+	DEBUG_PRINTF("\n\r (%d)timer PWM CLK, duty : (1, 2) %d, %d	, (3) %d, %d",
+			axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
 
 	QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
 	QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
 	QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, pwmFreqHz_t3, dutyCyclePercent_t3, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
 }
-*/
+
 
 
 void init_Axis_timer_Setup(axis_type_enum axisType)
