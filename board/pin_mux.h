@@ -37,7 +37,7 @@ extern "C" {
  */
 void BOARD_InitBootPins(void);
 
-#define BOARD_INITPINS_IOMUXC_GPR_GPR26_GPIO_MUX1_GPIO_SEL_MASK 0xCF38C000U /*!< GPIO1 and GPIO6 share same IO MUX function, GPIO_MUX1 selects one GPIO function: affected bits mask */
+#define BOARD_INITPINS_IOMUXC_GPR_GPR26_GPIO_MUX1_GPIO_SEL_MASK 0xFF38C000U /*!< GPIO1 and GPIO6 share same IO MUX function, GPIO_MUX1 selects one GPIO function: affected bits mask */
 #define BOARD_INITPINS_IOMUXC_GPR_GPR27_GPIO_MUX2_GPIO_SEL_MASK 0x45FF000EU /*!< GPIO2 and GPIO7 share same IO MUX function, GPIO_MUX2 selects one GPIO function: affected bits mask */
 
 /* GPIO_B1_13 (coord D14), WDOG_B */
@@ -183,33 +183,61 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_LED_HGROUP_DATA_PIN                                   27U   /*!< PORT pin number */
 #define BOARD_INITPINS_LED_HGROUP_DATA_PIN_MASK                      (1U << 27U)   /*!< PORT pin mask */
 
-/* GPIO_AD_B1_14 (coord G12), MCU_ADC_GROUP_SELECT_0 */
+/* GPIO_AD_B1_12 (coord H12), MCU_ADC_GROUP_SELECT_0 */
 /* Routed pin properties */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_0_PERIPHERAL                       GPIO1   /*!< Peripheral name */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_0_SIGNAL                         gpio_io   /*!< Signal name */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_0_CHANNEL                            30U   /*!< Signal channel */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_0_CHANNEL                            28U   /*!< Signal channel */
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_0_GPIO                             GPIO1   /*!< GPIO peripheral base pointer */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_0_GPIO_PIN                           30U   /*!< GPIO pin number */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_0_GPIO_PIN_MASK              (1U << 30U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_0_GPIO_PIN                           28U   /*!< GPIO pin number */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_0_GPIO_PIN_MASK              (1U << 28U)   /*!< GPIO pin mask */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_0_PORT                             GPIO1   /*!< PORT peripheral base pointer */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_0_PIN                                30U   /*!< PORT pin number */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_0_PIN_MASK                   (1U << 30U)   /*!< PORT pin mask */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_0_PIN                                28U   /*!< PORT pin number */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_0_PIN_MASK                   (1U << 28U)   /*!< PORT pin mask */
 
-/* GPIO_AD_B1_15 (coord J14), ADC_GROUP_SELECT_1 */
+/* GPIO_AD_B1_13 (coord H11), MCU_ADC_GROUP_SELECT_1 */
 /* Routed pin properties */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_1_PERIPHERAL                       GPIO1   /*!< Peripheral name */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_1_SIGNAL                         gpio_io   /*!< Signal name */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_1_CHANNEL                            31U   /*!< Signal channel */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_1_CHANNEL                            29U   /*!< Signal channel */
 
 /* Symbols to be used with GPIO driver */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_1_GPIO                             GPIO1   /*!< GPIO peripheral base pointer */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_1_GPIO_PIN                           31U   /*!< GPIO pin number */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_1_GPIO_PIN_MASK              (1U << 31U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_1_GPIO_PIN                           29U   /*!< GPIO pin number */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_1_GPIO_PIN_MASK              (1U << 29U)   /*!< GPIO pin mask */
 #define BOARD_INITPINS_ADC_GROUP_SELECT_1_PORT                             GPIO1   /*!< PORT peripheral base pointer */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_1_PIN                                31U   /*!< PORT pin number */
-#define BOARD_INITPINS_ADC_GROUP_SELECT_1_PIN_MASK                   (1U << 31U)   /*!< PORT pin mask */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_1_PIN                                29U   /*!< PORT pin number */
+#define BOARD_INITPINS_ADC_GROUP_SELECT_1_PIN_MASK                   (1U << 29U)   /*!< PORT pin mask */
+
+/* GPIO_AD_B1_14 (coord G12), MCU_TR_GROUP_SELECT_0 */
+/* Routed pin properties */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_PERIPHERAL                        GPIO1   /*!< Peripheral name */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_SIGNAL                          gpio_io   /*!< Signal name */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_CHANNEL                             30U   /*!< Signal channel */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_GPIO                              GPIO1   /*!< GPIO peripheral base pointer */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_GPIO_PIN                            30U   /*!< GPIO pin number */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_GPIO_PIN_MASK               (1U << 30U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_PORT                              GPIO1   /*!< PORT peripheral base pointer */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_PIN                                 30U   /*!< PORT pin number */
+#define BOARD_INITPINS_TR_GROUP_SELECT_0_PIN_MASK                    (1U << 30U)   /*!< PORT pin mask */
+
+/* GPIO_AD_B1_15 (coord J14), MCU_TR_GROUP_SELECT_1 */
+/* Routed pin properties */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_PERIPHERAL                        GPIO1   /*!< Peripheral name */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_SIGNAL                          gpio_io   /*!< Signal name */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_CHANNEL                             31U   /*!< Signal channel */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_GPIO                              GPIO1   /*!< GPIO peripheral base pointer */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_GPIO_PIN                            31U   /*!< GPIO pin number */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_GPIO_PIN_MASK               (1U << 31U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_PORT                              GPIO1   /*!< PORT peripheral base pointer */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_PIN                                 31U   /*!< PORT pin number */
+#define BOARD_INITPINS_TR_GROUP_SELECT_1_PIN_MASK                    (1U << 31U)   /*!< PORT pin mask */
 
 /* GPIO_B0_01 (coord E7), MCU_LED_CELL_CTRL1 */
 /* Routed pin properties */

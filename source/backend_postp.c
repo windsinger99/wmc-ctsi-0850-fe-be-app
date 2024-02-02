@@ -2104,7 +2104,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
                 //check down threshold
                 //  if (thr10_50 > DOWN_THR10_50_RATIO)
 
-#define THR10_50_RATIO_DOWN	0.17f	//0.15f  //0.2f	//
+#define THR10_50_RATIO_DOWN		0.15f 	//0.14f	//0.15f  //0.2f	//
                 if (thr10_50 > THR10_50_RATIO_DOWN)
                 {
 
@@ -2309,17 +2309,17 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 #ifdef SIZE_UP_FILTER_ENABLE
 #define THR10_50_RATIO_UP		0.1f//0.25f	//0.1f
 #define THR10_50_RATIO_UP_2ND	0.50f
-#if 0
-#define UP_CON_SIZE				1.35f	//1.75f
-#define UP_CON_SIZE_EDGE		1.2f      //1.5f
-#define UP_CON_SIZE_SIDE		1.2f   //1.5f
+#if 1
+#define UP_CON_SIZE				1.75f//1.45f	//1.75f
+#define UP_CON_SIZE_EDGE		1.5f//1.3f      //1.5f
+#define UP_CON_SIZE_SIDE		1.5f//1.2f   //1.5f
 #define UP_CON_SIZE_ERASE		1.7f
 
-#else				//	240115 size test
-#define UP_CON_SIZE				1.6f
-#define UP_CON_SIZE_EDGE		1.5f
-#define UP_CON_SIZE_SIDE		1.5f
-#define UP_CON_SIZE_ERASE		1.8f
+#else				//	240115 letter size test
+#define UP_CON_SIZE				1.3f//1.8f//1.6f
+#define UP_CON_SIZE_EDGE		1.4f//1.2f//1.5f
+#define UP_CON_SIZE_SIDE		0.9f//1.5f
+#define UP_CON_SIZE_ERASE		1.6f//1.65f // 1.8f
 #endif
 
                 if(s_eraserFlag)

@@ -620,6 +620,7 @@ typedef enum {
 /*****************************************************************************/
 
 
+
 #else
 #   error "MODEL_TYPE is not defined"
 #endif
@@ -633,8 +634,8 @@ typedef enum {
 /*****************************************************************************/
 //Corner Cell Range Setting (for valid signal for light reflection)
 /*****************************************************************************/
-#define Y_CORNER_CELL_SIZE      12//8
-#define X_CORNER_CELL_SIZE      12//8
+#define Y_CORNER_CELL_SIZE      8
+#define X_CORNER_CELL_SIZE      8
 
 
 /*****************************************************************************/
@@ -645,8 +646,8 @@ typedef enum {
 #define THRESHOLD_DROP_PERCENT_ENABLE              TRUE
 #define THRESHOLD_DROP_PERCENT_SATURATION            40 //30 //nsmoon@220330
 
-#define Y_CORNER_THRESHOLD_DROP_PERCENT              30//40	//50
-#define X_CORNER_THRESHOLD_DROP_PERCENT              30	//50
+#define Y_CORNER_THRESHOLD_DROP_PERCENT              40	//40	//50
+#define X_CORNER_THRESHOLD_DROP_PERCENT              40	//40	//50
 /*****************************************************************************/
 
 

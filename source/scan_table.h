@@ -74,7 +74,7 @@ typedef struct {
          *
          */
 #if (MODEL_TYPE == WMC_0750_NXP_VE)
-    #define LED_SINK_CONTROL_STEPS  16
+    #define LED_SINK_CONTROL_STEPS  4//16
 #else
 	#define LED_SINK_CONTROL_STEPS  4
 #endif
@@ -259,16 +259,16 @@ typedef struct {
     /*                                max     min    uint  step
                             DAC Step  254      110      2   72     (8bit)*/
 
-		#define LED_ON_DAC_MIN           100		// == 95mA
+		#define LED_ON_DAC_MIN           90		// == 95mA
 		#define LED_ON_DAC_UINT           2
 
-		#define LED_ON_DAC_MIN_X         100	// 180	//LED_ON_DAC_MIN
+		#define LED_ON_DAC_MIN_X         90	// 180	//LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_X         254	// 254
-		#define LED_ON_DAC_INIT_X        180	// 150 ~ 이상
+		#define LED_ON_DAC_INIT_X        130//110	// 150 ~ 이상
 
-		#define LED_ON_DAC_MIN_Y         100	// LED_ON_DAC_MIN
+		#define LED_ON_DAC_MIN_Y         90	// LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_Y         254	// 254
-		#define LED_ON_DAC_INIT_Y        180  	// 220
+		#define LED_ON_DAC_INIT_Y        150  	// 220
 
 		#define LED_GAIN_INIT_X			 1
 		#define LED_GAIN_INIT_Y			 1//3

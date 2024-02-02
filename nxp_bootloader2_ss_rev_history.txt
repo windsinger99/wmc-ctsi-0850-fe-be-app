@@ -1,0 +1,7 @@
+nxp_bootloader2_ss_201221a
+- CUSTOMER_NO 5 //nohost samsung
+- disable USB_HOST_FOR_FRONTEND
+
+nxp_bootloader2_ss_201208A
+- change PID from A2 to A3 for samsung 750
+

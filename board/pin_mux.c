@@ -115,10 +115,10 @@ pin_labels:
 - {pin_num: M13, pin_signal: GPIO_AD_B1_09, label: TEST_POINT_2, identifier: CSI_D8;TEST_POINT_2}
 - {pin_num: L13, pin_signal: GPIO_AD_B1_10, label: TEST_POINT_3, identifier: CSI_D7;TEST_POINT_3}
 - {pin_num: J13, pin_signal: GPIO_AD_B1_11, label: MCU_LED_HGROUP_DATA, identifier: CSI_D6;LED_HGROUP_DATA}
-- {pin_num: H12, pin_signal: GPIO_AD_B1_12, label: 'SAI1_RXD/CSI_D5/J35[5]/U13[16]', identifier: CSI_D5}
-- {pin_num: H11, pin_signal: GPIO_AD_B1_13, label: 'SAI1_TXD/CSI_D4/J35[3]/U13[14]', identifier: CSI_D4}
-- {pin_num: G12, pin_signal: GPIO_AD_B1_14, label: MCU_ADC_GROUP_SELECT_0, identifier: CSI_D3;ADC_GROUP_SELECT_0}
-- {pin_num: J14, pin_signal: GPIO_AD_B1_15, label: ADC_GROUP_SELECT_1, identifier: CSI_D2;ADC_GROUP_SELECT_1}
+- {pin_num: H12, pin_signal: GPIO_AD_B1_12, label: MCU_ADC_GROUP_SELECT_0, identifier: CSI_D5;ADC_GROUP_SELECT_0}
+- {pin_num: H11, pin_signal: GPIO_AD_B1_13, label: MCU_ADC_GROUP_SELECT_1, identifier: CSI_D4;ADC_GROUP_SELECT_1}
+- {pin_num: G12, pin_signal: GPIO_AD_B1_14, label: MCU_TR_GROUP_SELECT_0, identifier: CSI_D3;ADC_GROUP_SELECT_0;TR_GROUP_SELECT_0}
+- {pin_num: J14, pin_signal: GPIO_AD_B1_15, label: MCU_TR_GROUP_SELECT_1, identifier: CSI_D2;ADC_GROUP_SELECT_1;TR_GROUP_SELECT_1}
 - {pin_num: J4, pin_signal: GPIO_SD_B0_00, label: 'SD1_CMD/J24[6]', identifier: SD1_CMD}
 - {pin_num: J3, pin_signal: GPIO_SD_B0_01, label: 'SD1_CLK/J24[3]', identifier: SD1_CLK}
 - {pin_num: J1, pin_signal: GPIO_SD_B0_02, label: 'SD1_D0/J24[4]/SPI_MOSI/PWM', identifier: SD1_D0}
@@ -247,8 +247,10 @@ BOARD_InitPins:
   - {pin_num: L12, peripheral: GPIO1, signal: 'gpio_io, 20', pin_signal: GPIO_AD_B1_04, identifier: ADD_MUX12, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
   - {pin_num: K12, peripheral: GPIO1, signal: 'gpio_io, 21', pin_signal: GPIO_AD_B1_05, identifier: ADD_MUX13, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
   - {pin_num: J13, peripheral: GPIO1, signal: 'gpio_io, 27', pin_signal: GPIO_AD_B1_11, identifier: LED_HGROUP_DATA, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
-  - {pin_num: G12, peripheral: GPIO1, signal: 'gpio_io, 30', pin_signal: GPIO_AD_B1_14, identifier: ADC_GROUP_SELECT_0, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
-  - {pin_num: J14, peripheral: GPIO1, signal: 'gpio_io, 31', pin_signal: GPIO_AD_B1_15, identifier: ADC_GROUP_SELECT_1, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
+  - {pin_num: H12, peripheral: GPIO1, signal: 'gpio_io, 28', pin_signal: GPIO_AD_B1_12, identifier: ADC_GROUP_SELECT_0, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
+  - {pin_num: H11, peripheral: GPIO1, signal: 'gpio_io, 29', pin_signal: GPIO_AD_B1_13, identifier: ADC_GROUP_SELECT_1, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
+  - {pin_num: G12, peripheral: GPIO1, signal: 'gpio_io, 30', pin_signal: GPIO_AD_B1_14, identifier: TR_GROUP_SELECT_0, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
+  - {pin_num: J14, peripheral: GPIO1, signal: 'gpio_io, 31', pin_signal: GPIO_AD_B1_15, identifier: TR_GROUP_SELECT_1, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
   - {pin_num: E7, peripheral: GPIO2, signal: 'gpio_io, 01', pin_signal: GPIO_B0_01, identifier: LED_CELL_CTRL1, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
   - {pin_num: E8, peripheral: GPIO2, signal: 'gpio_io, 02', pin_signal: GPIO_B0_02, identifier: LED_CELL_CTRL2, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
   - {pin_num: D8, peripheral: GPIO2, signal: 'gpio_io, 03', pin_signal: GPIO_B0_03, identifier: LED_CELL_CTRL3, direction: OUTPUT, speed: MHZ_200, slew_rate: Fast}
@@ -361,23 +363,41 @@ void BOARD_InitPins(void) {
   /* Initialize GPIO functionality on GPIO_AD_B1_11 (pin J13) */
   GPIO_PinInit(GPIO1, 27U, &LED_HGROUP_DATA_config);
 
-  /* GPIO configuration of ADC_GROUP_SELECT_0 on GPIO_AD_B1_14 (pin G12) */
+  /* GPIO configuration of ADC_GROUP_SELECT_0 on GPIO_AD_B1_12 (pin H12) */
   gpio_pin_config_t ADC_GROUP_SELECT_0_config = {
       .direction = kGPIO_DigitalOutput,
       .outputLogic = 0U,
       .interruptMode = kGPIO_NoIntmode
   };
-  /* Initialize GPIO functionality on GPIO_AD_B1_14 (pin G12) */
-  GPIO_PinInit(GPIO1, 30U, &ADC_GROUP_SELECT_0_config);
+  /* Initialize GPIO functionality on GPIO_AD_B1_12 (pin H12) */
+  GPIO_PinInit(GPIO1, 28U, &ADC_GROUP_SELECT_0_config);
 
-  /* GPIO configuration of ADC_GROUP_SELECT_1 on GPIO_AD_B1_15 (pin J14) */
+  /* GPIO configuration of ADC_GROUP_SELECT_1 on GPIO_AD_B1_13 (pin H11) */
   gpio_pin_config_t ADC_GROUP_SELECT_1_config = {
       .direction = kGPIO_DigitalOutput,
       .outputLogic = 0U,
       .interruptMode = kGPIO_NoIntmode
   };
+  /* Initialize GPIO functionality on GPIO_AD_B1_13 (pin H11) */
+  GPIO_PinInit(GPIO1, 29U, &ADC_GROUP_SELECT_1_config);
+
+  /* GPIO configuration of TR_GROUP_SELECT_0 on GPIO_AD_B1_14 (pin G12) */
+  gpio_pin_config_t TR_GROUP_SELECT_0_config = {
+      .direction = kGPIO_DigitalOutput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on GPIO_AD_B1_14 (pin G12) */
+  GPIO_PinInit(GPIO1, 30U, &TR_GROUP_SELECT_0_config);
+
+  /* GPIO configuration of TR_GROUP_SELECT_1 on GPIO_AD_B1_15 (pin J14) */
+  gpio_pin_config_t TR_GROUP_SELECT_1_config = {
+      .direction = kGPIO_DigitalOutput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
   /* Initialize GPIO functionality on GPIO_AD_B1_15 (pin J14) */
-  GPIO_PinInit(GPIO1, 31U, &ADC_GROUP_SELECT_1_config);
+  GPIO_PinInit(GPIO1, 31U, &TR_GROUP_SELECT_1_config);
 
   /* GPIO configuration of LED_CELL_CTRL1 on GPIO_B0_01 (pin E7) */
   gpio_pin_config_t LED_CELL_CTRL1_config = {
@@ -518,6 +538,8 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_09_GPIO1_IO25, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_10_GPIO1_IO26, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_11_GPIO1_IO27, 0U); 
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_12_GPIO1_IO28, 0U); 
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_13_GPIO1_IO29, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_14_GPIO1_IO30, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_15_GPIO1_IO31, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_B0_00_QTIMER1_TIMER0, 0U); 
@@ -575,6 +597,8 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_09_GPIO1_IO25, 0x10F1U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_10_GPIO1_IO26, 0x10F1U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_11_GPIO1_IO27, 0x10F1U); 
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_12_GPIO1_IO28, 0x10F1U); 
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_13_GPIO1_IO29, 0x10F1U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_14_GPIO1_IO30, 0x10F1U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_15_GPIO1_IO31, 0x10F1U); 
   IOMUXC_SetPinConfig(IOMUXC_GPIO_B0_00_QTIMER1_TIMER0, 0x10F1U); 
