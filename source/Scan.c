@@ -632,7 +632,7 @@ uint32_t startAgcCtrlTimer, endAgcCtrlTimer;
 uint32_t startDelayscanTimer, endDelayscanTimer;
 uint32_t startPdDelayTimer, endPdDelayTimer;
 
-#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)   // 240130 JJH test add
 uint32_t startTestTimer, endtestTimer;
 #endif
 
@@ -863,78 +863,6 @@ inline __attribute__((always_inline)) void disableAllLEDBoard(void)
     M_LED_GROUP_Clear_Low();
     M_NOP_Delay_100nsec();
 }
-
-
-#if 0	//YJ@240126
-#define TSPM_LED_ONTIME_X		1.0f	//1.0f	//1us
-#define TSPM_LED_OFFTIME_X		2.5f	//1.5f	//1.5us
-#define TSPM_LED_ONTIME_Y		1.0f	//2.0f
-#define TSPM_LED_OFFTIME_Y		2.5f	//2.0f
-
-#define TSPM_ONTIMEOFFSET_X		0.1f		//90%
-#define TSPM_ONTIMEOFFSET_Y		0.1f		//90%
-#define TSPM_OFFTIMEOFFSET_X	0.9f		//10%
-#define TSPM_OFFTIMEOFFSET_Y	0.9f		//10%
-
-
-#define TSPM_ONTIME_CALC_X		(TSPM_LED_ONTIME_X/1000)
-#define TSPM_ONTIME_CALC_Y		(TSPM_LED_ONTIME_Y/1000)
-
-#define TSPM_OFFTIME_CALC_X		((TSPM_LED_OFFTIME_X/1000)-0.0005f)
-#define TSPM_OFFTIME_CALC_Y		((TSPM_LED_OFFTIME_Y/1000)-0.0005f)
-
-#define TSPM_PWM_TIMESUM_X		(TSPM_ONTIME_CALC_X + TSPM_OFFTIME_CALC_X)
-#define TSPM_PWM_TIMESUM_Y		(TSPM_ONTIME_CALC_Y + TSPM_OFFTIME_CALC_Y)
-
-#define TSPM_PWM_CLK_T3_ON_X	(TSPM_PWM_TIMESUM_X*TSPM_ONTIMEOFFSET_X + 0.000006666f)
-#define TSPM_PWM_CLK_T3_ON_Y	(TSPM_PWM_TIMESUM_Y*TSPM_ONTIMEOFFSET_Y + 0.000006666f)
-#define TSPM_PWM_CLK_T3_OFF_X	(TSPM_PWM_TIMESUM_X*TSPM_OFFTIMEOFFSET_X + 0.00006f)
-#define TSPM_PWM_CLK_T3_OFF_Y	(TSPM_PWM_TIMESUM_Y*TSPM_OFFTIMEOFFSET_Y + 0.00006f)
-
-//pwm freq
-#define TSPM_PWM_CLK_T1_2_X		(1/TSPM_PWM_TIMESUM_X)*1000
-#define TSPM_PWM_CLK_T1_2_Y		(1/TSPM_PWM_TIMESUM_Y)*1000
-#define TSPM_PWM_CLK_T3_X		(1/(TSPM_PWM_CLK_T3_ON_X + TSPM_PWM_CLK_T3_OFF_X)*1000)
-#define TSPM_PWM_CLK_T3_Y		(1/(TSPM_PWM_CLK_T3_ON_Y + TSPM_PWM_CLK_T3_OFF_Y)*1000)
-
-//pwm duty
-#define TSPM_PWM_DUTY_T1_2_X	((TSPM_ONTIME_CALC_X / TSPM_PWM_TIMESUM_X)*100)
-#define TSPM_PWM_DUTY_T1_2_Y	((TSPM_ONTIME_CALC_Y / TSPM_PWM_TIMESUM_Y)*100)
-
-#define TSPM_PWM_DUTY_T3_X		((TSPM_PWM_CLK_T3_ON_X / (TSPM_PWM_CLK_T3_ON_X + TSPM_PWM_CLK_T3_OFF_X))*100)
-#define TSPM_PWM_DUTY_T3_Y		((TSPM_PWM_CLK_T3_ON_Y / (TSPM_PWM_CLK_T3_ON_Y + TSPM_PWM_CLK_T3_OFF_Y))*100)
-
-
-void init_Axis_timer_Setup(axis_type_enum axisType)
-{
-	uint32_t pwmFreqHz_t1_2, pwmFreqHz_t3;
-	uint8_t dutyCyclePercent_t1_2, dutyCyclePercent_t3;
-
-	if(axisType == X_AXIS)
-	{
-		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_X;
-		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_X;
-		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_X;
-		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_X;
-	}
-	else
-	{
-		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_Y;
-		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_Y;
-		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_Y;
-		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_Y;
-	}
-
-	//DEBUG_PRINTF("\n\r (%d)timer pwm clk, duty : (1, 2) %d, %d	, (3) %d, %d",
-			//axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
-
-	QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
-	QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
-	QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, pwmFreqHz_t3, dutyCyclePercent_t3, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
-}
-
-#endif
-
 
 #if 0 //for test
 inline __attribute__((always_inline)) void disableAllPD(void)
@@ -1382,7 +1310,7 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 	// uint8_t PdShiftDelayFlag = 0;
 	uint16_t firstSequence = 2; //10;//5; //TRUE; // kjs 210315 add
 	uint16_t partialFirstDac;
-//  uint8_t  i = 0;
+	//  uint8_t  i = 0;
 
 //    uint8_t adc_idx =0;
 //   uint8_t AdcStoreTempBuf[9];
@@ -1429,8 +1357,6 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 
 		partialFirstDac = LED_ON_DAC_MAX_Y;
 	}
-
-	//init_Axis_timer_Setup(axisType);	//YJ@240126
 
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
 	//__builtin_disable_interrupts(); // kjsxy
@@ -1565,13 +1491,11 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		currentStartPdIdx = nextStartPdIdx;
 		//currentLedIdx = nextLedIdx;
 		curScanSequenceIdx = nextScanSequenceIdx;
-
 		if (!firstSequence) {
 		  if (++nextScanSequenceIdx < totalScanSteps) {
 			  nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
 			  nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
 		  }
-
 		}
 		else {
 		  firstSequence--;
@@ -1876,8 +1800,6 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         basePdIdx = 0;
         baseLedIdx = X_CELL_SIZE;
     }
-
-    //init_Axis_timer_Setup(axisType);	//YJ@240126
 
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
     //__builtin_disable_interrupts(); // kjsxy
@@ -2278,7 +2200,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     prevCYC = 0xff;
 #endif
     // uint32_t regPrimask;
-    uint8_t firstScan = 2;
+    uint8_t firstScan = 1;
 
 
 //    setDelayScanTimer10Msec(1);
@@ -2521,8 +2443,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         curScanSequenceIdx = nextScanSequenceIdx;
         if (!firstScan) {
             if (++nextScanSequenceIdx < totalScanSteps) {
-                nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
-                nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
+                nextStartPdIdx hquenceTbl[nextScanSequenceIdx][1];
             }
         }
         //----------------------------------------------------------------------
@@ -3600,8 +3521,7 @@ void Timer_Delay_us(uint32_t val)
         //WDOG_Reset_Refresh();	//2Sec
     }
 }
-
-#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)    // 240130 JJH test add
 void setTestTimerMsec(uint32_t val)
 {
 	endtestTimer = (uint32_t)(WAIT_TIME_10MS(val));	// 50
@@ -3619,7 +3539,6 @@ int16_t isTestControlTimerExpired(void)
     else return 0;
 }
 #endif
-
 #if (PROCESS_EXT_LIGHT_DISABLE == 0)
 
 #if 0

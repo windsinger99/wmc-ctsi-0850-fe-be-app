@@ -44,7 +44,7 @@
 #define SLIM_0750_NXP_VE 	80000
 #define WMC_0750_NXP_VE 	90000
 
-#define MODEL_TYPE          WMC_0750_NXP_VE
+#define MODEL_TYPE          WMC_0850_NXP_VE
 //-----------------------------------------------------------------------------
 
 /*****************************************************************************/
@@ -95,7 +95,7 @@
 #elif (MODEL_TYPE == WMC_0850_NXP_VE)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
-#define FORCED_FULL_SCAN                   TRUE   //YJ@240108
+#define FORCED_FULL_SCAN                   FALSE	//TRUE   //YJ@240108
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE         		   TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE
@@ -109,7 +109,7 @@
 #elif (MODEL_TYPE == WMC_0750_NXP_VE)
 #define LED_ON_TIME_SHORT                  TRUE    // nsmoon@210910
 #define CAL_HIGH_TO_LOW                    FALSE   // TRUE   //FALSE for test
-#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906   TRUE : full / FALSE : partial
+#define FORCED_FULL_SCAN                   TRUE    // nsmoon@210906
 #define SKIP_CAL_CRC_FOR_XFER_BLOCK        TRUE
 #define SPM_MODE_ENABLE         		   TRUE
 #define ONEPOINT_6MSFIX_REPORT			   FALSE//TRUE

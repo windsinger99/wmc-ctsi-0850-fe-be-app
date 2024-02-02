@@ -104,7 +104,7 @@
 
 #ifdef FRONTEND_LINE_THRESHOLD
 #define LINE_THRESHOLD_SIZE		(1)
-#define LINE_THRESHOLD_VALUE	(75)	//(75)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
+#define LINE_THRESHOLD_VALUE	(80)	//(75)	//(70)//(90)	//(85) //(95)	//(90) R0004		//90
 #endif
 
 #if (_DEBUG == 1) || defined(DEBUG)
@@ -120,7 +120,8 @@ extern int DbgConsole_Printf(const char *formatString, ...);
 #define DEBUG_INFO(...)         //usb_echo(__VA_ARGS__);
 #define TRACE_ERROR(...)        DEBUG_PRINTF(__VA_ARGS__)
 #define TRACE_RCP(...) 			//DEBUG_PRINTF(__VA_ARGS__)
-#define TRACEYJ(...)			// DbgConsole_Printf(__VA_ARGS__);DbgConsole_Printf("\r\n")
+#define TRACEYJ(...)			 //DbgConsole_Printf(__VA_ARGS__);DbgConsole_Printf("\r\n")
+#define TRACEJH(...)			 DbgConsole_Printf(__VA_ARGS__);DbgConsole_Printf("\r\n")
 #else
 #define DBG_PRINTF(...)        // DbgConsole_Printf(__VA_ARGS__);
 #define DEBUG_PRINTF(...)       //DBG_PRINTF(__VA_ARGS__);DBG_PRINTF("\r\n")

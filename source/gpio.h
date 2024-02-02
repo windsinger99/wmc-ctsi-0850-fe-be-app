@@ -30,15 +30,9 @@ typedef enum {
   TEST_POING_3            = 26U,
 
   MCU_LED_HGROUP_DATA     = 27U,  // GPIO1
-#if (MODEL_TYPE == WMC_0750_NXP_VE)
-  MCU_ADC_GROUP_SELECT_0  = 28U,  // GPIO1
-  MCU_ADC_GROUP_SELECT_1  = 29U,  // GPIO1
-  MCU_TR_GROUP_SELECT_0   = 30U,  // GPIO1
-  MCU_TR_GROUP_SELECT_1   = 31U  // GPIO1
-#else
+
   MCU_ADC_GROUP_SELECT_0  = 30U,  // GPIO1
   MCU_ADC_GROUP_SELECT_1  = 31U  // GPIO1
-#endif
 
 
 } GPIO_CTRL_BIT_1_T;
@@ -70,6 +64,8 @@ extern void Scan_GPIO_PortSet(GPIO_Type *base, uint32_t pin, uint32_t mask);
 
 
 
+
+
 /*****************************************************************************/
 // Macros for ADC_GROUP_SELECT_0 pin(MCU_ADC_GROUP_SELECT_0) - GPIO_PIN_30U
 /*****************************************************************************/
@@ -84,21 +80,6 @@ extern void Scan_GPIO_PortSet(GPIO_Type *base, uint32_t pin, uint32_t mask);
 #define MCU_ADC_GROUP_SELECT_1_Set()            (GPIO1->DR_SET = 1UL<< MCU_ADC_GROUP_SELECT_1)
 #define MCU_ADC_GROUP_SELECT_1_Clear()          (GPIO1->DR_CLEAR = 1UL<< MCU_ADC_GROUP_SELECT_1)
 #define MCU_ADC_GROUP_SELECT_1_Toggle()         (GPIO1->DR_TOGGLE = 1UL<< MCU_ADC_GROUP_SELECT_1)
-
-/*****************************************************************************/
-// Macros for ADC_GROUP_SELECT_0 pin(MCU_ADC_GROUP_SELECT_0) - GPIO_PIN_30U
-/*****************************************************************************/
-#define MCU_TR_GROUP_SELECT_0_Set()            (GPIO1->DR_SET = 1UL<< MCU_TR_GROUP_SELECT_0)
-#define MCU_TR_GROUP_SELECT_0_Clear()          (GPIO1->DR_CLEAR = 1UL<< MCU_TR_GROUP_SELECT_0)
-#define MCU_TR_GROUP_SELECT_0_Toggle()         (GPIO1->DR_TOGGLE = 1UL<< MCU_TR_GROUP_SELECT_0)
-
-
-/*****************************************************************************/
-// Macros for ADC_GROUP_SELECT_1 pin(MCU_ADC_GROUP_SELECT_1) - GPIO_PIN_31U
-/*****************************************************************************/
-#define MCU_TR_GROUP_SELECT_1_Set()            (GPIO1->DR_SET = 1UL<< MCU_TR_GROUP_SELECT_1)
-#define MCU_TR_GROUP_SELECT_1_Clear()          (GPIO1->DR_CLEAR = 1UL<< MCU_TR_GROUP_SELECT_1)
-#define MCU_TR_GROUP_SELECT_1_Toggle()         (GPIO1->DR_TOGGLE = 1UL<< MCU_TR_GROUP_SELECT_1)
 
 
 /*****************************************************************************/

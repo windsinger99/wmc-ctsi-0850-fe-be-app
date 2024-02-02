@@ -127,10 +127,10 @@
                <pin_label pin_num="M13" pin_signal="GPIO_AD_B1_09" label="TEST_POINT_2" identifier="CSI_D8;TEST_POINT_2"/>
                <pin_label pin_num="L13" pin_signal="GPIO_AD_B1_10" label="TEST_POINT_3" identifier="CSI_D7;TEST_POINT_3"/>
                <pin_label pin_num="J13" pin_signal="GPIO_AD_B1_11" label="MCU_LED_HGROUP_DATA" identifier="CSI_D6;LED_HGROUP_DATA"/>
-               <pin_label pin_num="H12" pin_signal="GPIO_AD_B1_12" label="MCU_ADC_GROUP_SELECT_0" identifier="CSI_D5;ADC_GROUP_SELECT_0"/>
-               <pin_label pin_num="H11" pin_signal="GPIO_AD_B1_13" label="MCU_ADC_GROUP_SELECT_1" identifier="CSI_D4;ADC_GROUP_SELECT_1"/>
-               <pin_label pin_num="G12" pin_signal="GPIO_AD_B1_14" label="MCU_TR_GROUP_SELECT_0" identifier="CSI_D3;ADC_GROUP_SELECT_0;TR_GROUP_SELECT_0"/>
-               <pin_label pin_num="J14" pin_signal="GPIO_AD_B1_15" label="MCU_TR_GROUP_SELECT_1" identifier="CSI_D2;ADC_GROUP_SELECT_1;TR_GROUP_SELECT_1"/>
+               <pin_label pin_num="H12" pin_signal="GPIO_AD_B1_12" label="SAI1_RXD/CSI_D5/J35[5]/U13[16]" identifier="CSI_D5"/>
+               <pin_label pin_num="H11" pin_signal="GPIO_AD_B1_13" label="SAI1_TXD/CSI_D4/J35[3]/U13[14]" identifier="CSI_D4"/>
+               <pin_label pin_num="G12" pin_signal="GPIO_AD_B1_14" label="MCU_ADC_GROUP_SELECT_0" identifier="CSI_D3;ADC_GROUP_SELECT_0"/>
+               <pin_label pin_num="J14" pin_signal="GPIO_AD_B1_15" label="ADC_GROUP_SELECT_1" identifier="CSI_D2;ADC_GROUP_SELECT_1"/>
                <pin_label pin_num="J4" pin_signal="GPIO_SD_B0_00" label="SD1_CMD/J24[6]" identifier="SD1_CMD"/>
                <pin_label pin_num="J3" pin_signal="GPIO_SD_B0_01" label="SD1_CLK/J24[3]" identifier="SD1_CLK"/>
                <pin_label pin_num="J1" pin_signal="GPIO_SD_B0_02" label="SD1_D0/J24[4]/SPI_MOSI/PWM" identifier="SD1_D0"/>
@@ -401,7 +401,7 @@
                         <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPIO1" signal="gpio_io, 28" pin_num="H12" pin_signal="GPIO_AD_B1_12">
+                  <pin peripheral="GPIO1" signal="gpio_io, 30" pin_num="G12" pin_signal="GPIO_AD_B1_14">
                      <pin_features>
                         <pin_feature name="identifier" value="ADC_GROUP_SELECT_0"/>
                         <pin_feature name="direction" value="OUTPUT"/>
@@ -409,25 +409,9 @@
                         <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPIO1" signal="gpio_io, 29" pin_num="H11" pin_signal="GPIO_AD_B1_13">
-                     <pin_features>
-                        <pin_feature name="identifier" value="ADC_GROUP_SELECT_1"/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                        <pin_feature name="speed" value="MHZ_200"/>
-                        <pin_feature name="slew_rate" value="Fast"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIO1" signal="gpio_io, 30" pin_num="G12" pin_signal="GPIO_AD_B1_14">
-                     <pin_features>
-                        <pin_feature name="identifier" value="TR_GROUP_SELECT_0"/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                        <pin_feature name="speed" value="MHZ_200"/>
-                        <pin_feature name="slew_rate" value="Fast"/>
-                     </pin_features>
-                  </pin>
                   <pin peripheral="GPIO1" signal="gpio_io, 31" pin_num="J14" pin_signal="GPIO_AD_B1_15">
                      <pin_features>
-                        <pin_feature name="identifier" value="TR_GROUP_SELECT_1"/>
+                        <pin_feature name="identifier" value="ADC_GROUP_SELECT_1"/>
                         <pin_feature name="direction" value="OUTPUT"/>
                         <pin_feature name="speed" value="MHZ_200"/>
                         <pin_feature name="slew_rate" value="Fast"/>

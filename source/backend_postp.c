@@ -1702,6 +1702,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
     float vfYAxisInfoBr[4]= { s_aarea_zero_y, SIZE_YCORD_BORDER_L, SIZE_YCORD_BORDER_R, s_aarea_end_y};
     uint8_t border = 0;
 
+    //TRACEJH("@start");
     if(IsSide(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4)
     		|| IsEdge(posX, posY, vfXAxisInfoBr, 4, vfYAxisInfoBr, 4))
     {
@@ -1788,6 +1789,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 
     }
     else if (w_max < pen_size_2) {
+
         pCurDataIn[idx].status = TOUCH_DOWN_STATE;
 
         size_type = ENUM_SIZE_PEN; //pen
@@ -1810,8 +1812,39 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
             size_type = ENUM_SIZE_MARKER; //pen
         }
         else if (w_min > marker_size_1) {
-            pCurDataIn[idx].status = TOUCH_DOWN_STATE;
+        	/*float thX_ratio = (float)pCurDataIn[idx].th10CntX /pCurDataIn[idx].th50CntX;
+        	        		float thY_ratio = (float)pCurDataIn[idx].th10CntY /pCurDataIn[idx].th50CntY;
+        	        		float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);*/
+        	pCurDataIn[idx].status = TOUCH_DOWN_STATE;
+#if 1
+
+		//TRACEJH("@s min : %f thx : %f thy : %f, ratio :%f ",w_min,thX_ratio,thY_ratio,th_min_ratio);
+            if(w_min < marker_size_1 + 5.0f)
+            {
+
+            	float thX_ratio = (float)pCurDataIn[idx].th10CntX /pCurDataIn[idx].th50CntX;
+        		float thY_ratio = (float)pCurDataIn[idx].th10CntY /pCurDataIn[idx].th50CntY;
+        		float th_min_ratio = GET_MIN(thX_ratio, thY_ratio);
+        		//TRACEJH("min_ratio : %f",th_min_ratio);
+        		if(th_min_ratio > 0.900f)  // 0.905f
+            	{
+				   size_type = ENUM_SIZE_MARKER;
+				  // TRACEJH("@M");
+			  	}
+            	else
+            	{
+            		size_type = ENUM_SIZE_PEN; //pen
+            		//TRACEJH("@P");
+            	}
+
+            }
+        	else
+        	{
+        		size_type = ENUM_SIZE_MARKER; //pen
+        	}
+#else
             size_type = ENUM_SIZE_MARKER; //pen
+#endif
         }
         else {
 #ifdef UNKNOWN_SIZE_AAREA
@@ -2104,7 +2137,7 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
                 //check down threshold
                 //  if (thr10_50 > DOWN_THR10_50_RATIO)
 
-#define THR10_50_RATIO_DOWN		0.15f 	//0.14f	//0.15f  //0.2f	//
+#define THR10_50_RATIO_DOWN		0.15f	//0.15f  //0.2f	//
                 if (thr10_50 > THR10_50_RATIO_DOWN)
                 {
 
@@ -2309,18 +2342,10 @@ static int decide_touch_size_750_132(touchDataSt_t *pCurDataIn, int idx, touchDa
 #ifdef SIZE_UP_FILTER_ENABLE
 #define THR10_50_RATIO_UP		0.1f//0.25f	//0.1f
 #define THR10_50_RATIO_UP_2ND	0.50f
-#if 1
-#define UP_CON_SIZE				1.75f//1.45f	//1.75f
-#define UP_CON_SIZE_EDGE		1.5f//1.3f      //1.5f
-#define UP_CON_SIZE_SIDE		1.5f//1.2f   //1.5f
-#define UP_CON_SIZE_ERASE		1.7f
-
-#else				//	240115 letter size test
-#define UP_CON_SIZE				1.3f//1.8f//1.6f
-#define UP_CON_SIZE_EDGE		1.4f//1.2f//1.5f
-#define UP_CON_SIZE_SIDE		0.9f//1.5f
-#define UP_CON_SIZE_ERASE		1.6f//1.65f // 1.8f
-#endif
+#define UP_CON_SIZE				1.0f	//1.35f	//1.75f
+#define UP_CON_SIZE_EDGE		1.3f  //1.2f      //1.5f
+#define UP_CON_SIZE_SIDE		1.1f  //1.2f   //1.5f
+#define UP_CON_SIZE_ERASE		2.0f	//1.0f		//1.7f
 
                 if(s_eraserFlag)
                 {

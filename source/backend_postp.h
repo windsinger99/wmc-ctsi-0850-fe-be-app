@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /** Descriptive File Name
 
- @Company
- Company Name
+  @Company
+    Company Name
 
- @File Name
- filename.h
+  @File Name
+    filename.h
 
- @Summary
- Brief description of the file.
+  @Summary
+    Brief description of the file.
 
- @Description
- Describe the purpose of this file.
+  @Description
+    Describe the purpose of this file.
  */
 /* ************************************************************************** */
 #ifndef _BACKEND_POSTP_H    /* Guard against multiple inclusion */
@@ -108,7 +108,7 @@ extern int s_debug_size_type, s_debug_edge;
 #define START_FRAME_LIMIT_ERASER	6	//5	//10		//YJ1127
 
 #if 1	//YJ@231227
-#define D2MIN_LIMIT_INITIAL			8000//2000	//8000 //1500
+#define D2MIN_LIMIT_INITIAL			8000//2000	//8000 //1500    
 #define D2MIN_LIMIT_PEN				80000//5000	//80000 //15000
 #else
 #define D2MIN_LIMIT_INITIAL			8000 //1500
@@ -181,45 +181,25 @@ extern int s_debug_size_type, s_debug_edge;
 #define MAX_SIZE_MARKER_2_SIDE  13.0f	//11.0f	R004
 #elif (MODEL_SPT == MODEL_CTSK_650_V100)||(MODEL_SPT == MODEL_CTSK_N650_V100)||(MODEL_SPT == MODEL_CTSK_N750_V100)||(MODEL_SPT == MODEL_CTSK_N850_V100)
 #define START_FRAME_LIMIT			7	//7	//10//7		//YJ@210323	//10 //2105	//4  //750 PV	//3	//4 R0004 YJ200428
-#define START_FRAME_MULTI3			5
-#define START_FRAME_ERASE			5
+#define START_FRAME_MULTI3			3	//5
+#define START_FRAME_ERASE			3	//5
 #define LIB_0418		1
 #ifdef LIB_0418
+#define MAX_SIZE_PEN_2          9.0f	// 11.0 2pen//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
+#define MAX_SIZE_MARKER_1      	10.0f	// 12.0 2pen//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
 
-#if 1
-#define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f					//  < w_max  2
-#define MAX_SIZE_MARKER_1      	12.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
+#define MAX_SIZE_PEN_E2         9.0f	//6.0f	//7.0f	//12.5f			//  < w_max  2
+#define MAX_SIZE_MARKER_E1      10.0f	//7.0f	//7.5f	//13.0f			//  > w_min  4
 
-#define MAX_SIZE_PEN_E2         9.0f	//10.0f//9.0 //6.0f	//7.0f	//12.5f			//  < w_max  2
-#define MAX_SIZE_MARKER_E1      9.5f	//10.5f//9.5f	//7.0f	//7.5f	//13.0f			//  > w_min  4
+#define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31																					
 
-#define MAX_SIZE_MARKER_2       24.0f//24.0f	//15.0f			//  > w_max  31
-
-#define MAX_SIZE_PEN_2_EDGE     11.0f//13.5f	//11.0f	//11.0f R0004  // 11
-#define MAX_SIZE_MARKER_1_EDGE  15.0f//14.5f	//11.5f //11.0f	R0004   15.0f
+#define MAX_SIZE_PEN_2_EDGE     14.0f	//11.0f R0004  // 11    // 15.0 4pen
+#define MAX_SIZE_MARKER_1_EDGE  15.0f	//11.0f	R0004   15.0f	// 16.0	4pen
 #define MAX_SIZE_MARKER_2_EDGE  26.0f	//12.0f R0004
 
-#define MAX_SIZE_PEN_2_SIDE     11.0f//13.0f	 //8.0f R0004
-#define MAX_SIZE_MARKER_1_SIDE  15.0f//14.0f  //8.0f R0004
+#define MAX_SIZE_PEN_2_SIDE     14.0f	//8.0f R0004    // 16.0 4pen
+#define MAX_SIZE_MARKER_1_SIDE  15.0f	//8.0f R0004	//	16.0 4pen
 #define MAX_SIZE_MARKER_2_SIDE  26.0f	//11.0f	R004
-
-#else		/// 240119 JJH 75VE test
-#define MAX_SIZE_PEN_2          11.0f	//15.0f //11.0f	//14.0f //1204	//12.5f	//8.0f R0004	//7.5f		side marker down			//  < w_max  2
-#define MAX_SIZE_MARKER_1      	12.0f	//16.0f // 12.0f	//15.0f //1204	//13.0f	//8.0f R0004	//7.5f					//  > w_min  4
-
-#define MAX_SIZE_PEN_E2         10.0f	//9.0 //6.0f	//7.0f	//12.5f			//  < w_max  2
-#define MAX_SIZE_MARKER_E1      10.5f	//9.5f	//7.0f	//7.5f	//13.0f			//  > w_min  4
-
-#define MAX_SIZE_MARKER_2       24.0f	//15.0f			//  > w_max  31
-
-#define MAX_SIZE_PEN_2_EDGE    	17.0f	//11.0f R0004  // 11
-#define MAX_SIZE_MARKER_1_EDGE  11.0f	//11.0f	R0004   15.0f
-#define MAX_SIZE_MARKER_2_EDGE  26.0f	//12.0f R0004
-
-#define MAX_SIZE_PEN_2_SIDE     8.0f	//8.0f R0004
-#define MAX_SIZE_MARKER_1_SIDE  9.0f	//8.0f R0004
-#define MAX_SIZE_MARKER_2_SIDE  26.0f	//11.0f	R004
-#endif
 #ifdef MARKER_TOP_AAREA
 #define MAX_SIZE_PEN_1_MTOP     2.5f
 #define MAX_SIZE_PEN_2_MTOP     11.0f	//8.0f R0004
@@ -269,6 +249,7 @@ extern int s_debug_size_type, s_debug_edge;
 #else
 #ERROR MODEL_SPT NOT DEFINED!
 #endif
+
 
 #define MAX_SIZE_ERASER_1       95.0f				//80.0f	YJ20200318
 #define MAX_SIZE_ERASER_1_EDGE  95.0f				//80.0f	YJ20200318
@@ -359,6 +340,7 @@ extern int s_debug_size_type, s_debug_edge;
 #define BURSH_ERASER_SIZE_MAX	255
 #define BURSH_ERASER_SIZE_MIN	35
 
+
 #define BRUSH_REAL_SIZE_STEP		(BRUSH_MAX_OBJECT_SIZE - BRUSH_MIN_OBJECT_SIZE)
 #define BRUSH_VIRTUAL_SIZE_STEP		((BRUSH_REAL_SIZE_STEP * BRUSH_PRESSURE_MIN) / 10)
 
@@ -372,13 +354,14 @@ typedef struct {
 } touch_pos_t;
 #endif
 
-typedef enum {
-	ENUM_SIZE_ONE = 0x01, //not-used
-	ENUM_SIZE_PEN = 0x02,
-	ENUM_SIZE_MARKER = 0x03,
-	ENUM_SIZE_ERASER = 0x04,
+typedef enum
+{
+    ENUM_SIZE_ONE = 0x01, //not-used
+    ENUM_SIZE_PEN = 0x02,
+    ENUM_SIZE_MARKER = 0x03,
+    ENUM_SIZE_ERASER = 0x04,
 	ENUM_SIZE_S_ERASER = 0x05,
-	ENUM_SIZE_UNKNOWN = 0xFF
+    ENUM_SIZE_UNKNOWN = 0xFF
 } size_type_t;
 
 #define TOUCH_MAX_CNT			0xFF //uint8_t: pressedCnt, releaseCnt
@@ -396,35 +379,40 @@ typedef struct {
 	float xVel;
 	float yVel;
 	int8_t used;
-	int8_t cxRef;
-	size_type_t sizeType;
+    int8_t cxRef;
+    size_type_t sizeType;
 #ifdef FRONTEND_LINE_THRESHOLD //nsmoon@191226
-	uint8_t th50CntX;
-	uint8_t th10CntX;
-	uint8_t th50CntY;
-	uint8_t th10CntY;
+    uint8_t th50CntX;
+    uint8_t th10CntX;
+    uint8_t th50CntY;
+    uint8_t th10CntY;
 	float th10WidthX;
 	float th10WidthY;
 #endif
-	int8_t multi_fine; //for debugging
+    int8_t multi_fine; //for debugging
 #if	1	//KYJ20200228
-	//  uint8_t penCnt;
-	//  uint8_t markerCnt;
-	uint16_t eraseSize;
+  //  uint8_t penCnt;
+  //  uint8_t markerCnt;
+    uint16_t eraseSize;
 #endif
 } touchDataSt_t;
 
 //for Brush
 typedef enum {
-	MOVE_NONE = 0, MOVE_X_POS = 1, MOVE_Y_POS = 2, MOVE_XY_POS = 3
+	MOVE_NONE = 0,
+	MOVE_X_POS = 1,
+	MOVE_Y_POS = 2,
+	MOVE_XY_POS = 3
 } move_pos_status_t;
 
 typedef enum {
-	NORMAL_SIZE = 0, ERASER_SIZE = 1
+	NORMAL_SIZE = 0,
+	ERASER_SIZE	= 1
 } brush_size_mode_status_t;
 
 typedef enum {
-	NORMAL_SIZE_PROCESS = 0, ERASER_SIZE_PROCESS = 1
+	NORMAL_SIZE_PROCESS = 0,
+	ERASER_SIZE_PROCESS	= 1
 } brush_process_t;
 
 #if 0
@@ -436,14 +424,17 @@ typedef struct {
 
 #if 1 //shj@20200421 for window drawing (multi pen) & bursh
 typedef enum {
-	NOT_IN_USE_ID = 0x00, IN_USE_ID = 0x01, NEW_ID = 0x02, ID_STATUS_ERROR
-} TP_ID_STATUS_T;
+	NOT_IN_USE_ID = 0x00,
+	IN_USE_ID = 0x01,
+	NEW_ID = 0x02,
+	ID_STATUS_ERROR
+}TP_ID_STATUS_T;
 
 typedef struct {
 	uint8_t *tp_ID_Status_buf;
 	uint8_t *tp_ID_idx_buf;
 	uint8_t *tp_Big_Size_ID_buf;
-//uint8_t in_use_ID;
+	//uint8_t in_use_ID;
 } TP_ID_INFO_T;
 
 typedef struct {
@@ -458,6 +449,7 @@ extern int s_wheel_delta;
 extern int s_cal_hor_scroll(vec_t edgeData_in);
 #endif
 
+
 #ifdef TOUCH_SCROLL_INFO_ENABLE //nsmoon@200611
 #define START_SCROLL_NONE	0x00
 #define START_SCROLL_TOP	0x01
@@ -465,10 +457,10 @@ extern int s_cal_hor_scroll(vec_t edgeData_in);
 #define START_NON_STATE     0x03
 
 typedef struct {
-	uint8_t out_of_scroll_area;
-	uint8_t start_from_scroll_area;
-	uint16_t reserved;
-	uint32_t touch_elapsed_time;
+    uint8_t out_of_scroll_area;
+    uint8_t start_from_scroll_area;
+    uint16_t reserved;
+    uint32_t touch_elapsed_time;
 } touch_scroll_info_t;
 #endif
 //////////////////////////////////////////////////////
@@ -500,7 +492,7 @@ extern void s_smooth_filter_brush(void);
 extern int s_smooth_filter_brush_report_delay(void);
 extern void s_touch_point_tracking_brush(void);
 
-/* Provide C++ Compatibility */
+    /* Provide C++ Compatibility */
 #ifdef __cplusplus
 }
 #endif
