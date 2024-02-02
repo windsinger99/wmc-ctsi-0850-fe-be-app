@@ -1522,8 +1522,8 @@
                               <setting name="debugMode" value="kQTMR_RunNormalInDebug"/>
                               <setting name="timerModeInit" value="pwmOutput"/>
                               <struct name="pwmMode">
-                                 <setting name="freq_value_str" value="420"/>
-                                 <setting name="dutyCyclePercent" value="46"/>
+                                 <setting name="freq_value_str" value="450"/>
+                                 <setting name="dutyCyclePercent" value="33"/>
                                  <setting name="outputPolarity" value="true"/>
                               </struct>
                               <setting name="dmaIntMode" value="polling"/>
@@ -1559,8 +1559,8 @@
                               <setting name="debugMode" value="kQTMR_RunNormalInDebug"/>
                               <setting name="timerModeInit" value="pwmOutput"/>
                               <struct name="pwmMode">
-                                 <setting name="freq_value_str" value="420"/>
-                                 <setting name="dutyCyclePercent" value="46"/>
+                                 <setting name="freq_value_str" value="450"/>
+                                 <setting name="dutyCyclePercent" value="33"/>
                                  <setting name="outputPolarity" value="true"/>
                               </struct>
                               <setting name="dmaIntMode" value="polling"/>
@@ -1596,7 +1596,7 @@
                               <setting name="debugMode" value="kQTMR_RunNormalInDebug"/>
                               <setting name="timerModeInit" value="pwmOutput"/>
                               <struct name="pwmMode">
-                                 <setting name="freq_value_str" value="430"/>
+                                 <setting name="freq_value_str" value="460"/>
                                  <setting name="dutyCyclePercent" value="10"/>
                                  <setting name="outputPolarity" value="false"/>
                               </struct>

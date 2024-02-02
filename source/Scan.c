@@ -632,7 +632,7 @@ uint32_t startAgcCtrlTimer, endAgcCtrlTimer;
 uint32_t startDelayscanTimer, endDelayscanTimer;
 uint32_t startPdDelayTimer, endPdDelayTimer;
 
-#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)   // 240130 JJH test add
 uint32_t startTestTimer, endtestTimer;
 #endif
 
@@ -910,7 +910,7 @@ enum {
 	PWM_TIMER_3
 };
 spmtimer timergp[2];
-
+/*
 void onofftime_freq_Calc(axis_type_enum axisType, float Ontime, float Offtime)
 {
 	float sum;
@@ -966,7 +966,7 @@ void init_Axis_timer_Setup_adj(axis_type_enum axisType)
 	QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
 	QTMR_SetupPwm(BOARD_TMR3_PERIPHERAL, BOARD_TMR3_CHANNEL_0_CHANNEL, pwmFreqHz_t3, dutyCyclePercent_t3, false, BOARD_TMR3_CHANNEL_0_CLOCK_SOURCE);
 }
-
+*/
 
 
 void init_Axis_timer_Setup(axis_type_enum axisType)
@@ -1452,8 +1452,10 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 	uint8_t pdShiftDelayUsec;
 	// uint8_t PdShiftDelayFlag = 0;
 	uint16_t firstSequence = 2; //10;//5; //TRUE; // kjs 210315 add
+
 	//uint16_t partialFirstDac;
 //  uint8_t  i = 0;
+
 
 //    uint8_t adc_idx =0;
 //   uint8_t AdcStoreTempBuf[9];
@@ -1637,12 +1639,12 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		currentStartPdIdx = nextStartPdIdx;
 		//currentLedIdx = nextLedIdx;
 		curScanSequenceIdx = nextScanSequenceIdx;
-
 		if (!firstSequence) {
 		  if (++nextScanSequenceIdx < totalScanSteps) {
 			  nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
 			  nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
 		  }
+
 		  M_TSPM_Triger_Set();
 		}
 		else {
@@ -2352,7 +2354,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
     prevCYC = 0xff;
 #endif
     // uint32_t regPrimask;
-    uint8_t firstScan = 2;
+    uint8_t firstScan = 1;
 
 
 //    setDelayScanTimer10Msec(1);
@@ -2595,8 +2597,7 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         curScanSequenceIdx = nextScanSequenceIdx;
         if (!firstScan) {
             if (++nextScanSequenceIdx < totalScanSteps) {
-                nextStartPdIdx = sequenceTbl[nextScanSequenceIdx][0];
-                nextLedIdx = sequenceTbl[nextScanSequenceIdx][1];
+                nextStartPdIdx hquenceTbl[nextScanSequenceIdx][1];
             }
         }
         //----------------------------------------------------------------------
@@ -3674,8 +3675,7 @@ void Timer_Delay_us(uint32_t val)
         //WDOG_Reset_Refresh();	//2Sec
     }
 }
-
-#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_VCOM_MODE)    // 240130 JJH test add
 void setTestTimerMsec(uint32_t val)
 {
 	endtestTimer = (uint32_t)(WAIT_TIME_10MS(val));	// 50
@@ -3693,7 +3693,6 @@ int16_t isTestControlTimerExpired(void)
     else return 0;
 }
 #endif
-
 #if (PROCESS_EXT_LIGHT_DISABLE == 0)
 
 #if 0

@@ -212,13 +212,15 @@ typedef struct {
 		#define LED_ON_DAC_MIN           80		// == 95mA
 		#define LED_ON_DAC_UINT           2
 
-		#define LED_ON_DAC_MIN_X         100	//120	// 180	//LED_ON_DAC_MIN
+		#define LED_ON_DAC_MIN_X         90	// 180	//LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_X         254	// 254
 		#define LED_ON_DAC_INIT_X        120	// 150 ~ 이상
+
 
 		#define LED_ON_DAC_MIN_Y         100	//130 //120  // LED_ON_DAC_MIN
 		#define LED_ON_DAC_MAX_Y         254	// 254
 		#define LED_ON_DAC_INIT_Y        180	//150		//130  	// 220
+
 
 		#define LED_GAIN_INIT_X			 1
 		#define LED_GAIN_INIT_Y			 1//3

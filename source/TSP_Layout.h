@@ -641,12 +641,12 @@ typedef enum {
 //Threshold ratio Setting (max 100) : Drop percent for check if blocked or not
 /*****************************************************************************/
 #define X_THRESHOLD_DROP_PERCENT                     50	//50
-#define Y_THRESHOLD_DROP_PERCENT                     40	//50	//50
+#define Y_THRESHOLD_DROP_PERCENT                     50	//50	//50
 #define THRESHOLD_DROP_PERCENT_ENABLE              TRUE
 #define THRESHOLD_DROP_PERCENT_SATURATION            40 //30 //nsmoon@220330
 
-#define Y_CORNER_THRESHOLD_DROP_PERCENT              30//40	//50
-#define X_CORNER_THRESHOLD_DROP_PERCENT              30	//50
+#define Y_CORNER_THRESHOLD_DROP_PERCENT              50
+#define X_CORNER_THRESHOLD_DROP_PERCENT              50
 /*****************************************************************************/
 
 

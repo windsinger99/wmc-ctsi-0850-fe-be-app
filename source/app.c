@@ -176,7 +176,7 @@ ATTR_BACKEND_RAM3  __attribute__((aligned(4))) float s_pd_pos_y[MAX_NUM_PD_Y_DLT
 //static void get_slope_mask(axis_t axis, uint16_t slope_idx, slope_mask_t *sm);
 //static void get_slope_val(axis_t axis, int stIdx, int pd, unsigned char *pRcv, slope_mask_t *slopeVal);
 
-#if 0 //for test
+#if 0//for test
 #define APP_TIME_LEN 5
 #define APP_TIME_STR_LEN 80
 uint32_t curTime, prevTime;
@@ -1072,7 +1072,7 @@ int backend_process_line_data(void)
 #endif
 #if 1 //for test
     APP_TIME_ADD(2);
-    nextScan.numTouch = s_prevTouchCntPen;	//YJ@231016 after Tuning 4pen
+    nextScan.numTouch = 0;	//s_prevTouchCntPen;	//YJ@231016 after Tuning 4pen
     if (BG_call_backend2((DEF_PD_INFO *)InBuf, (DEF_DATA_INFO2 *)OutBuf2, (next_scan_t *)&nextScan) != NO_BACKEND_ERROR)
     {
 #if (ENABLE_DEBUG_MESSAGE != 1)
@@ -1096,7 +1096,6 @@ int backend_process_line_data(void)
         //return APP_ERR;
     }
     APP_TIME_ADD(3);
-    //TRACE_ERROR("\n\n\n %d", s_prevTouchCntPen);
 #endif //1
 #ifdef TIMER_CNT_CHECK
     TRACEYJ("\r\n%d, %d, %d", test_dwt, test_gpt1, test_gpt2);
@@ -2583,17 +2582,10 @@ int main(void)
 
         //test_mode_func();
 
-#if defined(DEBUG)
+#if (ENABLE_UART_CMD_PROCESS == DEBUG_UART_MOME)
 		  //uartCmdProcess();
-        if(isTestControlTimerExpired() == 1)
-        {
-        	clearTestControlTimer();
-        	if(testFlag == 1)
-        	{
-        		DEBUG_TP1_Toggle();
-        	}
-        }
 #endif
+
     } //while (1)
 }
 
