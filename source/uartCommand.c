@@ -119,7 +119,8 @@ void display_menu(void)
 	TRACE_MENU("\r\n %d. TIME	:	GPT2 Timer,  Value X 10ms, T1", i++);
 	TRACE_MENU("\r\n %d. FLAG	:	Timer test delay flag", i++);
 	TRACE_MENU("\r\n %d. BLOCK	:	Block line cnt test", i++);
-	TRACE_MENU("\r\n %d. LED	:	on off time, uint = 0.1us, ex)10=1us, 25=2.5us ", i++);
+	TRACE_MENU("\r\n %d. LEDX	:	X on off time, uint = 0.1us, ex)10=1us, 25=2.5us ", i++);
+	TRACE_MENU("\r\n %d. LEDY	:	Y on off time, uint = 0.1us, ex)10=1us, 25=2.5us ", i++);
 	TRACE_MENU("\r\n ex) cmd xx xx ... enter  -> xx max = 255");
 	TRACE_MENU("\r\n/********************************************/\r\n");
 }
@@ -266,17 +267,45 @@ int Blocklinetest(int argc, char **argv)
 	return 0;
 }
 
-int LedonoffTimeControl(int argc, char **argv)
+int xLedonoffTimeControl(int argc, char **argv)
 {
 	uint8_t ontime = 0, offtime = 0;
 	ontime = (uint8_t)atoi(argv[1]);
 	offtime = (uint8_t)atoi(argv[2]);
-	TRACE_VCOM("\r\nLED on : (%d), off (%d)\r\n", ontime, offtime );
-	ontime_Adj = (float)(ontime/10);
-	offtime_Adj = (float)(offtime/10);
+	TRACE_VCOM("\r\nX LED on : (%d), off (%d)\r\n", ontime, offtime );
+	xontime_Adj = (float)(ontime)/10;
+	xofftime_Adj = (float)(offtime)/10;
 
-	TRACE_VCOM("\r\nLED on : (%f), off (%f)\r\n", ontime_Adj, offtime_Adj );
-	init_Axis_timer_Setup_adj(1);
+	if(ledAdj_flag == 0)
+	{
+		ledAdj_flag = 1;
+		yontime_Adj = 1.0f;
+		yofftime_Adj = 2.0f;
+	}
+
+	TRACE_VCOM("\r\n X LED: on(%0.2f) off(%0.2f),	Y LED: on(%0.2f) off(%0.2f)\r\n", xontime_Adj, xofftime_Adj , yontime_Adj, yofftime_Adj );
+	init_Axis_timer_Setup_adj(X_AXIS);
+
+	return 0;
+}
+
+int yLedonoffTimeControl(int argc, char **argv)
+{
+	uint8_t ontime = 0, offtime = 0;
+	ontime = (uint8_t)atoi(argv[1]);
+	offtime = (uint8_t)atoi(argv[2]);
+	TRACE_VCOM("\r\nY LED on : (%d), off (%d)\r\n", ontime, offtime );
+	yontime_Adj = (float)(ontime)/10;
+	yofftime_Adj = (float)(offtime)/10;
+
+	if(ledAdj_flag == 0)
+	{
+		ledAdj_flag = 1;
+		xontime_Adj = 1.0f;
+		xofftime_Adj = 2.0f;
+	}
+	TRACE_VCOM("\r\n X LED: on(%0.2f) off(%0.2f),	Y LED: on(%0.2f) off(%0.2f)\r\n", xontime_Adj, xofftime_Adj , yontime_Adj, yofftime_Adj );
+	init_Axis_timer_Setup_adj(Y_AXIS);
 	return 0;
 }
 
@@ -291,7 +320,8 @@ TCommand Cmds[CMD_MAX] = 	{
 							{	"TIME"					,	Timertest							},
 							{	"FLAG"					,	Flagtest							},
 							{	"BLOCK"					,	Blocklinetest						},
-							{	"LED"					,	LedonoffTimeControl					},
+							{	"LEDX"					,	xLedonoffTimeControl				},
+							{	"LEDY"					,	yLedonoffTimeControl				},
 							{	"NULL"					,	NULL								}
 };
 

@@ -911,7 +911,7 @@ enum {
 };
 
 spmtimer timergp[2];
-uint8_t ontime_Adj, offtime_Adj;
+float xontime_Adj, xofftime_Adj, yontime_Adj, yofftime_Adj, ledAdj_flag;
 
 void onofftime_freq_Calc(axis_type_enum axisType, float Ontime, float Offtime)
 {
@@ -947,23 +947,19 @@ void init_Axis_timer_Setup_adj(axis_type_enum axisType)
 
 	if(axisType == X_AXIS)
 	{
-		onofftime_freq_Calc(X_AXIS, ontime_Adj, offtime_Adj);
-		pwmFreqHz_t1_2 = timergp[PWM_TIMER_1_2].pwmFreqHz;
-		pwmFreqHz_t3 = timergp[PWM_TIMER_3].pwmFreqHz;
-		dutyCyclePercent_t1_2 = timergp[PWM_TIMER_1_2].duty;
-		dutyCyclePercent_t3 = timergp[PWM_TIMER_3].duty;
+		onofftime_freq_Calc(X_AXIS, xontime_Adj, xofftime_Adj);
 	}
 	else
 	{
-		onofftime_freq_Calc(Y_AXIS, ontime_Adj, offtime_Adj);
-		pwmFreqHz_t1_2 = TSPM_PWM_CLK_T1_2_Y;
-		pwmFreqHz_t3 = TSPM_PWM_CLK_T3_Y;
-		dutyCyclePercent_t1_2 = TSPM_PWM_DUTY_T1_2_Y;
-		dutyCyclePercent_t3 = TSPM_PWM_DUTY_T3_Y;
+		onofftime_freq_Calc(Y_AXIS, yontime_Adj, yofftime_Adj);
 	}
 
-	DEBUG_PRINTF("\n\r (%d)timer PWM CLK, duty : (1, 2) %d, %d	, (3) %d, %d",
-			axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
+	pwmFreqHz_t1_2 = timergp[PWM_TIMER_1_2].pwmFreqHz;
+	pwmFreqHz_t3 = timergp[PWM_TIMER_3].pwmFreqHz;
+	dutyCyclePercent_t1_2 = timergp[PWM_TIMER_1_2].duty;
+	dutyCyclePercent_t3 = timergp[PWM_TIMER_3].duty;
+	//DEBUG_PRINTF("\n\r (%d)timer PWM CLK, duty : (1, 2) %d, %d	, (3) %d, %d",
+			//axisType, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, pwmFreqHz_t3, dutyCyclePercent_t3);
 
 	QTMR_SetupPwm(BOARD_TMR1_PERIPHERAL, BOARD_TMR1_CHANNEL_0_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR1_CHANNEL_0_CLOCK_SOURCE);
 	QTMR_SetupPwm(BOARD_TMR2_PERIPHERAL, BOARD_TMR2_CHANNEL_3_CHANNEL, pwmFreqHz_t1_2, dutyCyclePercent_t1_2, true, BOARD_TMR2_CHANNEL_3_CLOCK_SOURCE);
@@ -1508,7 +1504,12 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
 	init_Axis_timer_Setup(axisType);
 #endif
-
+#if defined(DEBUG)	//YJ@240205
+    if(ledAdj_flag)
+    {
+    	init_Axis_timer_Setup_adj(axisType);
+    }
+#endif
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
 	//__builtin_disable_interrupts(); // kjsxy
 	__disable_irq();
@@ -1956,7 +1957,12 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
     init_Axis_timer_Setup(axisType);
 #endif
-
+#if defined(DEBUG)	//YJ@240205
+    if(ledAdj_flag)
+    {
+    	init_Axis_timer_Setup_adj(axisType);
+    }
+#endif
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
     //__builtin_disable_interrupts(); // kjsxy
     __disable_irq();

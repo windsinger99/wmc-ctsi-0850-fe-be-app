@@ -120,7 +120,7 @@ extern uint8_t yScanThresholdData[Y_CELL_SIZE][Y_MAX_OFFSET * 2 + 1]; // [pd Ind
 extern uint32_t adc_value[ADC_SIZE];
 
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
-extern uint8_t ontime_Adj, offtime_Adj;
+extern float xontime_Adj, xofftime_Adj, yontime_Adj, yofftime_Adj, ledAdj_flag;
 extern void init_Axis_timer_Setup_adj(axis_type_enum axisType);
 #endif
 
