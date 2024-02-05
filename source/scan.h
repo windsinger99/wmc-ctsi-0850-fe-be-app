@@ -122,6 +122,7 @@ extern uint32_t adc_value[ADC_SIZE];
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
 extern float xontime_Adj, xofftime_Adj, yontime_Adj, yofftime_Adj, ledAdj_flag;
 extern void init_Axis_timer_Setup_adj(axis_type_enum axisType);
+extern void init_Adj_onofftime_value(void);
 #endif
 
 #ifdef ENABLE_UART_CMD_PROCESS  //nsmoon@210915

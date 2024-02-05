@@ -912,6 +912,13 @@ enum {
 
 spmtimer timergp[2];
 float xontime_Adj, xofftime_Adj, yontime_Adj, yofftime_Adj, ledAdj_flag;
+void init_Adj_onofftime_value(void)
+{
+	xontime_Adj = TSPM_LED_ONTIME_X;
+	xofftime_Adj = TSPM_LED_OFFTIME_X;
+	yontime_Adj= TSPM_LED_ONTIME_Y;
+	yofftime_Adj = TSPM_LED_OFFTIME_Y;
+}
 
 void onofftime_freq_Calc(axis_type_enum axisType, float Ontime, float Offtime)
 {
@@ -1502,12 +1509,15 @@ int16_t scanAxis(axis_type_enum axisType, uint8_t bLedOn, uint8_t pdIdxMin, uint
 		//partialFirstDac = LED_ON_DAC_MAX_Y;
 	}
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
-	init_Axis_timer_Setup(axisType);
-#endif
 #if defined(DEBUG)	//YJ@240205
     if(ledAdj_flag)
     {
     	init_Axis_timer_Setup_adj(axisType);
+    }
+    else
+#endif
+    {
+    	init_Axis_timer_Setup(axisType);
     }
 #endif
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
@@ -1955,12 +1965,15 @@ int16_t scanAxisFull(axis_type_enum axisType, uint8_t bLedOn)
         baseLedIdx = X_CELL_SIZE;
     }
 #ifdef TSPM_LED_ONTIME_XY_ENABLE	//YJ@240126
-    init_Axis_timer_Setup(axisType);
-#endif
 #if defined(DEBUG)	//YJ@240205
     if(ledAdj_flag)
     {
     	init_Axis_timer_Setup_adj(axisType);
+    }
+    else
+#endif
+    {
+    	init_Axis_timer_Setup(axisType);
     }
 #endif
 #if (SCAN_INT_DISABLE_SHJ)          //YJ@220222
